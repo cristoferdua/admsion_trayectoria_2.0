@@ -9,6 +9,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Collection;
 import java.util.List;
@@ -125,10 +128,21 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
         http
+                .cors(cors -> {})
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/actuator/**", "/error").permitAll()
+                        // DEV: lectura y escritura de admision/trayectoria sin token (Fase 1, Keycloak va en fase 2)
+                        .requestMatchers("/api/v1/postulaciones/**", "/api/v1/postulantes/**",
+                                "/api/v1/inscripciones/**", "/api/v1/convocatorias/**",
+                                "/api/v1/modalidades-admision/**", "/api/v1/examenes-admision/**",
+                                "/api/v1/calificaciones/**", "/api/v1/adjudicaciones/**",
+                                "/api/v1/casos-especiales/**", "/api/v1/seguimientos/**",
+                                "/api/v1/tipos-documento/**",
+                                "/api/v1/admision/**").permitAll()
+                        .requestMatchers(TRAYECTORIA).permitAll()
                         .requestMatchers(HttpMethod.GET, ACADEMICO).authenticated()
                         .requestMatchers(ACADEMICO).hasAnyRole("ADMIN", "COORDINADOR")
                         // Aprobar o rechazar una solicitud de gestion es solo de coordinacion
@@ -169,5 +183,18 @@ public class SecurityConfig {
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter))
                 );
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration cfg = new CorsConfiguration();
+        cfg.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost:4300"));
+        cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        cfg.setAllowedHeaders(List.of("*"));
+        cfg.setAllowCredentials(true);
+        cfg.setMaxAge(3600L);
+        UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
+        src.registerCorsConfiguration("/**", cfg);
+        return src;
     }
 }

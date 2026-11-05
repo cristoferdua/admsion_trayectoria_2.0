@@ -15,7 +15,8 @@ public class PostulanteRequest {
     @NotNull private Long idConvocatoria;
     @NotNull private Long idPrograma;
     @NotNull private Long idModalidad;
-    @NotBlank @Size(max = 30) private String codigoPostulante;
+    // Autogenerado por backend si no viene (formato POS-{yyyy}-{sem}-{correlativo})
+    @Size(max = 30) private String codigoPostulante;
     @Size(max = 200) private String colegioProcedencia;
     @Min(1950) @Max(2100) private Integer anioEgresoColegio;
     @DecimalMin("0.0") @DecimalMax("20.0") private BigDecimal promedioColegio;

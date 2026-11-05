@@ -40,9 +40,6 @@ public class PostulanteService {
 
     @Transactional
     public PostulanteResponse crear(PostulanteRequest r) {
-        if (repo.existsByCodigoPostulante(r.getCodigoPostulante())) {
-            throw new BusinessRuleException("Ya existe un postulante con codigo " + r.getCodigoPostulante());
-        }
         if (repo.existsByIdPersonaAndConvocatoriaId(r.getIdPersona(), r.getIdConvocatoria())) {
             throw new BusinessRuleException("La persona ya esta registrada en esta convocatoria");
         }
@@ -54,12 +51,20 @@ public class PostulanteService {
         ModalidadAdmision mod = modalidadRepo.findById(r.getIdModalidad())
                 .orElseThrow(() -> new ResourceNotFoundException("Modalidad no encontrada: " + r.getIdModalidad()));
 
+        // Autogenerar codigo si no viene en el request (secretaria no lo escribe)
+        String codigo = (r.getCodigoPostulante() == null || r.getCodigoPostulante().isBlank())
+                ? generarCodigo(conv)
+                : r.getCodigoPostulante();
+        if (repo.existsByCodigoPostulante(codigo)) {
+            throw new BusinessRuleException("Ya existe un postulante con codigo " + codigo);
+        }
+
         Postulante p = Postulante.builder()
                 .idPersona(r.getIdPersona())
                 .convocatoria(conv)
                 .idPrograma(r.getIdPrograma())
                 .modalidad(mod)
-                .codigoPostulante(r.getCodigoPostulante())
+                .codigoPostulante(codigo)
                 .colegioProcedencia(r.getColegioProcedencia())
                 .anioEgresoColegio(r.getAnioEgresoColegio())
                 .promedioColegio(r.getPromedioColegio())
@@ -102,5 +107,16 @@ public class PostulanteService {
     private Postulante buscar(Long id) {
         return repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Postulante no encontrado: " + id));
+    }
+
+    /**
+     * Genera un codigo unico por convocatoria: POS-{periodo}-{correlativo4}.
+     * Ej: POS-2026-2-0001. El correlativo se calcula contando postulantes de la convocatoria.
+     * TODO: cuando haya alta concurrencia, usar una secuencia dedicada en BD para evitar colisiones.
+     */
+    private String generarCodigo(Convocatoria conv) {
+        long correlativo = repo.findByConvocatoriaId(conv.getId()).size() + 1L;
+        String periodo = conv.getPeriodo() == null ? "0000-0" : conv.getPeriodo();
+        return String.format("POS-%s-%04d", periodo, correlativo);
     }
 }

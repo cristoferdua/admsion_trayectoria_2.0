@@ -1,0 +1,33 @@
+<div class="hero">
+  <header class="hero__topbar">
+    <div class="brand">
+      <div class="brand-chip">A</div>
+      <span class="brand-text">A | UPeU</span>
+    </div>
+    <div class="user-pill">
+      <div class="user-pill__icon"><span class="material-symbols-outlined">calendar_month</span></div>
+      <div class="user-pill__meta">
+        <div class="user-pill__name">{{ kc.profile()?.name || 'NELSON ANTONY LARICO QUISPE' }}</div>
+        <div class="user-pill__filial">{{ kc.profile()?.filial || 'FILIAL JULIACA' }}</div>
+      </div>
+      <div class="avatar">{{ kc.profile()?.initials || 'NL' }}</div>
+      <button class="icon-btn" aria-label="salir" (click)="kc.logout()"><span class="material-symbols-outlined">logout</span></button>
+    </div>
+  </header>
+
+  <main class="launcher">
+    <div class="tiles">
+      @for (t of tiles; track t.label) {
+        <a class="tile" [routerLink]="t.route">
+          <div class="tile__icon"><span class="material-symbols-outlined">{{ t.icon }}</span></div>
+          <div class="tile__label">{{ t.label }}</div>
+        </a>
+      }
+    </div>
+  </main>
+
+  <footer class="hero__footer">
+    <span>versión 2.0</span>
+    <span class="online">● En línea</span>
+  </footer>
+</div>
