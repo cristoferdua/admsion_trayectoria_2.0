@@ -141,7 +141,9 @@ public class SecurityConfig {
                                 "/api/v1/calificaciones/**", "/api/v1/adjudicaciones/**",
                                 "/api/v1/casos-especiales/**", "/api/v1/seguimientos/**",
                                 "/api/v1/tipos-documento/**",
-                                "/api/v1/admision/**").permitAll()
+                                "/api/v1/admision/**",
+                                "/api/v1/public/**",
+                                "/api/v1/derecho-admision/**").permitAll()
                         .requestMatchers(TRAYECTORIA).permitAll()
                         .requestMatchers(HttpMethod.GET, ACADEMICO).authenticated()
                         .requestMatchers(ACADEMICO).hasAnyRole("ADMIN", "COORDINADOR")

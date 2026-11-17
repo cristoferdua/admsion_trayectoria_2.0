@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { ApiService } from '../../core/api.service';
+import { ApiService } from '../../../core/api.service';
 
 interface Alerta {
   id: number;

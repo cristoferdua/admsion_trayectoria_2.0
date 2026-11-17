@@ -99,12 +99,26 @@
       <div class="card__body">
         <div class="grid-2">
           <div class="field">
+            <label class="field__label">Sede / Filial *</label>
+            <div class="input">
+              <span class="material-symbols-outlined input__icon">location_on</span>
+              <select [value]="idSede() ?? ''"
+                      (change)="idSede.set(+$any($event.target).value || null); idPrograma.set(null)">
+                <option value="">— Elige la sede —</option>
+                @for (s of sedes(); track s.id) {
+                  <option [value]="s.id">{{ s.nombre }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
             <label class="field__label">Convocatoria *</label>
             <div class="input">
               <span class="material-symbols-outlined input__icon">campaign</span>
               <select [value]="idConvocatoria() ?? ''"
                       (change)="idConvocatoria.set(+$any($event.target).value || null)">
-                <option value="">— Seleccionar convocatoria abierta —</option>
+                <option value="">— Elige la convocatoria —</option>
                 @for (c of convocatorias(); track c.id) {
                   <option [value]="c.id">{{ c.nombre }} · {{ c.periodo }}</option>
                 }
@@ -113,38 +127,33 @@
           </div>
 
           <div class="field">
-            <label class="field__label">Modalidad *</label>
-            @if (modalidades().length > 0) {
-              <div class="input">
-                <span class="material-symbols-outlined input__icon">list</span>
-                <select [value]="idModalidad() ?? ''"
-                        (change)="idModalidad.set(+$any($event.target).value || null)">
-                  <option value="">— Seleccionar modalidad —</option>
-                  @for (m of modalidades(); track m.id) {
-                    <option [value]="m.id">{{ m.nombre }}</option>
-                  }
-                </select>
-              </div>
-            } @else {
-              <div class="input">
-                <span class="material-symbols-outlined input__icon">list</span>
-                <input type="number" placeholder="ID modalidad (ej. 1)"
-                       [value]="idModalidad() ?? ''"
-                       (input)="idModalidad.set(+$any($event.target).value || null)">
-              </div>
-              <p class="field__hint">Catálogo no disponible — ingresar ID manual temporalmente.</p>
-            }
+            <label class="field__label">Modalidad de ingreso *</label>
+            <div class="input">
+              <span class="material-symbols-outlined input__icon">list</span>
+              <select [value]="idModalidad() ?? ''"
+                      (change)="idModalidad.set(+$any($event.target).value || null)">
+                <option value="">— Elige la modalidad —</option>
+                @for (m of modalidades(); track m.id) {
+                  <option [value]="m.id">{{ m.nombre }}</option>
+                }
+              </select>
+            </div>
           </div>
 
-          <div class="field field--full">
-            <label class="field__label">Programa académico *</label>
+          <div class="field">
+            <label class="field__label">Carrera *</label>
             <div class="input">
               <span class="material-symbols-outlined input__icon">menu_book</span>
-              <input type="number" placeholder="ID del programa (ej. 1)"
-                     [value]="idPrograma() ?? ''"
-                     (input)="idPrograma.set(+$any($event.target).value || null)">
+              <select [value]="idPrograma() ?? ''" [disabled]="!idSede()"
+                      (change)="idPrograma.set(+$any($event.target).value || null)">
+                <option value="">
+                  {{ idSede() ? '— Elige la carrera —' : 'Primero elige la sede' }}
+                </option>
+                @for (p of programasFiltrados(); track p.id) {
+                  <option [value]="p.id">{{ p.nombre }} ({{ p.facultad }})</option>
+                }
+              </select>
             </div>
-            <p class="field__hint">Pendiente: integración con <code>lamb-institucional-ms</code> → se mostrará select.</p>
           </div>
         </div>
       </div>
@@ -164,66 +173,26 @@
     <div class="card">
       <header class="card__head">
         <span class="material-symbols-outlined">contact_mail</span>
-        <h3>Paso 3 — Datos de contacto y colegio</h3>
+        <h3>Paso 3 — Datos de contacto</h3>
       </header>
       <div class="card__body">
+        <p class="hint">Solo necesitamos como contactarte. El resto (documentos, pago del derecho de admision)
+          lo coordinaras en la oficina de admision. Recibiras un correo con tu codigo.</p>
         <div class="grid-2">
           <div class="field">
-            <label class="field__label">Colegio de procedencia</label>
-            <div class="input">
-              <span class="material-symbols-outlined input__icon">school</span>
-              <input type="text" placeholder="Nombre del colegio"
-                     [value]="colegio()" (input)="colegio.set($any($event.target).value)">
-            </div>
-          </div>
-          <div class="field">
-            <label class="field__label">Año de egreso</label>
-            <div class="input">
-              <span class="material-symbols-outlined input__icon">calendar_today</span>
-              <input type="number" min="1950" max="2100" placeholder="2024"
-                     [value]="anioEgreso() ?? ''"
-                     (input)="anioEgreso.set(+$any($event.target).value || null)">
-            </div>
-          </div>
-          <div class="field">
-            <label class="field__label">Promedio colegio</label>
-            <div class="input">
-              <span class="material-symbols-outlined input__icon">pin</span>
-              <input type="number" step="0.1" min="0" max="20" placeholder="16.5"
-                     [value]="promedio() ?? ''"
-                     (input)="promedio.set(+$any($event.target).value || null)">
-            </div>
-          </div>
-          <div class="field">
-            <label class="field__label">Teléfono</label>
+            <label class="field__label">Telefono / celular *</label>
             <div class="input">
               <span class="material-symbols-outlined input__icon">call</span>
               <input type="text" placeholder="999 999 999"
                      [value]="telefono()" (input)="telefono.set($any($event.target).value)">
             </div>
           </div>
-          <div class="field field--full">
-            <label class="field__label">Correo electrónico</label>
+          <div class="field">
+            <label class="field__label">Correo electronico *</label>
             <div class="input">
               <span class="material-symbols-outlined input__icon">mail</span>
               <input type="email" placeholder="postulante@gmail.com"
                      [value]="correo()" (input)="correo.set($any($event.target).value)">
-            </div>
-          </div>
-          <div class="field">
-            <label class="field__label">Nombre del apoderado</label>
-            <div class="input">
-              <span class="material-symbols-outlined input__icon">family_restroom</span>
-              <input type="text" placeholder="Nombre completo"
-                     [value]="apoderado()" (input)="apoderado.set($any($event.target).value)">
-            </div>
-          </div>
-          <div class="field">
-            <label class="field__label">Teléfono apoderado</label>
-            <div class="input">
-              <span class="material-symbols-outlined input__icon">call</span>
-              <input type="text" placeholder="999 999 999"
-                     [value]="telefonoApoderado()" (input)="telefonoApoderado.set($any($event.target).value)">
             </div>
           </div>
         </div>
@@ -277,9 +246,20 @@
         </div>
       }
 
+      <div class="success__qr">
+        <img [src]="carnetUrl()" alt="QR del carnet" width="180" height="180">
+        <div class="success__qr-text">
+          <strong>Carnet del postulante</strong>
+          <p>El QR contiene el código <code>{{ res.codigoPostulante }}</code> para identificarte el día del examen. Descarga tu carnet oficial con todos los datos:</p>
+          <button class="btn btn--sm" (click)="descargarCarnet()">
+            <span class="material-symbols-outlined">picture_as_pdf</span> Descargar carnet PDF
+          </button>
+        </div>
+      </div>
+
       <div class="success__actions">
         <button class="btn btn--ghost" (click)="irAListado()">
-          <span class="material-symbols-outlined">list</span> Ver listado de postulantes
+          <span class="material-symbols-outlined">search</span> Consultar mi postulacion
         </button>
         <button class="btn btn--primary" (click)="nuevo()">
           <span class="material-symbols-outlined">add</span> Nueva postulación

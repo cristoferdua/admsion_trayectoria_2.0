@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiService } from '../../core/api.service';
-import { Postulacion, PostulacionRequest } from './postulacion.model';
+import { ApiService } from '../../../core/api.service';
+import { Postulacion, PostulacionRequest } from '../postulacion/postulacion.model';
 
 @Component({
   selector: 'app-postulaciones',

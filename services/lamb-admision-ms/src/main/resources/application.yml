@@ -10,12 +10,11 @@ spring:
 lamb:
   reniec:
     base-url: https://api.apis.net.pe
-    # Token de apis.net.pe — override con env var LAMB_RENIEC_TOKEN si se quiere rotar
     token: ${LAMB_RENIEC_TOKEN:}
-  resend:
-    base-url: https://api.resend.com
-    # API key de Resend (si vacía → modo mock, solo loguea)
-    key: ${LAMB_RESEND_KEY:}
-    # Formato "Nombre <correo@dominio>" o solo correo. Por defecto usa el sandbox de Resend.
-    from-email: ${LAMB_RESEND_FROM:Admisión UPeU <onboarding@resend.dev>}
-    from-name: ${LAMB_RESEND_FROM_NAME:Admisión UPeU}
+  brevo:
+    base-url: https://api.brevo.com
+    key: ${LAMB_BREVO_KEY:}
+    from-email: ${LAMB_BREVO_FROM:cristion22gfg@gmail.com}
+    from-name: ${LAMB_BREVO_FROM_NAME:Admisión UPeU}
+  # URL pública del backend (ngrok/producción). Si vacía, el QR usa la request HTTP (localhost).
+  public-base-url: ${LAMB_PUBLIC_BASE_URL:}

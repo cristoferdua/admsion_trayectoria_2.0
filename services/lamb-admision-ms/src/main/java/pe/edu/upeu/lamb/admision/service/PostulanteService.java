@@ -9,10 +9,12 @@ import pe.edu.upeu.lamb.admision.entity.*;
 import pe.edu.upeu.lamb.admision.exception.BusinessRuleException;
 import pe.edu.upeu.lamb.admision.exception.ResourceNotFoundException;
 import pe.edu.upeu.lamb.admision.mapper.PostulanteMapper;
+import pe.edu.upeu.lamb.admision.port.FinanzasPort;
 import pe.edu.upeu.lamb.admision.repository.ConvocatoriaRepository;
 import pe.edu.upeu.lamb.admision.repository.ModalidadAdmisionRepository;
 import pe.edu.upeu.lamb.admision.repository.PostulanteRepository;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -24,6 +26,9 @@ public class PostulanteService {
     private final ConvocatoriaRepository convocatoriaRepo;
     private final ModalidadAdmisionRepository modalidadRepo;
     private final PostulanteMapper mapper;
+    private final FinanzasPort finanzasPort;
+
+    private static final BigDecimal MONTO_DERECHO_ADMISION = new BigDecimal("450.00");
 
     @Transactional(readOnly = true)
     public List<PostulanteResponse> listar(Long idConvocatoria) {
@@ -72,10 +77,12 @@ public class PostulanteService {
                 .correoContacto(r.getCorreoContacto())
                 .nombreApoderado(r.getNombreApoderado())
                 .telefonoApoderado(r.getTelefonoApoderado())
-                .estado(EstadoPostulante.REGISTRADO)
+                .estado(EstadoPostulante.PRE_INSCRITO)
                 .fechaRegistro(Instant.now())
                 .build();
-        return mapper.toResponse(repo.save(p));
+        Postulante guardado = repo.save(p);
+        finanzasPort.crearCargoDerechoAdmision(guardado.getId(), MONTO_DERECHO_ADMISION, conv.getPeriodo());
+        return mapper.toResponse(guardado);
     }
 
     @Transactional
@@ -98,8 +105,8 @@ public class PostulanteService {
     @Transactional
     public void eliminar(Long id) {
         Postulante p = buscar(id);
-        if (p.getEstado() != EstadoPostulante.REGISTRADO) {
-            throw new BusinessRuleException("Solo se puede eliminar un postulante en estado REGISTRADO");
+        if (p.getEstado() != EstadoPostulante.PRE_INSCRITO) {
+            throw new BusinessRuleException("Solo se puede eliminar un postulante en estado PRE_INSCRITO");
         }
         repo.delete(p);
     }

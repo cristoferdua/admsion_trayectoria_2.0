@@ -2,7 +2,8 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApiService } from '../../core/api.service';
+import { ApiService } from '../../../core/api.service';
+import { environment } from '../../../../environments/environment';
 
 interface ReniecResponse {
   dni: string;
@@ -46,26 +47,26 @@ export class WizardPostulacionComponent {
   reniec = signal<ReniecResponse | null>(null);
 
   // Paso 2 — Académico
+  idSede = signal<number | null>(null);
   idConvocatoria = signal<number | null>(null);
   idPrograma = signal<number | null>(null);
   idModalidad = signal<number | null>(null);
+  sedes = signal<any[]>([]);
+  programas = signal<any[]>([]);
   convocatorias = signal<any[]>([]);
   modalidades = signal<any[]>([]);
+  programasFiltrados = computed(() =>
+    this.programas().filter(p => !this.idSede() || p.idSede === this.idSede()));
 
   // Paso 3 — Contacto
-  colegio = signal('');
-  anioEgreso = signal<number | null>(null);
-  promedio = signal<number | null>(null);
   telefono = signal('');
   correo = signal('');
-  apoderado = signal('');
-  telefonoApoderado = signal('');
 
   // Resultado
   resultado = signal<WizardResponse | null>(null);
 
   puedePaso2 = computed(() => !!this.reniec()?.encontrado);
-  puedePaso3 = computed(() => !!this.idConvocatoria() && !!this.idPrograma() && !!this.idModalidad());
+  puedePaso3 = computed(() => !!this.idSede() && !!this.idConvocatoria() && !!this.idPrograma() && !!this.idModalidad());
 
   constructor() {
     this.cargarCatalogos();
@@ -79,6 +80,14 @@ export class WizardPostulacionComponent {
     this.api.list<any>('/api/v1/modalidades-admision').subscribe({
       next: r => this.modalidades.set(r),
       error: () => this.modalidades.set([])
+    });
+    this.api.list<any>('/api/v1/public/catalogo/sedes').subscribe({
+      next: r => this.sedes.set(r),
+      error: () => this.sedes.set([])
+    });
+    this.api.list<any>('/api/v1/public/catalogo/programas').subscribe({
+      next: r => this.programas.set(r),
+      error: () => this.programas.set([])
     });
   }
 
@@ -124,13 +133,8 @@ export class WizardPostulacionComponent {
       idConvocatoria: this.idConvocatoria(),
       idPrograma: this.idPrograma(),
       idModalidad: this.idModalidad(),
-      colegioProcedencia: this.colegio() || null,
-      anioEgresoColegio: this.anioEgreso(),
-      promedioColegio: this.promedio(),
       telefonoContacto: this.telefono() || null,
-      correoContacto: this.correo() || null,
-      nombreApoderado: this.apoderado() || null,
-      telefonoApoderado: this.telefonoApoderado() || null
+      correoContacto: this.correo() || null
     };
     this.loading.set(true);
     this.error.set(null);
@@ -152,21 +156,38 @@ export class WizardPostulacionComponent {
     this.paso.set(1);
     this.dni.set('');
     this.reniec.set(null);
+    this.idSede.set(null);
     this.idConvocatoria.set(null);
     this.idPrograma.set(null);
     this.idModalidad.set(null);
-    this.colegio.set('');
-    this.anioEgreso.set(null);
-    this.promedio.set(null);
     this.telefono.set('');
     this.correo.set('');
-    this.apoderado.set('');
-    this.telefonoApoderado.set('');
     this.resultado.set(null);
     this.error.set(null);
   }
 
   irAListado() {
-    this.router.navigate(['/crud/postulantes']);
+    this.router.navigate(['/seguimiento']);
+  }
+
+  carnetUrl(): string | null {
+    const r = this.resultado();
+    return r ? `${environment.apiUrl}/api/v1/postulantes/${r.idPostulante}/carnet?size=320` : null;
+  }
+
+  carnetPdfUrl(): string | null {
+    const r = this.resultado();
+    return r ? `${environment.apiUrl}/api/v1/postulantes/${r.idPostulante}/carnet.pdf` : null;
+  }
+
+  descargarCarnet() {
+    const url = this.carnetPdfUrl();
+    if (!url) return;
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `carnet-${this.resultado()!.codigoPostulante}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 }

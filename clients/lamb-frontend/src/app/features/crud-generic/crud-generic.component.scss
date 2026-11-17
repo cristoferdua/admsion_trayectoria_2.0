@@ -252,7 +252,7 @@ textarea:focus { border-color: var(--upeu-navy); box-shadow: 0 0 0 3px rgba(26,3
 }
 .table tbody tr:hover { background: #F9FAFB; }
 .col--num { text-align: right; font-variant-numeric: tabular-nums; }
-.actions-col { width: 80px; text-align: center; }
+.actions-col { width: 160px; text-align: center; white-space: nowrap; }
 
 .act {
   background: transparent; border: 0;
@@ -261,8 +261,13 @@ textarea:focus { border-color: var(--upeu-navy); box-shadow: 0 0 0 3px rgba(26,3
   cursor: pointer;
   color: var(--upeu-navy);
 }
+.act + .act { margin-left: 4px; }
 .act:hover { background: rgba(245,184,0,.2); }
 .act .material-symbols-outlined { font-size: 18px; }
+.act--del { color: #B91C1C; }
+.act--del:hover { background: rgba(185,28,28,.12); }
+.act--dl { color: #047857; }
+.act--dl:hover { background: rgba(4,120,87,.12); }
 
 .chip {
   display: inline-flex; align-items: center;

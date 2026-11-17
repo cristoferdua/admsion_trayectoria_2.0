@@ -11,6 +11,7 @@ import pe.edu.upeu.lamb.admision.event.PostulanteAdmitidoEvento;
 import pe.edu.upeu.lamb.admision.exception.BusinessRuleException;
 import pe.edu.upeu.lamb.admision.exception.ResourceNotFoundException;
 import pe.edu.upeu.lamb.admision.messaging.AdmisionEventosProducer;
+import pe.edu.upeu.lamb.admision.port.PersonaPort;
 import pe.edu.upeu.lamb.admision.repository.ConvocatoriaRepository;
 import pe.edu.upeu.lamb.admision.repository.ModalidadAdmisionRepository;
 import pe.edu.upeu.lamb.admision.repository.PostulanteRepository;
@@ -18,7 +19,6 @@ import pe.edu.upeu.lamb.admision.repository.PostulanteRepository;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 /**
@@ -41,12 +41,14 @@ public class PostulacionWizardService {
     private final ModalidadAdmisionRepository modalidadRepo;
     private final AdmisionEventosProducer eventosProducer;
     private final EmailService emailService;
+    private final PersonaPort personaPort;
 
     @Transactional
     public PostulacionWizardResponse registrar(PostulacionWizardRequest r) {
-        // Paso 1 — resolver idPersona desde DNI (MOCK temporal)
-        // TODO: reemplazar por llamada REST a lamb-personas-ms cuando esté disponible
-        Long idPersona = resolverIdPersonaDesdeDni(r.getDni());
+        // Paso 1 — resolver idPersona via puerto (hoy local; manana ms Personas)
+        Long idPersona = personaPort.obtenerOCrearPersona(new PersonaPort.DatosPersona(
+                r.getDni(), r.getNombres(), r.getApellidoPaterno(), r.getApellidoMaterno(),
+                null, null, r.getCorreoContacto(), r.getTelefonoContacto()));
 
         // Paso 2 — validar y cargar catálogos
         Convocatoria conv = convocatoriaRepo.findById(r.getIdConvocatoria())
@@ -76,7 +78,7 @@ public class PostulacionWizardService {
                 .correoContacto(r.getCorreoContacto())
                 .nombreApoderado(r.getNombreApoderado())
                 .telefonoApoderado(r.getTelefonoApoderado())
-                .estado(EstadoPostulante.REGISTRADO)
+                .estado(EstadoPostulante.PRE_INSCRITO)
                 .fechaRegistro(Instant.now())
                 .build();
         Postulante guardado = postulanteRepo.save(p);
@@ -85,12 +87,12 @@ public class PostulacionWizardService {
 
         // Paso 4 — publicar evento tras commit (otros módulos reaccionan)
         PostulanteAdmitidoEvento evento = PostulanteAdmitidoEvento.builder()
-                .tipoEvento("postulante.creado")
+                .tipoEvento("postulante.pre-inscrito")
                 .postulacionId(guardado.getId())
                 .idPersona(idPersona)
                 .idPrograma(r.getIdPrograma())
                 .periodo(conv.getPeriodo())
-                .puntajeExamen(BigDecimal.ZERO) // aún no evaluado
+                .puntajeExamen(null) // aún no evaluado
                 .origen("wizard-admision")
                 .timestamp(Instant.now().toEpochMilli())
                 .build();
@@ -131,17 +133,14 @@ public class PostulacionWizardService {
                 .build();
     }
 
-    /** MOCK: genera idPersona desde DNI. Reemplazar por lamb-personas-ms. */
-    private Long resolverIdPersonaDesdeDni(String dni) {
-        // Mapeo determinista: mismo DNI → mismo idPersona (positivo, 7 dígitos)
-        long base = Long.parseLong(dni);
-        return (base % 9000000L) + 1000000L;
-    }
-
     private String generarCodigo(Convocatoria conv) {
-        long correlativo = postulanteRepo.findByConvocatoriaId(conv.getId()).size() + 1L;
         String periodo = conv.getPeriodo() == null ? "0000-0" : conv.getPeriodo();
-        return String.format("POS-%s-%04d", periodo, correlativo);
+        long base = postulanteRepo.countByConvocatoriaId(conv.getId());
+        for (int intento = 1; intento <= 20; intento++) {
+            String candidato = String.format("POS-%s-%04d", periodo, base + intento);
+            if (!postulanteRepo.existsByCodigoPostulante(candidato)) return candidato;
+        }
+        throw new IllegalStateException("No se pudo generar codigo unico para convocatoria " + conv.getId());
     }
 
     private String nz(String s) { return s == null ? "" : s; }

@@ -49,7 +49,7 @@ spring:
             - id: lamb-admision
               uri: lb://lamb-admision-ms
               predicates:
-                - Path=/api/v1/postulaciones/**,/api/v1/postulantes/**,/api/v1/inscripciones/**,/api/v1/convocatorias/**,/api/v1/modalidades-admision/**,/api/v1/examenes-admision/**,/api/v1/calificaciones/**,/api/v1/adjudicaciones/**,/api/v1/casos-especiales/**,/api/v1/seguimientos/**,/api/v1/tipos-documento/**,/api/v1/admision/**
+                - Path=/api/v1/postulaciones/**,/api/v1/postulantes/**,/api/v1/inscripciones/**,/api/v1/convocatorias/**,/api/v1/modalidades-admision/**,/api/v1/examenes-admision/**,/api/v1/calificaciones/**,/api/v1/adjudicaciones/**,/api/v1/casos-especiales/**,/api/v1/seguimientos/**,/api/v1/tipos-documento/**,/api/v1/admision/**,/api/v1/public/**,/api/v1/derecho-admision/**
             - id: lamb-curriculo
               uri: lb://lamb-curriculo-ms
               predicates:

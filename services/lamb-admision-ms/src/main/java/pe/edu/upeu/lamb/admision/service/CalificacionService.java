@@ -9,6 +9,7 @@ import pe.edu.upeu.lamb.admision.entity.*;
 import pe.edu.upeu.lamb.admision.exception.BusinessRuleException;
 import pe.edu.upeu.lamb.admision.exception.ResourceNotFoundException;
 import pe.edu.upeu.lamb.admision.mapper.CalificacionMapper;
+import pe.edu.upeu.lamb.admision.port.FinanzasPort;
 import pe.edu.upeu.lamb.admision.repository.CalificacionRepository;
 import pe.edu.upeu.lamb.admision.repository.ExamenAdmisionRepository;
 import pe.edu.upeu.lamb.admision.repository.PostulanteRepository;
@@ -24,6 +25,7 @@ public class CalificacionService {
     private final ExamenAdmisionRepository examenRepo;
     private final PostulanteRepository postulanteRepo;
     private final CalificacionMapper mapper;
+    private final FinanzasPort finanzasPort;
 
     @Transactional(readOnly = true)
     public List<CalificacionResponse> listar(Long idExamen) {
@@ -47,6 +49,13 @@ public class CalificacionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Examen no encontrado: " + r.getIdExamen()));
         Postulante postulante = postulanteRepo.findById(r.getIdPostulante())
                 .orElseThrow(() -> new ResourceNotFoundException("Postulante no encontrado: " + r.getIdPostulante()));
+
+        if (postulante.getEstado() != EstadoPostulante.APTO_EXAMEN
+                && postulante.getEstado() != EstadoPostulante.CALIFICADO) {
+            throw new BusinessRuleException("El postulante " + postulante.getId()
+                    + " no esta APTO_EXAMEN (actual: " + postulante.getEstado() + ")");
+        }
+        postulante.setEstado(EstadoPostulante.CALIFICADO);
 
         CalificacionExamen c = CalificacionExamen.builder()
                 .examen(examen)

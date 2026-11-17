@@ -1,5 +1,6 @@
 package pe.edu.upeu.lamb.admision.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -44,5 +45,6 @@ public class ModalidadAdmision {
 
     @OneToMany(mappedBy = "modalidad", fetch = FetchType.LAZY)
     @Builder.Default
+    @JsonIgnore
     private List<ModalidadDocumento> documentosRequeridos = new ArrayList<>();
 }

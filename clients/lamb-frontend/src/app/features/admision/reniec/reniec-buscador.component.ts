@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiService } from '../../core/api.service';
+import { ApiService } from '../../../core/api.service';
 
 interface ReniecResponse {
   dni: string;

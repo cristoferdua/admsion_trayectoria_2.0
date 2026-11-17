@@ -4,7 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { ApiService } from '../../core/api.service';
-import { CRUD_BY_SLUG, CrudDef, FieldDef } from '../cruds.catalog';
+import { CRUD_BY_SLUG } from './cruds.registry';
+import { CrudDef, FieldDef } from './crud.types';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-crud-generic',
@@ -17,6 +19,7 @@ export class CrudGenericComponent {
   private api = inject(ApiService);
   private route = inject(ActivatedRoute);
   private location = inject(Location);
+  private router = inject(Router);
 
   back() { this.location.back(); }
 
@@ -67,6 +70,11 @@ export class CrudGenericComponent {
   }
 
   openCreate() {
+    const d = this.def();
+    if (d?.createVia) {
+      this.router.navigateByUrl(d.createVia);
+      return;
+    }
     this.resetForm();
     this.resetReniec();
     this.showForm.set(true);
@@ -137,6 +145,32 @@ export class CrudGenericComponent {
 
   updateField(key: string, value: any) {
     this.form.update(f => ({ ...f, [key]: value }));
+  }
+
+  download(row: any) {
+    const d = this.def(); if (!d?.rowDownload) return;
+    const dl = d.rowDownload;
+    const path = dl.path.replace('{id}', row.id);
+    const codigo = dl.codeField ? (row[dl.codeField] ?? row.id) : row.id;
+    const filename = dl.filename.replace('{id}', row.id).replace('{codigo}', codigo);
+    const a = document.createElement('a');
+    a.href = `${environment.apiUrl}${path}`;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  remove(row: any) {
+    const d = this.def(); if (!d) return;
+    if (!confirm(`¿Eliminar registro #${row.id}?`)) return;
+    this.api.delete<void>(`${d.path}/${row.id}`).subscribe({
+      next: () => {
+        this.items.update(a => a.filter(x => x.id !== row.id));
+        this.error.set(null);
+      },
+      error: e => this.error.set(this.msg(e))
+    });
   }
 
   fmtCell(row: any, field: FieldDef) {

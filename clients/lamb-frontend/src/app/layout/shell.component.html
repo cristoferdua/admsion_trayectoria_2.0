@@ -9,12 +9,16 @@
     <nav class="sidebar__nav">
       @if (showAdmision()) {
         <div class="nav-group">Admisión</div>
-        <a class="nav-item nav-item--featured" routerLink="/admision/nueva-postulacion" routerLinkActive="nav-item--active">
-          <span class="material-symbols-outlined nav-item__icon">bolt</span>
-          <span class="nav-item__label">+ Nueva postulación</span>
+        <a class="nav-item nav-item--featured" routerLink="/admin/prospectos" routerLinkActive="nav-item--active">
+          <span class="material-symbols-outlined nav-item__icon">inbox</span>
+          <span class="nav-item__label">Bandeja prospectos</span>
+        </a>
+        <a class="nav-item nav-item--featured" routerLink="/admin/derecho-admision" routerLinkActive="nav-item--active">
+          <span class="material-symbols-outlined nav-item__icon">payments</span>
+          <span class="nav-item__label">Pago derecho admisión</span>
         </a>
         @for (item of admision(); track item.slug) {
-          <a class="nav-item" [routerLink]="['/crud', item.slug]" routerLinkActive="nav-item--active">
+          <a class="nav-item" [routerLink]="['/admin/crud', item.slug]" routerLinkActive="nav-item--active">
             <span class="material-symbols-outlined nav-item__icon">{{ item.icon }}</span>
             <span class="nav-item__label">{{ item.label }}</span>
           </a>
@@ -23,12 +27,12 @@
 
       @if (showTrayectoria()) {
         <div class="nav-group">Trayectoria</div>
-        <a class="nav-item" routerLink="/trayectoria/plan" routerLinkActive="nav-item--active">
+        <a class="nav-item" routerLink="/admin/trayectoria/plan" routerLinkActive="nav-item--active">
           <span class="material-symbols-outlined nav-item__icon">menu_book</span>
           <span class="nav-item__label">Plan Académico</span>
         </a>
         @for (item of trayectoria(); track item.slug) {
-          <a class="nav-item" [routerLink]="['/crud', item.slug]" routerLinkActive="nav-item--active">
+          <a class="nav-item" [routerLink]="['/admin/crud', item.slug]" routerLinkActive="nav-item--active">
             <span class="material-symbols-outlined nav-item__icon">{{ item.icon }}</span>
             <span class="nav-item__label">{{ item.label }}</span>
           </a>
@@ -37,13 +41,17 @@
 
       @if (!activeModule()) {
         <div class="nav-group">Módulos</div>
-        <a class="nav-item" routerLink="/crud/convocatorias">
+        <a class="nav-item" routerLink="/admin/admision">
           <span class="material-symbols-outlined nav-item__icon">how_to_reg</span>
           <span class="nav-item__label">Admisión</span>
         </a>
-        <a class="nav-item" routerLink="/trayectoria/plan">
+        <a class="nav-item" routerLink="/admin/trayectoria">
           <span class="material-symbols-outlined nav-item__icon">route</span>
           <span class="nav-item__label">Trayectoria</span>
+        </a>
+        <a class="nav-item" routerLink="/admin" style="margin-top: .5rem;">
+          <span class="material-symbols-outlined nav-item__icon">home</span>
+          <span class="nav-item__label">Volver al portal</span>
         </a>
       }
     </nav>

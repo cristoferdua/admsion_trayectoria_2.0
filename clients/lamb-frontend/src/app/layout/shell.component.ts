@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { KeycloakService } from '../core/keycloak.service';
-import { CRUDS, CRUD_BY_SLUG } from '../features/cruds.catalog';
+import { CRUDS, CRUD_BY_SLUG } from '../features/crud-generic/cruds.registry';
 
 type ModuleKey = 'Admisión' | 'Trayectoria';
 
@@ -24,9 +24,10 @@ export class ShellComponent {
   // Módulo activo según la URL
   activeModule = computed<ModuleKey | null>(() => {
     const u = this.url();
-    if (u.startsWith('/trayectoria')) return 'Trayectoria';
-    if (u.startsWith('/admision')) return 'Admisión';
-    const match = u.match(/^\/crud\/([^/?#]+)/);
+    if (u.startsWith('/admin/trayectoria')) return 'Trayectoria';
+    if (u.startsWith('/admin/admision') || u.startsWith('/admin/prospectos')
+        || u.startsWith('/admin/derecho-admision') || u.startsWith('/admin/reniec')) return 'Admisión';
+    const match = u.match(/^\/admin\/crud\/([^/?#]+)/);
     if (match) {
       const def = CRUD_BY_SLUG.get(match[1]);
       if (def) return def.group;

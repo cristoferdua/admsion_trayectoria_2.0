@@ -225,8 +225,16 @@
                     </td>
                   }
                   <td class="actions-col">
+                    @if (d.rowDownload; as dl) {
+                      <button class="act act--dl" (click)="download(row)" [title]="dl.label">
+                        <span class="material-symbols-outlined">{{ dl.icon }}</span>
+                      </button>
+                    }
                     <button class="act act--edit" (click)="openEdit(row)" title="editar">
                       <span class="material-symbols-outlined">edit</span>
+                    </button>
+                    <button class="act act--del" (click)="remove(row)" title="eliminar">
+                      <span class="material-symbols-outlined">delete</span>
                     </button>
                   </td>
                 </tr>
