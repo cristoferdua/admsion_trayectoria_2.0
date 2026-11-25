@@ -1,5 +1,6 @@
 # Publica la carpeta guias-web/ en GitHub Pages cada vez que cambia en main.
 # Requisito (una sola vez): repo en GitHub -> Settings -> Pages -> Source: "GitHub Actions".
+# Para publicar sin cambiar nada: Actions -> "Publicar guías" -> Run workflow.
 name: Publicar guías
 
 on:
