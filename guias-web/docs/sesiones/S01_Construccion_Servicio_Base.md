@@ -5,6 +5,44 @@
 !!! note "Antes de empezar: debe estar levantado"
     Abre **Docker Desktop** (debe decir *Engine running*) y haz la verificación de la [sección 1.5](#15-verifica-tu-computadora-antes-de-todo). En esta sesión todavía no se arranca ningún servicio.
 
+## 0. Liberar todos los puertos (antes de empezar)
+
+Si te sale **`Port 18888 was already in use`** (o cualquier puerto), es porque algo de Lamb ya quedó corriendo:
+otra terminal, un `java -jar` o **otra copia del proyecto**. Haz esto antes de crear o arrancar un servicio,
+así empiezas limpio.
+
+**Dónde abrir la terminal:** cualquier PowerShell (no importa la carpeta).  
+**Qué hace:** apaga todo lo que use los puertos de Lamb. Los programas (`java`, `node`) los cierra, y los
+contenedores de Docker (BD, Kafka, Keycloak, Grafana) los detiene **sin** cerrar Docker Desktop.  
+**Y pega el siguiente código:**
+
+```powershell
+$puertos = @(4200, 8095, 8096, 13000, 13100, 18080, 18090, 18092, 18180, 18761, 18888, 19090) + (8081..8089) + (15451..15460)
+foreach ($p in $puertos) {
+    $c = Get-NetTCPConnection -LocalPort $p -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
+    if (-not $c) { continue }
+    $proc = Get-Process -Id $c.OwningProcess -ErrorAction SilentlyContinue
+    if ($proc.ProcessName -match '^(com\.docker\.backend|wslrelay|vpnkit|docker)') {
+        docker ps -q --filter "publish=$p" | ForEach-Object { docker stop $_ | Out-Null }
+        "[LIBERADO] $p  (contenedor de Docker)"
+    } else {
+        Stop-Process -Id $c.OwningProcess -Force
+        "[LIBERADO] $p  ($($proc.ProcessName))"
+    }
+}
+"Listo: puertos libres."
+```
+
+Si un puerto estaba ocupado, sale `[LIBERADO] 18888  (java)`. Si no sale ninguna línea `[LIBERADO]`, ya estaban todos libres.
+
+!!! note "Si tu servicio usa otro puerto"
+    Agrega tu puerto a la primera línea (ej. si elegiste `8097` y `15461`, ponlos dentro de `@( ... )`).
+    Los contenedores de Docker se vuelven a levantar con su `docker compose ... up -d` de cada sesión.
+
+!!! note "Arranca siempre desde esta carpeta"
+    Después de liberar, arranca Config, Eureka, tu servicio y el Gateway desde **esta** copia del proyecto.
+    Si tienes otra copia de Lamb en tu PC y la arrancas, su Config Server **no ve** los archivos que creas aquí.
+
 ## 1. Introducción
 
 ### 1.1 Qué es esta guía
