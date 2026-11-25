@@ -181,7 +181,7 @@ Todos deben salir `[LIBRE]`. Si alguno sale `[OCUPADO]`: ciérralo, o cambia el 
 
 Aquí **no creas archivos a mano**: el comando crea `mi-proyecto\` y todas sus carpetas (vacías).
 
-**Terminal:** en la carpeta donde quieras crear el proyecto (ej. `Documentos`). Pega todo el bloque. Al terminar, la terminal queda **dentro** de `mi-proyecto\`. Ábrela en VS Code: *File → Open Folder* → `mi-proyecto`.
+**Dónde abrir la terminal:** En la carpeta donde quieras crear el proyecto (ej. `Documentos`). Pega todo el bloque. Al terminar, la terminal queda **dentro** de `mi-proyecto\`. Ábrela en VS Code: *File → Open Folder* → `mi-proyecto`.
 
 
 ```powershell
@@ -212,7 +212,10 @@ cd mi-proyecto
 
 Levanta PostgreSQL, Kafka, Kafka UI, Keycloak, Prometheus, Loki, Promtail y Grafana.
 
-**Crea el archivo** `mi-proyecto\docker-compose.yml` y pega este código. Va **directo** en `mi-proyecto\` (no dentro de `mi-servicio`).
+**Crea el archivo:** `docker-compose.yml`  
+**En la ruta:** `mi-proyecto\`  
+**Ojo:** Va **directo** en `mi-proyecto\` (no dentro de `mi-servicio`).  
+**Y pega el siguiente código:**
 
 ```yaml
 # Infraestructura completa para mi-servicio (independiente de Lamb).
@@ -350,7 +353,9 @@ volumes:
 Keycloak lo importa solo al arrancar. Crea el realm **demo**, los roles `ADMIN` y `USUARIO`,
 el cliente `mi-servicio-web` y dos usuarios.
 
-**Crea el archivo** `keycloak\realm-demo.json` y pega este código.
+**Crea el archivo:** `realm-demo.json`  
+**En la ruta:** `keycloak\`  
+**Y pega el siguiente código:**
 
 ```json
 {
@@ -412,7 +417,9 @@ el cliente `mi-servicio-web` y dos usuarios.
 
 ### 3.3 `observabilidad\prometheus.yml` (de dónde saca métricas)
 
-**Crea el archivo** `observabilidad\prometheus.yml` y pega este código.
+**Crea el archivo:** `prometheus.yml`  
+**En la ruta:** `observabilidad\`  
+**Y pega el siguiente código:**
 
 ```yaml
 global:
@@ -430,7 +437,9 @@ scrape_configs:
 
 ### 3.4 `observabilidad\promtail.yml` (de dónde saca logs)
 
-**Crea el archivo** `observabilidad\promtail.yml` y pega este código.
+**Crea el archivo:** `promtail.yml`  
+**En la ruta:** `observabilidad\`  
+**Y pega el siguiente código:**
 
 ```yaml
 server:
@@ -457,7 +466,9 @@ scrape_configs:
 
 ### 3.5 `observabilidad\grafana\datasources\datasources.yml` - copia tal cual
 
-**Crea el archivo** `observabilidad\grafana\datasources\datasources.yml` y pega este código.
+**Crea el archivo:** `datasources.yml`  
+**En la ruta:** `observabilidad\grafana\datasources\`  
+**Y pega el siguiente código:**
 
 ```yaml
 apiVersion: 1
@@ -479,7 +490,9 @@ datasources:
 
 ### 3.6 `observabilidad\grafana\dashboards\dashboards.yml` - copia tal cual
 
-**Crea el archivo** `observabilidad\grafana\dashboards\dashboards.yml` y pega este código.
+**Crea el archivo:** `dashboards.yml`  
+**En la ruta:** `observabilidad\grafana\dashboards\`  
+**Y pega el siguiente código:**
 
 ```yaml
 apiVersion: 1
@@ -496,7 +509,9 @@ providers:
 
 Muestra: si el servicio está arriba, peticiones por segundo y los logs en vivo.
 
-**Crea el archivo** `observabilidad\grafana\dashboards\mi-servicio.json` y pega este código.
+**Crea el archivo:** `mi-servicio.json`  
+**En la ruta:** `observabilidad\grafana\dashboards\`  
+**Y pega el siguiente código:**
 
 ```json
 {
@@ -541,7 +556,7 @@ Muestra: si el servicio está arriba, peticiones por segundo y los logs en vivo.
 Copia `mvnw`, `mvnw.cmd` y la carpeta `.mvn` de **cualquier** proyecto Spring Boot a `mi-servicio\`.
 Por ejemplo, desde el proyecto Lamb:
 
-**Terminal:** en la carpeta **`mi-proyecto\`** (la que abriste en VS Code). Cambia la primera línea por la ruta real de Lamb en tu PC.
+**Dónde abrir la terminal:** En la carpeta **`mi-proyecto\`** (la que abriste en VS Code). Cambia la primera línea por la ruta real de Lamb en tu PC.
 
 ```powershell
 $lamb = "C:\ruta\a\Lamb-Modulo02-Admision-Trayectoria\services\lamb-trayectoria-ms"   # cambia por tu ruta
@@ -556,7 +571,10 @@ Copy-Item "$lamb\mvnw", "$lamb\mvnw.cmd" mi-servicio
 Trae: web, JPA, PostgreSQL, Flyway, Kafka, seguridad JWT (Keycloak), Swagger, Actuator y Prometheus.
 Es **el mismo** para los dos caminos.
 
-**Crea el archivo** `mi-servicio\pom.xml` y pega este código. Va **directo** en `mi-servicio\`, al lado de `mvnw.cmd`.
+**Crea el archivo:** `pom.xml`  
+**En la ruta:** `mi-servicio\`  
+**Ojo:** Va **directo** en `mi-servicio\`, al lado de `mvnw.cmd`.  
+**Y pega el siguiente código:**
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -704,7 +722,9 @@ Es **el mismo** para los dos caminos.
 
 ### 4.3 `mi-servicio\.gitignore` - copia tal cual
 
-**Crea el archivo** `mi-servicio\.gitignore` y pega este código.
+**Crea el archivo:** `.gitignore`  
+**En la ruta:** `mi-servicio\`  
+**Y pega el siguiente código:**
 
 ```text
 HELP.md
@@ -744,7 +764,9 @@ build/
 
 ### 4.4 `src\main\resources\application.yml`
 
-**Crea el archivo** `mi-servicio\src\main\resources\application.yml` y pega este código.
+**Crea el archivo:** `application.yml`  
+**En la ruta:** `mi-servicio\src\main\resources\`  
+**Y pega el siguiente código:**
 
 ```yaml
 server:
@@ -825,7 +847,9 @@ management:
 
 Escribe en `mi-servicio\logs\mi-servicio.log`, carpeta que Promtail lee.
 
-**Crea el archivo** `mi-servicio\src\main\resources\logback-spring.xml` y pega este código.
+**Crea el archivo:** `logback-spring.xml`  
+**En la ruta:** `mi-servicio\src\main\resources\`  
+**Y pega el siguiente código:**
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -864,7 +888,9 @@ Todos van dentro de `mi-servicio\src\main\java\com\ejemplo\miservicio\`.
 
 ### 5.1 `MiServicioApplication.java`
 
-**Crea el archivo** `mi-servicio\src\main\java\com\ejemplo\miservicio\MiServicioApplication.java` y pega este código.
+**Crea el archivo:** `MiServicioApplication.java`  
+**En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\`  
+**Y pega el siguiente código:**
 
 ```java
 package com.ejemplo.miservicio;
@@ -887,7 +913,9 @@ Deja pasar la página y Swagger; para `/api/**`: **ver** = cualquier usuario log
 **modificar** = solo `ADMIN`. Convierte los roles del token de Keycloak (`realm_access.roles`) en roles de Spring.
 Ya sirve para el CRUD del camino B: no hay que tocarlo.
 
-**Crea el archivo** `mi-servicio\src\main\java\com\ejemplo\miservicio\config\SecurityConfig.java` y pega este código.
+**Crea el archivo:** `SecurityConfig.java`  
+**En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\config\`  
+**Y pega el siguiente código:**
 
 ```java
 package com.ejemplo.miservicio.config;
@@ -952,7 +980,9 @@ public class SecurityConfig {
 
 ### 5.3 `config\OpenApiConfig.java` (Swagger con botón *Authorize*) - copia tal cual
 
-**Crea el archivo** `mi-servicio\src\main\java\com\ejemplo\miservicio\config\OpenApiConfig.java` y pega este código.
+**Crea el archivo:** `OpenApiConfig.java`  
+**En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\config\`  
+**Y pega el siguiente código:**
 
 ```java
 package com.ejemplo.miservicio.config;
@@ -980,7 +1010,9 @@ public class OpenApiConfig {
 
 ### 5.4 `config\KafkaTopicsConfig.java` (crea el topic) - copia tal cual
 
-**Crea el archivo** `mi-servicio\src\main\java\com\ejemplo\miservicio\config\KafkaTopicsConfig.java` y pega este código.
+**Crea el archivo:** `KafkaTopicsConfig.java`  
+**En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\config\`  
+**Y pega el siguiente código:**
 
 ```java
 package com.ejemplo.miservicio.config;
@@ -1004,7 +1036,9 @@ public class KafkaTopicsConfig {
 
 ### 5.5 `event\MiEvento.java` (el mensaje que viaja por Kafka)
 
-**Crea el archivo** `mi-servicio\src\main\java\com\ejemplo\miservicio\event\MiEvento.java` y pega este código.
+**Crea el archivo:** `MiEvento.java`  
+**En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\event\`  
+**Y pega el siguiente código:**
 
 ```java
 package com.ejemplo.miservicio.event;
@@ -1034,7 +1068,9 @@ public class MiEvento {
 
 ### 5.6 `messaging\EventosProducer.java` (ENVÍA a Kafka) - copia tal cual
 
-**Crea el archivo** `mi-servicio\src\main\java\com\ejemplo\miservicio\messaging\EventosProducer.java` y pega este código.
+**Crea el archivo:** `EventosProducer.java`  
+**En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\messaging\`  
+**Y pega el siguiente código:**
 
 ```java
 package com.ejemplo.miservicio.messaging;
@@ -1073,7 +1109,9 @@ public class EventosProducer {
 
 ### 5.7 `messaging\EventosConsumer.java` (RECIBE de Kafka)
 
-**Crea el archivo** `mi-servicio\src\main\java\com\ejemplo\miservicio\messaging\EventosConsumer.java` y pega este código.
+**Crea el archivo:** `EventosConsumer.java`  
+**En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\messaging\`  
+**Y pega el siguiente código:**
 
 ```java
 package com.ejemplo.miservicio.messaging;
@@ -1105,7 +1143,9 @@ public class EventosConsumer {
 `/api/config` (público, le dice a la página dónde está Keycloak), `/api/hola` y `/api/hola/evento`.
 Va en **los dos caminos**.
 
-**Crea el archivo** `mi-servicio\src\main\java\com\ejemplo\miservicio\controller\HolaController.java` y pega este código.
+**Crea el archivo:** `HolaController.java`  
+**En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\controller\`  
+**Y pega el siguiente código:**
 
 ```java
 package com.ejemplo.miservicio.controller;
@@ -1188,7 +1228,10 @@ En SQL los nombres de varias palabras van con guion bajo (`fecha_nacimiento`) y 
 
 Flyway la ejecuta sola al arrancar el servicio.
 
-**Crea el archivo** `mi-servicio\src\main\resources\db\migration\V1__create_productos.sql` y pega este código. El nombre lleva **dos** guiones bajos (`V1__`).
+**Crea el archivo:** `V1__create_productos.sql`  
+**En la ruta:** `mi-servicio\src\main\resources\db\migration\`  
+**Ojo:** El nombre lleva **dos** guiones bajos (`V1__`).  
+**Y pega el siguiente código:**
 
 ```sql
 CREATE TABLE productos (
@@ -1219,7 +1262,9 @@ CREATE TABLE productos (
 
 Un atributo por cada columna de la tabla.
 
-**Crea el archivo** `mi-servicio\src\main\java\com\ejemplo\miservicio\entity\Producto.java` y pega este código.
+**Crea el archivo:** `Producto.java`  
+**En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\entity\`  
+**Y pega el siguiente código:**
 
 ```java
 package com.ejemplo.miservicio.entity;
@@ -1270,7 +1315,9 @@ public class Producto {
 
 Con solo esto ya tienes `findAll`, `findById`, `save` y `delete`.
 
-**Crea el archivo** `mi-servicio\src\main\java\com\ejemplo\miservicio\repository\ProductoRepository.java` y pega este código.
+**Crea el archivo:** `ProductoRepository.java`  
+**En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\repository\`  
+**Y pega el siguiente código:**
 
 ```java
 package com.ejemplo.miservicio.repository;
@@ -1296,7 +1343,10 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
 Cada cambio se avisa por Kafka (`producto.creado`, `producto.editado`, `producto.eliminado`).
 
-**Crea el archivo** `mi-servicio\src\main\java\com\ejemplo\miservicio\controller\ProductoController.java` y pega este código. Va al lado de `HolaController.java`.
+**Crea el archivo:** `ProductoController.java`  
+**En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\controller\`  
+**Ojo:** Va al lado de `HolaController.java`.  
+**Y pega el siguiente código:**
 
 ```java
 package com.ejemplo.miservicio.controller;
@@ -1383,7 +1433,7 @@ public class ProductoController {
 
 La página usa la librería oficial de Keycloak. En PowerShell, desde `mi-proyecto\`:
 
-**Terminal:** en la carpeta **`mi-proyecto\`** (la que abriste en VS Code). El bloque entra a `static`, descarga la librería y vuelve a `mi-proyecto\`.
+**Dónde abrir la terminal:** En la carpeta **`mi-proyecto\`** (la que abriste en VS Code). El bloque entra a `static`, descarga la librería y vuelve a `mi-proyecto\`.
 
 ```powershell
 cd mi-servicio\src\main\resources\static
@@ -1401,7 +1451,10 @@ Deben quedar `static\js\keycloak.js` y `static\js\deprecations.js`.
 **Si elegiste el servicio sin CRUD (solo Hola mundo), usa esta página.** Pide login a Keycloak, muestra
 "Hola mundo" y tiene un botón para mandar un evento a Kafka.
 
-**Crea el archivo** `mi-servicio\src\main\resources\static\index.html` y pega este código. Camino A. Va en `static` (no dentro de `js`).
+**Crea el archivo:** `index.html`  
+**En la ruta:** `mi-servicio\src\main\resources\static\`  
+**Ojo:** Camino A. Va en `static` (no dentro de `js`).  
+**Y pega el siguiente código:**
 
 ```html
 <!DOCTYPE html>
@@ -1457,7 +1510,10 @@ Deben quedar `static\js\keycloak.js` y `static\js\deprecations.js`.
 **Si elegiste el servicio con CRUD, usa esta página en lugar de la 7.2.** "Hola mundo", un formulario y una
 tabla con botones *Editar* / *Eliminar*.
 
-**Crea el archivo** `mi-servicio\src\main\resources\static\index.html` y pega este código. Camino B (si ya creaste la del camino A, **reemplaza** todo su contenido).
+**Crea el archivo:** `index.html`  
+**En la ruta:** `mi-servicio\src\main\resources\static\`  
+**Ojo:** Camino B (si ya creaste la del camino A, **reemplaza** todo su contenido).  
+**Y pega el siguiente código:**
 
 ```html
 <!DOCTYPE html>
@@ -1571,7 +1627,7 @@ tabla con botones *Editar* / *Eliminar*.
 
 ## 8. Ejecutar - los dos caminos
 
-**Terminal:** en la carpeta **`mi-proyecto\`** (la que abriste en VS Code). La línea `cd mi-servicio` entra al servicio. Deja la terminal abierta: el servicio se queda corriendo ahí.
+**Dónde abrir la terminal:** En la carpeta **`mi-proyecto\`** (la que abriste en VS Code). La línea `cd mi-servicio` entra al servicio. Deja la terminal abierta: el servicio se queda corriendo ahí.
 
 ```powershell
 # 1. Infraestructura (desde mi-proyecto\; la primera vez descarga imágenes)

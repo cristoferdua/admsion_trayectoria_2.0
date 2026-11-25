@@ -40,7 +40,9 @@ Tocas 2 archivos del Gateway: **la ruta** y **el permiso**.
 
 Una ruta **por recurso**.
 
-**Modifica** `infra\lamb-config\config-repo\lamb-gateway-dev.yml`: busca (`Ctrl+F`) la línea `- id: lamb-finanzas` y pega **justo arriba** de ella el bloque de tu camino (A **o** B, no los dos). No borres lo demás.
+**Abre el archivo:** `lamb-gateway-dev.yml`  
+**En la ruta:** `infra\lamb-config\config-repo\`  
+**Qué hacer:** Busca (`Ctrl+F`) la línea `- id: lamb-finanzas` y pega **justo arriba** de ella el bloque de tu camino (A **o** B, no los dos). No borres lo demás del archivo.
 
 
 ### Camino A - Sin CRUD
@@ -78,7 +80,9 @@ Las dos rutas (la del Hola mundo y la del CRUD):
 
 El Gateway de Lamb **rechaza** (`401`) toda ruta que no tenga permiso.
 
-**Modifica** `infra\lamb-gateway\src\main\java\pe\edu\upeu\lamb\gateway\config\SecurityConfig.java`: busca (`Ctrl+F`) la línea `.requestMatchers(TRAYECTORIA).permitAll()` y pega **en la línea de abajo** la línea de tu camino (A **o** B). No borres lo demás.
+**Abre el archivo:** `SecurityConfig.java`  
+**En la ruta:** `infra\lamb-gateway\src\main\java\pe\edu\upeu\lamb\gateway\config\`  
+**Qué hacer:** Busca (`Ctrl+F`) la línea `.requestMatchers(TRAYECTORIA).permitAll()` y pega **en la línea de abajo** la línea de tu camino (A **o** B). No borres lo demás del archivo.
 
 
 ### Camino A - Sin CRUD
@@ -101,7 +105,7 @@ El Gateway de Lamb **rechaza** (`401`) toda ruta que no tenga permiso.
 Cambiaste código Java del Gateway: detenlo (Ctrl+C) y vuelve a arrancarlo **al final**, cuando tu servicio
 ya esté en Eureka:
 
-**Terminal:** en la terminal donde corre el Gateway: pulsa `Ctrl+C` para detenerlo. Si no lo tenías corriendo, abre una terminal nueva en la raíz del proyecto. Arráncalo **al final**, cuando tu servicio ya salga en Eureka.
+**Dónde abrir la terminal:** En la terminal donde corre el Gateway: pulsa `Ctrl+C` para detenerlo. Si no lo tenías corriendo, abre una terminal nueva en la raíz del proyecto. Arráncalo **al final**, cuando tu servicio ya salga en Eureka.
 
 ```powershell
 cd infra\lamb-gateway
@@ -120,7 +124,7 @@ cd infra\lamb-gateway
 
 **Camino B:** prueba el CRUD completo por el Gateway con PowerShell:
 
-**Terminal:** cualquier PowerShell (no importa la carpeta). Pega **una línea a la vez** para ver qué responde cada una.
+**Dónde abrir la terminal:** Cualquier PowerShell (no importa la carpeta). Pega **una línea a la vez** para ver qué responde cada una.
 
 ```powershell
 $api = "http://localhost:18080/api/v1/libros"                       # cambia por tu ruta

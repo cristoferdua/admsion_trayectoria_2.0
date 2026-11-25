@@ -30,7 +30,10 @@ hace lo mismo. **Es igual para los dos caminos (A y B).**
 
 ## 2. `src\main\resources\application.yml` (en tu servicio)
 
-**Crea el archivo** `services\lamb-biblioteca-ms\src\main\resources\application.yml` y pega este código. Va en `resources`, al lado de `logback-spring.xml`.
+**Crea el archivo:** `application.yml`  
+**En la ruta:** `services\lamb-biblioteca-ms\src\main\resources\`  
+**Ojo:** Va en `resources`, al lado de `logback-spring.xml`.  
+**Y pega el siguiente código:**
 
 ```yaml
 spring:
@@ -50,7 +53,10 @@ spring:
 Crea este archivo en el Config Server. Ya trae todo lo que se usará en las siguientes sesiones
 (Eureka en S3, Keycloak en S7, Kafka en S8, métricas en S10), así no vuelves a tocarlo.
 
-**Crea el archivo** `infra\lamb-config\config-repo\lamb-biblioteca-ms-dev.yml` y pega este código. Esta carpeta está en `infra` (**fuera** de tu servicio), junto a los `-dev.yml` de los otros servicios.
+**Crea el archivo:** `lamb-biblioteca-ms-dev.yml`  
+**En la ruta:** `infra\lamb-config\config-repo\`  
+**Ojo:** Esta carpeta está en `infra` (**fuera** de tu servicio), junto a los `-dev.yml` de los otros servicios.  
+**Y pega el siguiente código:**
 
 ```yaml
 server:

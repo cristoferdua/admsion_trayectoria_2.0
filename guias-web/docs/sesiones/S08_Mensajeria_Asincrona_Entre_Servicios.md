@@ -42,7 +42,7 @@ La configuración de Kafka ya quedó lista en la S2 (`spring.kafka...` y `app.ka
 
 Crea las carpetas `event` y `messaging` dentro de `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\`:
 
-**Terminal:** en la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*.
+**Dónde abrir la terminal:** En la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*.
 
 ```powershell
 $java = "services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca"   # cambia por tu nombre
@@ -53,7 +53,10 @@ $java = "services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca" 
 
 ### 2.1 `config\KafkaTopicsConfig.java` (crea el topic al arrancar)
 
-**Crea el archivo** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\KafkaTopicsConfig.java` y pega este código. Va en `config`, al lado de `SecurityConfig.java`.
+**Crea el archivo:** `KafkaTopicsConfig.java`  
+**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\`  
+**Ojo:** Va en `config`, al lado de `SecurityConfig.java`.  
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.biblioteca.config;
@@ -81,7 +84,9 @@ public class KafkaTopicsConfig {
 
 Mismo formato que `OrdenCreadaEvento` / `PagoValidadoEvento` de Pagatu.
 
-**Crea el archivo** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\event\BibliotecaEvento.java` y pega este código.
+**Crea el archivo:** `BibliotecaEvento.java`  
+**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\event\`  
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.biblioteca.event;
@@ -117,7 +122,9 @@ public class BibliotecaEvento {
 
 Igual que `PagoEventosProducer`. `publicarTrasCommit` se explica en la [S9](S09_Consistencia_Distribuida_Procesos_Negocio.md).
 
-**Crea el archivo** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\messaging\BibliotecaEventosProducer.java` y pega este código.
+**Crea el archivo:** `BibliotecaEventosProducer.java`  
+**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\messaging\`  
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.biblioteca.messaging;
@@ -174,7 +181,9 @@ public class BibliotecaEventosProducer {
 
 ### 2.4 `messaging\BibliotecaEventosConsumer.java` (RECIBE)
 
-**Crea el archivo** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\messaging\BibliotecaEventosConsumer.java` y pega este código.
+**Crea el archivo:** `BibliotecaEventosConsumer.java`  
+**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\messaging\`  
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.biblioteca.messaging;
@@ -206,7 +215,9 @@ public class BibliotecaEventosConsumer {
 **Si elegiste el servicio sin CRUD (solo Hola mundo), reemplaza `controller\SaludoController.java` por esta versión**
 (agrega `POST /api/v1/biblioteca/saludo/evento`):
 
-**Reemplaza todo** el contenido de `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\controller\SaludoController.java` por este código.
+**Abre el archivo:** `SaludoController.java`  
+**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\controller\`  
+**Borra todo su contenido y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.biblioteca.controller;
@@ -262,7 +273,9 @@ public class SaludoController {
 1. Reemplaza `controller\SaludoController.java` por la versión de la sección 3 (también va en el camino B).
 2. Reemplaza `service\LibroService.java` por esta versión, que publica un evento en cada `crear`, `actualizar` y `eliminar`:
 
-**Reemplaza todo** el contenido de `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\service\LibroService.java` por este código.
+**Abre el archivo:** `LibroService.java`  
+**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\service\`  
+**Borra todo su contenido y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.biblioteca.service;

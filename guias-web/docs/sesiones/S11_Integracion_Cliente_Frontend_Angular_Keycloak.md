@@ -60,7 +60,9 @@ clients\lamb-frontend\src\app\
 
 ### 2.1 `biblioteca-service.ts`
 
-**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\biblioteca-service.ts` y pega este código.
+**Crea el archivo:** `biblioteca-service.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Y pega el siguiente código:**
 
 ```ts
 import { Injectable, inject } from '@angular/core';
@@ -87,7 +89,9 @@ export class BibliotecaService {
 
 ### 2.2 `saludo.ts`
 
-**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\saludo.ts` y pega este código.
+**Crea el archivo:** `saludo.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Y pega el siguiente código:**
 
 ```ts
 import { Component, OnInit, inject, signal } from '@angular/core';
@@ -126,7 +130,9 @@ export class Saludo implements OnInit {
 
 **Camino A - Sin CRUD:** quita la última línea (el link *Ver libros*). **Camino B:** pégalo completo.
 
-**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\saludo.html` y pega este código.
+**Crea el archivo:** `saludo.html`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Y pega el siguiente código:**
 
 ```html
 <h1>{{ mensaje() }}</h1>
@@ -145,7 +151,9 @@ export class Saludo implements OnInit {
 
 ### 2.4 La ruta: `clients\lamb-frontend\src\app\app.routes.ts`
 
-**Modifica** `clients\lamb-frontend\src\app\app.routes.ts`: busca (`Ctrl+F`) la línea `{ path: '**', redirectTo: '' }` (casi al final) y pega **justo arriba** de ella. No borres lo demás.
+**Abre el archivo:** `app.routes.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\`  
+**Qué hacer:** Busca (`Ctrl+F`) la línea `{ path: '**', redirectTo: '' }` (casi al final) y pega **justo arriba** de ella. No borres lo demás del archivo.
 
 
 ```ts
@@ -167,7 +175,9 @@ export class Saludo implements OnInit {
 
 ### 3.1 `libro.model.ts`
 
-**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\libro.model.ts` y pega este código.
+**Crea el archivo:** `libro.model.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Y pega el siguiente código:**
 
 ```ts
 export interface Libro {
@@ -183,7 +193,9 @@ export interface Libro {
 
 ### 3.2 `libro-service.ts`
 
-**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\libro-service.ts` y pega este código.
+**Crea el archivo:** `libro-service.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Y pega el siguiente código:**
 
 ```ts
 import { Injectable, inject } from '@angular/core';
@@ -223,7 +235,9 @@ export class LibroService {
 
 ### 3.3 `libro-list.ts` (la tabla)
 
-**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\libro-list.ts` y pega este código.
+**Crea el archivo:** `libro-list.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Y pega el siguiente código:**
 
 ```ts
 import { Component, OnInit, inject, signal } from '@angular/core';
@@ -281,7 +295,9 @@ export class LibroList implements OnInit {
 
 ### 3.4 `libro-list.html`
 
-**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\libro-list.html` y pega este código.
+**Crea el archivo:** `libro-list.html`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Y pega el siguiente código:**
 
 ```html
 <h1>Libros</h1>
@@ -327,7 +343,9 @@ export class LibroList implements OnInit {
 
 Si la ruta trae `:id`, carga el libro y al guardar hace `PUT`; si no, hace `POST`.
 
-**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\libro-form.ts` y pega este código.
+**Crea el archivo:** `libro-form.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Y pega el siguiente código:**
 
 ```ts
 import { Component, inject, signal } from '@angular/core';
@@ -425,7 +443,9 @@ export class LibroForm {
 
 ### 3.6 `libro-form.html`
 
-**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\libro-form.html` y pega este código.
+**Crea el archivo:** `libro-form.html`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Y pega el siguiente código:**
 
 ```html
 <h1>{{ id() ? 'Editar libro' : 'Nuevo libro' }}</h1>
@@ -466,7 +486,9 @@ export class LibroForm {
 
 ### 3.7 Las rutas: `app.routes.ts`
 
-**Modifica** `clients\lamb-frontend\src\app\app.routes.ts`: el mismo archivo del paso 2.4. Busca la ruta `path: 'biblioteca'` que pegaste y pega esto **debajo** de su `},`. No borres lo demás.
+**Abre el archivo:** `app.routes.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\`  
+**Qué hacer:** El mismo archivo del paso 2.4. Busca la ruta `path: 'biblioteca'` que pegaste y pega esto **debajo** de su `},`. No borres lo demás del archivo.
 
 
 ```ts
@@ -489,7 +511,7 @@ export class LibroForm {
 
 ## 4. Probar
 
-**Terminal:** en la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*. Déjala abierta: el frontend se queda corriendo ahí.
+**Dónde abrir la terminal:** En la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*. Déjala abierta: el frontend se queda corriendo ahí.
 
 ```powershell
 cd clients\lamb-frontend
