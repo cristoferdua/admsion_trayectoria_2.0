@@ -46,7 +46,12 @@ spring:
     import: "optional:configserver:${CONFIG_SERVER_URL:http://localhost:18888}"
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Solo `name: lamb-biblioteca-ms`. No cambies `profiles.active: dev` ni la línea `config.import`.
 
 ## 3. `infra\lamb-config\config-repo\lamb-biblioteca-ms-dev.yml`
@@ -148,6 +153,14 @@ eureka:
     service-url:
       defaultZone: http://localhost:18761/eureka
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 7 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
+- `8095` (aparece 1 vez) → el puerto de **tu servicio**.
+- `15460` (aparece 1 vez) → el puerto de la **base de datos** de tu servicio.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 **Qué cambiar según tu caso y qué no:**
 

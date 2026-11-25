@@ -80,6 +80,11 @@ public class SecurityConfig {
 }
 ```
 
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
 !!! note "Copia tal cual (solo cambia el `package`)"
     `oauth2ResourceServer(... jwt ...)` valida la firma del token usando el `issuer-uri` que pusiste en la S2.
     Las reglas por rol **no van aquí**: van en el Gateway.
@@ -98,6 +103,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/biblioteca/**").hasRole("ADMIN")
 ```
 
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
 ### Camino B - Con CRUD
 
 ```java
@@ -106,6 +116,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/v1/libros/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/libros/**").hasRole("ADMIN")
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `libro` / `libros` (aparece 4 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 Guarda (`Ctrl+S`) y **reinicia el Gateway**: en su terminal `Ctrl+C` y otra vez `.\mvnw.cmd spring-boot:run`.
 Reinicia también **tu servicio** (cambiaste su `SecurityConfig`).

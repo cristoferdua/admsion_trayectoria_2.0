@@ -54,6 +54,11 @@ Una ruta **por recurso**.
                 - Path=/api/v1/biblioteca/**
 ```
 
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 3 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
 ### Camino B - Con CRUD
 
 Las dos rutas (la del Hola mundo y la del CRUD):
@@ -69,7 +74,13 @@ Las dos rutas (la del Hola mundo y la del CRUD):
                 - Path=/api/v1/libros/**
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 5 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `libro` / `libros` (aparece 2 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     - `id`: un nombre único (`lamb-` + servicio + recurso).
     - `uri: lb://lamb-biblioteca-ms`: el `spring.application.name` de tu servicio (`lb://` = buscarlo en Eureka y balancear).
     - `Path`: la ruta de tu controlador (`@RequestMapping`). Si el profe pide otro CRUD, agrega otra ruta igual con su `Path`.
@@ -91,11 +102,22 @@ El Gateway de Lamb **rechaza** (`401`) toda ruta que no tenga permiso.
                         .requestMatchers("/api/v1/biblioteca/**").permitAll()
 ```
 
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
 ### Camino B - Con CRUD
 
 ```java
                         .requestMatchers("/api/v1/biblioteca/**", "/api/v1/libros/**").permitAll()
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `libro` / `libros` (aparece 1 vez) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Es temporal"
     Igual que Admisión y Trayectoria en "DEV Fase 1". En la **S7** se reemplaza por reglas con roles de Keycloak.

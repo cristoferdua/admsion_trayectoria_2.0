@@ -281,7 +281,13 @@ public class LambBibliotecaMsApplication {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     El `package` (tu nombre) y el nombre de la clase (`Lamb` + `TuServicio` + `MsApplication`). Nada más.
 
 ### 4.2 `config\SecurityConfig.java` (por ahora todo abierto)
@@ -314,6 +320,11 @@ public class SecurityConfig {
     }
 }
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 ### 4.3 `config\OpenApiConfig.java` (Swagger) - copia tal cual
 
@@ -349,6 +360,11 @@ public class OpenApiConfig {
     }
 }
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 ### 4.4 `filter\CorrelationIdFilter.java` (traceId) - copia tal cual
 
@@ -398,6 +414,11 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
 }
 ```
 
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
 !!! note "En los archivos que dicen “copia tal cual”"
     Solo cambia la línea `package pe.edu.upeu.lamb.biblioteca...` por tu nombre.
 
@@ -441,7 +462,12 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
 </configuration>
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Solo `biblioteca` en `logs/biblioteca.log` y `logs/biblioteca-%d...`. El patrón (`LOG_PATTERN`) no se toca.
 
 ## 5. Camino A - Sin CRUD: el Hola mundo
@@ -478,7 +504,12 @@ public class SaludoController {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Solo `biblioteca` en el `package` y en `@RequestMapping("/api/v1/biblioteca")`. En la **S8** se le agrega el envío a Kafka.
 
 ## 6. Camino B - Con CRUD: tabla, entidad, DTO, mapper, servicio y controlador
@@ -520,6 +551,12 @@ CREATE TABLE IF NOT EXISTS libros (
     PRIMARY KEY (id)
 );
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `libro` / `libros` (aparece 1 vez) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `titulo`, `autor` (aparece 2 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Ejemplo: te piden “Pagos” con monto, fecha y método de pago"
     Archivo `V1__create_pagos.sql`:
@@ -575,6 +612,14 @@ public class Libro {
 }
 ```
 
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `libro` / `libros` (aparece 1 vez) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Libro` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `titulo`, `autor` (aparece 4 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
 !!! note "Ejemplo para “Pagos”"
     ```java
     @Column(name = "monto", nullable = false, precision = 10, scale = 2)
@@ -616,6 +661,13 @@ public class LibroRequest {
 }
 ```
 
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Libro` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `titulo`, `autor` (aparece 2 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
 **Crea el archivo:** `LibroResponse.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\dto\`  
 **Cómo:** clic derecho en la carpeta `dto` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
@@ -642,7 +694,14 @@ public class LibroResponse {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Libro` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `titulo`, `autor` (aparece 2 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Los atributos (los mismos de la entidad, **sin `id`** en el Request y **con `id`** en el Response) y sus validaciones (tabla 6.1).
 
 ### 6.5 `mapper\LibroMapper.java` (MapStruct)
@@ -673,7 +732,14 @@ public interface LibroMapper {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 4 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `libro` / `libros` (aparece 1 vez) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Libro` (aparece 8 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Solo los nombres (`Libro` → tu entidad). No tienes que escribir los atributos: MapStruct los copia solo si se llaman igual.
 
 **Agrega MapStruct al `pom.xml`** (copia tal cual). Son **2 cambios** en el mismo archivo.
@@ -691,6 +757,8 @@ public interface LibroMapper {
 		</dependency>
 ```
 
+**Qué cambiar en este código:** nada, se pega tal cual.
+
 **Cambio 2:** en el **mismo** `pom.xml`, busca `<annotationProcessorPaths>` (sale **2 veces**: en `default-compile` y en `default-testCompile`).
 En **cada una**, debajo del `</path>` que cierra el de Lombok (`<artifactId>lombok</artifactId>`), pega:
 
@@ -701,6 +769,8 @@ En **cada una**, debajo del `</path>` que cierra el de Lombok (`<artifactId>lomb
 									<version>1.6.3</version>
 								</path>
 ```
+
+**Qué cambiar en este código:** nada, se pega tal cual.
 
 ### 6.6 `repository\LibroRepository.java`
 
@@ -718,6 +788,12 @@ import pe.edu.upeu.lamb.biblioteca.entity.Libro;
 public interface LibroRepository extends JpaRepository<Libro, Long> {
 }
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Libro` (aparece 3 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 ### 6.7 `exception\ResourceNotFoundException.java` y `exception\GlobalExceptionHandler.java` - copia tal cual
 
@@ -737,6 +813,11 @@ public class ResourceNotFoundException extends RuntimeException {
     }
 }
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 **Crea el archivo:** `GlobalExceptionHandler.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\exception\`  
@@ -780,6 +861,11 @@ public class GlobalExceptionHandler {
     }
 }
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 ### 6.8 `service\LibroService.java`
 
@@ -848,7 +934,14 @@ public class LibroService {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 7 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `libro` / `libros` (aparece 18 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Libro` (aparece 18 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Los nombres (`Libro` → tu entidad), el mensaje `"Libro no encontrado: "` y, en `actualizar`,
     **un `libro.setX(request.getX());` por cada atributo**. Ej. para Pagos:
     `pago.setMonto(request.getMonto()); pago.setFecha(request.getFecha()); pago.setMetodoPago(request.getMetodoPago());`
@@ -921,7 +1014,14 @@ public class LibroController {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 4 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `libro` / `libros` (aparece 8 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Libro` (aparece 11 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Los nombres y la ruta `@RequestMapping("/api/v1/libros")` (en plural: `/api/v1/pagos`). Los 5 métodos se quedan igual.
 
 ## 7. Base de datos en Docker (los dos caminos)
@@ -954,7 +1054,13 @@ volumes:
     name: lamb-biblioteca-data
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 7 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `15460` (aparece 1 vez) → el puerto de la **base de datos** de tu servicio.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     `biblioteca` en todos los nombres y el puerto `15460`. No cambies `5432` (puerto interno) ni la imagen.
 
 !!! note "El `name:` del volumen es obligatorio"

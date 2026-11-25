@@ -343,7 +343,13 @@ volumes:
   postgres_data:
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `mi-servicio` (aparece 13 veces) → el nombre de **tu servicio**. Ej.: `tienda`.
+- `mi_servicio` (aparece 1 vez) → el nombre de **tu servicio** con guion bajo (base de datos). Ej.: `tienda`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     - `name:` y los `container_name` → tu nombre de servicio.
     - `./mi-servicio/logs` (en Promtail) → la carpeta de tu servicio.
     - Si un puerto está ocupado: cambia solo el número de la **izquierda** en `ports:` (ej. `"25433:5432"`) y
@@ -408,6 +414,12 @@ el cliente `mi-servicio-web` y dos usuarios.
 }
 ```
 
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `mi-servicio` (aparece 1 vez) → el nombre de **tu servicio**. Ej.: `tienda`.
+- `8100` (aparece 3 veces) → el puerto de **tu servicio** (solo si está ocupado).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
 | Usuario | Clave | Roles | Puede |
 |---|---|---|---|
 | `admin` | `admin123` | ADMIN, USUARIO | ver y modificar |
@@ -438,6 +450,12 @@ scrape_configs:
           application: mi-servicio
 ```
 
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `mi-servicio` (aparece 2 veces) → el nombre de **tu servicio**. Ej.: `tienda`.
+- `8100` (aparece 2 veces) → el puerto de **tu servicio** (solo si está ocupado).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
 ### 3.4 `observabilidad\promtail.yml` (de dónde saca logs)
 
 **Crea el archivo:** `promtail.yml`  
@@ -464,6 +482,11 @@ scrape_configs:
           application: mi-servicio
           __path__: /var/log/mi-servicio/*.log
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `mi-servicio` (aparece 4 veces) → el nombre de **tu servicio**. Ej.: `tienda`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Qué cambia en 3.3 y 3.4"
     Solo `job_name` y `application` → tu nombre de servicio (y el puerto `8100` si lo cambiaste).
@@ -493,6 +516,8 @@ datasources:
     url: http://loki:3100
 ```
 
+**Qué cambiar en este código:** nada, se pega tal cual.
+
 ### 3.6 `observabilidad\grafana\dashboards\dashboards.yml` - copia tal cual
 
 **Crea el archivo:** `dashboards.yml`  
@@ -510,6 +535,11 @@ providers:
     options:
       path: /etc/grafana/provisioning/dashboards
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `mi-servicio` (aparece 2 veces) → el nombre de **tu servicio**. Ej.: `tienda`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 ### 3.7 `observabilidad\grafana\dashboards\mi-servicio.json` (el dashboard)
 
@@ -553,7 +583,12 @@ Muestra: si el servicio está arriba, peticiones por segundo y los logs en vivo.
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `mi-servicio` (aparece 5 veces) → el nombre de **tu servicio**. Ej.: `tienda`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     El nombre del archivo y cada `job="mi-servicio"` y `application="mi-servicio"` → tu nombre de servicio.
 
 ## 4. Proyecto Spring Boot - los dos caminos
@@ -725,7 +760,12 @@ Es **el mismo** para los dos caminos.
 </project>
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `mi-servicio` (aparece 2 veces) → el nombre de **tu servicio**. Ej.: `tienda`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Solo `<artifactId>` y `<name>` del proyecto (no los de las dependencias).
 
 ### 4.3 `mi-servicio\.gitignore` - copia tal cual
@@ -770,6 +810,8 @@ build/
 ### VS Code ###
 .vscode/
 ```
+
+**Qué cambiar en este código:** nada, se pega tal cual.
 
 ### 4.4 `src\main\resources\application.yml`
 
@@ -849,7 +891,15 @@ management:
       show-details: always
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `mi-servicio` (aparece 4 veces) → el nombre de **tu servicio**. Ej.: `tienda`.
+- `mi_servicio` (aparece 1 vez) → el nombre de **tu servicio** con guion bajo (base de datos). Ej.: `tienda`.
+- `8100` (aparece 1 vez) → el puerto de **tu servicio** (solo si está ocupado).
+- `com.ejemplo.miservicio` y `MiServicio` **no hace falta cambiarlos** (es opcional, ver sección 11).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     `spring.application.name`, `app.kafka.topic` y, si los cambiaste en el `docker-compose.yml`, el puerto,
     la BD, usuario y contraseña de `datasource`. `server.port` solo si `8100` está ocupado.
 
@@ -890,7 +940,12 @@ Escribe en `mi-servicio\logs\mi-servicio.log`, carpeta que Promtail lee.
 </configuration>
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `mi-servicio` (aparece 3 veces) → el nombre de **tu servicio**. Ej.: `tienda`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Solo el nombre del archivo de log (`mi-servicio.log`).
 
 ## 5. Código Java común - los dos caminos
@@ -918,6 +973,8 @@ public class MiServicioApplication {
     }
 }
 ```
+
+**Qué cambiar en este código:** nada, se pega tal cual.
 
 ### 5.2 `config\SecurityConfig.java` (Keycloak y roles)
 
@@ -987,6 +1044,8 @@ public class SecurityConfig {
 }
 ```
 
+**Qué cambiar en este código:** nada, se pega tal cual.
+
 !!! note "Qué cambia: quién puede hacer qué"
     Ej. "los docentes también pueden modificar": `.requestMatchers("/api/**").hasAnyRole("ADMIN", "DOCENTE")`
     y crea el rol `DOCENTE` en `realm-demo.json`.
@@ -1022,6 +1081,8 @@ public class OpenApiConfig {
 }
 ```
 
+**Qué cambiar en este código:** nada, se pega tal cual.
+
 ### 5.4 `config\KafkaTopicsConfig.java` (crea el topic) - copia tal cual
 
 **Crea el archivo:** `KafkaTopicsConfig.java`  
@@ -1048,6 +1109,8 @@ public class KafkaTopicsConfig {
     }
 }
 ```
+
+**Qué cambiar en este código:** nada, se pega tal cual.
 
 ### 5.5 `event\MiEvento.java` (el mensaje que viaja por Kafka)
 
@@ -1079,7 +1142,13 @@ public class MiEvento {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `producto` / `productos` (aparece 1 vez) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `alumno` / `alumnos`.
+- `com.ejemplo.miservicio` y `MiServicio` **no hace falta cambiarlos** (es opcional, ver sección 11).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Si te piden mandar más datos, agrega campos (ej. `private String dni;`).
 
 ### 5.6 `messaging\EventosProducer.java` (ENVÍA a Kafka) - copia tal cual
@@ -1124,6 +1193,8 @@ public class EventosProducer {
 }
 ```
 
+**Qué cambiar en este código:** nada, se pega tal cual.
+
 ### 5.7 `messaging\EventosConsumer.java` (RECIBE de Kafka)
 
 **Crea el archivo:** `EventosConsumer.java`  
@@ -1152,6 +1223,8 @@ public class EventosConsumer {
     }
 }
 ```
+
+**Qué cambiar en este código:** nada, se pega tal cual.
 
 !!! note "Qué cambia: reaccionar a un evento"
     Escribe dentro de `alRecibir(...)` lo que debe pasar cuando llega el mensaje (guardar algo, avisar, etc.).
@@ -1221,6 +1294,12 @@ public class HolaController {
 }
 ```
 
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `8100` (aparece 2 veces) → el puerto de **tu servicio** (solo si está ocupado).
+- `com.ejemplo.miservicio` y `MiServicio` **no hace falta cambiarlos** (es opcional, ver sección 11).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
 **Si elegiste el camino A, salta a la sección 7.**
 
 ## 6. Camino B - Con CRUD: tabla, entidad, repositorio y controlador
@@ -1260,6 +1339,12 @@ CREATE TABLE productos (
     precio  NUMERIC(10,2) NOT NULL
 );
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `producto` / `productos` (aparece 1 vez) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `alumno` / `alumnos`.
+- `nombre`, `precio` (aparece 2 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `dni`, `fechaNacimiento`. El tipo de cada uno está en la [tabla 6.1](#61-traduce-los-atributos-que-te-piden).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Qué cambia: ejemplo, te piden “Alumnos” con nombre, dni y fecha de nacimiento"
     Archivo `V1__create_alumnos.sql`:
@@ -1315,6 +1400,14 @@ public class Producto {
 }
 ```
 
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `producto` / `productos` (aparece 1 vez) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `alumno` / `alumnos`.
+- `Producto` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Alumno`.
+- `nombre`, `precio` (aparece 2 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `dni`, `fechaNacimiento`. El tipo de cada uno está en la [tabla 6.1](#61-traduce-los-atributos-que-te-piden).
+- `com.ejemplo.miservicio` y `MiServicio` **no hace falta cambiarlos** (es opcional, ver sección 11).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
 !!! note "Qué cambia: ejemplo para “Alumnos”"
     Archivo `Alumno.java`:
     ```java
@@ -1351,7 +1444,13 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `Producto` (aparece 3 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Alumno`.
+- `com.ejemplo.miservicio` y `MiServicio` **no hace falta cambiarlos** (es opcional, ver sección 11).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Solo el nombre: `public interface AlumnoRepository extends JpaRepository<Alumno, Long> {}`
 
 ### 6.5 `controller\ProductoController.java` (el CRUD)
@@ -1441,7 +1540,14 @@ public class ProductoController {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `producto` / `productos` (aparece 6 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `alumno` / `alumnos`.
+- `Producto` (aparece 14 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Alumno`.
+- `com.ejemplo.miservicio` y `MiServicio` **no hace falta cambiarlos** (es opcional, ver sección 11).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     `Producto` → tu entidad, la ruta `/api/productos` → `/api/alumnos`, los textos de los eventos
     (`producto.creado` → `alumno.creado`) y, en `editar(...)`, **un `actual.setX(p.getX());` por cada atributo**:
     ```java
@@ -1528,6 +1634,11 @@ Deben quedar `static\js\keycloak.js` y `static\js\deprecations.js`.
 </body>
 </html>
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `mi-servicio` (aparece 1 vez) → el nombre de **tu servicio**. Ej.: `tienda`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 ### 7.3 Camino B - Con CRUD: `src\main\resources\static\index.html`
 
@@ -1643,7 +1754,15 @@ tabla con botones *Editar* / *Eliminar*.
 </html>
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`):
+
+- `mi-servicio` (aparece 1 vez) → el nombre de **tu servicio**. Ej.: `tienda`.
+- `producto` / `productos` (aparece 6 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `alumno` / `alumnos`.
+- `Producto` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Alumno`.
+- `nombre`, `precio` (aparece 18 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `dni`, `fechaNacimiento`. El tipo de cada uno está en la [tabla 6.1](#61-traduce-los-atributos-que-te-piden).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     `/api/productos` → tu ruta, un `<input>` por atributo (tipo según la tabla 6.1), las columnas `<th>`,
     el `tr.innerHTML`, lo que se copia al formulario al editar y el objeto `datos`:
     ```js

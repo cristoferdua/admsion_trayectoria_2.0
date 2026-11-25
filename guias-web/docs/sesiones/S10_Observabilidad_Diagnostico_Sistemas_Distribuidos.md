@@ -56,7 +56,12 @@ Tu servicio ya produce todo lo necesario para verlo en **Grafana** (igual en los
           __path__: /var/log/lamb/lamb-biblioteca-ms/logs/*.log
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 3 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Las 3 apariciones de `lamb-biblioteca-ms` (tu `spring.application.name`, que también es el nombre de la carpeta
     en `services\`). No cambies `/var/log/lamb/` ni `/logs/*.log`: Promtail ve la carpeta `services\` montada ahí.
 

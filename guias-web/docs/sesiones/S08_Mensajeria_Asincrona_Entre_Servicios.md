@@ -78,7 +78,12 @@ public class KafkaTopicsConfig {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 3 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     El nombre del método y la clave `app.kafka.topic.biblioteca` (debe ser la misma del `-dev.yml` de la S2).
 
 ### 2.2 `event\BibliotecaEvento.java` (el mensaje)
@@ -112,7 +117,13 @@ public class BibliotecaEvento {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     El nombre de la clase (`TuServicioEvento`). Si te piden mandar más datos, agrega atributos
     (ej. `private String dni;`). Deja `tipoEvento`, `id`, `origen` y `timestamp`.
 
@@ -182,6 +193,12 @@ public class BibliotecaEventosProducer {
 }
 ```
 
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 3 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Biblioteca` (aparece 8 veces) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
 ### 2.4 `messaging\BibliotecaEventosConsumer.java` (RECIBE)
 
 **Crea el archivo:** `BibliotecaEventosConsumer.java`  
@@ -209,7 +226,13 @@ public class BibliotecaEventosConsumer {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 3 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Biblioteca` (aparece 3 veces) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Solo los nombres. Si te piden **hacer algo** al recibir el evento (guardar un historial, avisar...), va
     dentro de `alRecibirEvento(...)`. Para escuchar el topic de **otro** servicio (ej. `admision-eventos`), mira
     `AdmisionEventosConsumer` de Trayectoria o `OrdenEventosConsumer` de `pagatu-pago-ms`.
@@ -269,6 +292,12 @@ public class SaludoController {
     }
 }
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 4 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Biblioteca` (aparece 6 veces) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 ## 4. Camino B - Con CRUD: cada cambio avisa a Kafka
 
@@ -361,6 +390,14 @@ public class LibroService {
     }
 }
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 9 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Biblioteca` (aparece 4 veces) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
+- `libro` / `libros` (aparece 31 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Libro` (aparece 20 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Qué cambia respecto a la S1"
     Se agregaron: `producer`, `nombreServicio`, el método `publicar(...)` y una llamada `publicar("libro.xxx", libro)`

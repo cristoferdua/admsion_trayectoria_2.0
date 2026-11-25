@@ -85,7 +85,13 @@ export class BibliotecaService {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     El nombre de la clase y las rutas `/api/v1/biblioteca/...`. `environment.apiUrl` es el Gateway (`http://localhost:18080`): no lo cambies.
 
 ### 2.2 `saludo.ts`
@@ -128,6 +134,12 @@ export class Saludo implements OnInit {
 }
 ```
 
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 4 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
 ### 2.3 `saludo.html`
 
 **Camino A - Sin CRUD:** quita la última línea (el link *Ver libros*). **Camino B:** pégalo completo.
@@ -148,6 +160,12 @@ export class Saludo implements OnInit {
 <p><a routerLink="/biblioteca/libros">Ver libros</a></p>
 ```
 
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `libro` / `libros` (aparece 2 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
 !!! note "Camino A: el aviso de `RouterLink`"
     Si quitas el link, Angular avisa que `RouterLink` no se usa (es solo un aviso). Para quitarlo,
     borra `RouterLink` del `import` y del `imports: [...]` en `saludo.ts`.
@@ -167,6 +185,12 @@ export class Saludo implements OnInit {
     loadComponent: () => import('./features/biblioteca/saludo').then((m) => m.Saludo)
   },
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `BIBLIOTECA` (aparece 1 vez) → el nombre de **tu servicio**, en mayúsculas. Ej.: `TESORERIA`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 `adminGuard` (ya existe en Lamb) pide iniciar sesión en Keycloak. No lo cambies.
 
@@ -191,7 +215,13 @@ export interface Libro {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `Libro` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `titulo`, `autor` (aparece 2 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Un atributo por cada campo del `LibroResponse` (S1). `id?` siempre se queda. Tipos: texto → `string`,
     números → `number`, fecha → `string`, sí/no → `boolean`. Opcional → con `?`.
 
@@ -235,7 +265,13 @@ export class LibroService {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `libro` / `libros` (aparece 10 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Libro` (aparece 12 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Los nombres y la ruta `/api/v1/libros`. Los 5 métodos se quedan igual.
 
 ### 3.3 `libro-list.ts` (la tabla)
@@ -299,6 +335,12 @@ export class LibroList implements OnInit {
 }
 ```
 
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `libro` / `libros` (aparece 12 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Libro` (aparece 5 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
 ### 3.4 `libro-list.html`
 
 **Crea el archivo:** `libro-list.html`  
@@ -342,7 +384,15 @@ export class LibroList implements OnInit {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `libro` / `libros` (aparece 12 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Libro` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `titulo`, `autor` (aparece 4 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Un `<th>` y un `<td>{{ libro.x }}</td>` por cada atributo que quieras mostrar, y las rutas `/biblioteca/libros...`.
     Ajusta el `colspan="3"` al número de columnas.
 
@@ -437,7 +487,15 @@ export class LibroForm {
 }
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `libro` / `libros` (aparece 13 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Libro` (aparece 3 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `titulo`, `autor` (aparece 4 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     En `form = this.fb.nonNullable.group({...})` va **un control por atributo** con sus validaciones
     (las mismas del Request), y en `mensajeValidacion(campo: 'titulo' | 'autor')` la lista de tus atributos.
     Ejemplo para Pagos:
@@ -489,7 +547,13 @@ export class LibroForm {
 </form>
 ```
 
-!!! note "Qué cambia"
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `libro` / `libros` (aparece 2 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `titulo`, `autor` (aparece 6 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
+
+!!! note "Más detalle"
     Un bloque `<label>...<input formControlName="x" />...</label>` + su mensaje por cada atributo.
     El tipo de `<input>` está en la tabla de la S1 (6.1).
 
@@ -517,6 +581,13 @@ export class LibroForm {
     loadComponent: () => import('./features/biblioteca/libro-form').then((m) => m.LibroForm)
   },
 ```
+
+**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
+
+- `biblioteca` (aparece 6 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `libro` / `libros` (aparece 6 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Libro` (aparece 3 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 ## 4. Probar
 
