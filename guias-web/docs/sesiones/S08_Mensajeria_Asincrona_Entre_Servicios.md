@@ -55,6 +55,7 @@ $java = "services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca" 
 
 **Crea el archivo:** `KafkaTopicsConfig.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\`  
+**Cómo:** clic derecho en la carpeta `config` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Va en `config`, al lado de `SecurityConfig.java`.  
 **Y pega el siguiente código:**
 
@@ -86,6 +87,7 @@ Mismo formato que `OrdenCreadaEvento` / `PagoValidadoEvento` de Pagatu.
 
 **Crea el archivo:** `BibliotecaEvento.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\event\`  
+**Cómo:** clic derecho en la carpeta `event` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
@@ -124,6 +126,7 @@ Igual que `PagoEventosProducer`. `publicarTrasCommit` se explica en la [S9](S09_
 
 **Crea el archivo:** `BibliotecaEventosProducer.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\messaging\`  
+**Cómo:** clic derecho en la carpeta `messaging` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
@@ -183,6 +186,7 @@ public class BibliotecaEventosProducer {
 
 **Crea el archivo:** `BibliotecaEventosConsumer.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\messaging\`  
+**Cómo:** clic derecho en la carpeta `messaging` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java

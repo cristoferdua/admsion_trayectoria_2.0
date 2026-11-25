@@ -62,6 +62,7 @@ clients\lamb-frontend\src\app\
 
 **Crea el archivo:** `biblioteca-service.ts`  
 **En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/biblioteca-service.ts}}
@@ -73,6 +74,7 @@ clients\lamb-frontend\src\app\
 
 **Crea el archivo:** `saludo.ts`  
 **En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/saludo.ts}}
@@ -83,6 +85,7 @@ clients\lamb-frontend\src\app\
 
 **Crea el archivo:** `saludo.html`  
 **En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/saludo.html}}
@@ -119,6 +122,7 @@ clients\lamb-frontend\src\app\
 
 **Crea el archivo:** `libro.model.ts`  
 **En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro.model.ts}}
@@ -131,6 +135,7 @@ clients\lamb-frontend\src\app\
 
 **Crea el archivo:** `libro-service.ts`  
 **En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro-service.ts}}
@@ -142,6 +147,7 @@ clients\lamb-frontend\src\app\
 
 **Crea el archivo:** `libro-list.ts`  
 **En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro-list.ts}}
@@ -150,6 +156,7 @@ clients\lamb-frontend\src\app\
 
 **Crea el archivo:** `libro-list.html`  
 **En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro-list.html}}
@@ -164,6 +171,7 @@ Si la ruta trae `:id`, carga el libro y al guardar hace `PUT`; si no, hace `POST
 
 **Crea el archivo:** `libro-form.ts`  
 **En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro-form.ts}}
@@ -184,6 +192,7 @@ Si la ruta trae `:id`, carga el libro y al guardar hace `PUT`; si no, hace `POST
 
 **Crea el archivo:** `libro-form.html`  
 **En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
+**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro-form.html}}

@@ -32,6 +32,7 @@ hace lo mismo. **Es igual para los dos caminos (A y B).**
 
 **Crea el archivo:** `application.yml`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\resources\`  
+**Cómo:** clic derecho en la carpeta `resources` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Va en `resources`, al lado de `logback-spring.xml`.  
 **Y pega el siguiente código:**
 
@@ -55,6 +56,7 @@ Crea este archivo en el Config Server. Ya trae todo lo que se usará en las sigu
 
 **Crea el archivo:** `lamb-biblioteca-ms-dev.yml`  
 **En la ruta:** `infra\lamb-config\config-repo\`  
+**Cómo:** clic derecho en la carpeta `config-repo` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Esta carpeta está en `infra` (**fuera** de tu servicio), junto a los `-dev.yml` de los otros servicios.  
 **Y pega el siguiente código:**
 

@@ -214,6 +214,7 @@ Levanta PostgreSQL, Kafka, Kafka UI, Keycloak, Prometheus, Loki, Promtail y Graf
 
 **Crea el archivo:** `docker-compose.yml`  
 **En la ruta:** `mi-proyecto\`  
+**Cómo:** clic derecho en la carpeta `mi-proyecto` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Va **directo** en `mi-proyecto\` (no dentro de `mi-servicio`).  
 **Y pega el siguiente código:**
 
@@ -232,6 +233,7 @@ el cliente `mi-servicio-web` y dos usuarios.
 
 **Crea el archivo:** `realm-demo.json`  
 **En la ruta:** `keycloak\`  
+**Cómo:** clic derecho en la carpeta `keycloak` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/keycloak/realm-demo.json}}
@@ -249,6 +251,7 @@ el cliente `mi-servicio-web` y dos usuarios.
 
 **Crea el archivo:** `prometheus.yml`  
 **En la ruta:** `observabilidad\`  
+**Cómo:** clic derecho en la carpeta `observabilidad` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/observabilidad/prometheus.yml}}
@@ -257,6 +260,7 @@ el cliente `mi-servicio-web` y dos usuarios.
 
 **Crea el archivo:** `promtail.yml`  
 **En la ruta:** `observabilidad\`  
+**Cómo:** clic derecho en la carpeta `observabilidad` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/observabilidad/promtail.yml}}
@@ -268,6 +272,7 @@ el cliente `mi-servicio-web` y dos usuarios.
 
 **Crea el archivo:** `datasources.yml`  
 **En la ruta:** `observabilidad\grafana\datasources\`  
+**Cómo:** clic derecho en la carpeta `datasources` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/observabilidad/grafana/datasources/datasources.yml}}
@@ -276,6 +281,7 @@ el cliente `mi-servicio-web` y dos usuarios.
 
 **Crea el archivo:** `dashboards.yml`  
 **En la ruta:** `observabilidad\grafana\dashboards\`  
+**Cómo:** clic derecho en la carpeta `dashboards` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/observabilidad/grafana/dashboards/dashboards.yml}}
@@ -286,6 +292,7 @@ Muestra: si el servicio está arriba, peticiones por segundo y los logs en vivo.
 
 **Crea el archivo:** `mi-servicio.json`  
 **En la ruta:** `observabilidad\grafana\dashboards\`  
+**Cómo:** clic derecho en la carpeta `dashboards` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/observabilidad/grafana/dashboards/mi-servicio.json}}
@@ -317,6 +324,7 @@ Es **el mismo** para los dos caminos.
 
 **Crea el archivo:** `pom.xml`  
 **En la ruta:** `mi-servicio\`  
+**Cómo:** clic derecho en la carpeta `mi-servicio` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Va **directo** en `mi-servicio\`, al lado de `mvnw.cmd`.  
 **Y pega el siguiente código:**
 
@@ -329,6 +337,7 @@ Es **el mismo** para los dos caminos.
 
 **Crea el archivo:** `.gitignore`  
 **En la ruta:** `mi-servicio\`  
+**Cómo:** clic derecho en la carpeta `mi-servicio` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/mi-servicio/.gitignore}}
@@ -337,6 +346,7 @@ Es **el mismo** para los dos caminos.
 
 **Crea el archivo:** `application.yml`  
 **En la ruta:** `mi-servicio\src\main\resources\`  
+**Cómo:** clic derecho en la carpeta `resources` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/mi-servicio/src/main/resources/application.yml}}
@@ -351,6 +361,7 @@ Escribe en `mi-servicio\logs\mi-servicio.log`, carpeta que Promtail lee.
 
 **Crea el archivo:** `logback-spring.xml`  
 **En la ruta:** `mi-servicio\src\main\resources\`  
+**Cómo:** clic derecho en la carpeta `resources` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/mi-servicio/src/main/resources/logback-spring.xml}}
@@ -366,6 +377,7 @@ Todos van dentro de `mi-servicio\src\main\java\com\ejemplo\miservicio\`.
 
 **Crea el archivo:** `MiServicioApplication.java`  
 **En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\`  
+**Cómo:** clic derecho en la carpeta `miservicio` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/MiServicioApplication.java}}
@@ -378,6 +390,7 @@ Ya sirve para el CRUD del camino B: no hay que tocarlo.
 
 **Crea el archivo:** `SecurityConfig.java`  
 **En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\config\`  
+**Cómo:** clic derecho en la carpeta `config` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/config/SecurityConfig.java}}
@@ -390,6 +403,7 @@ Ya sirve para el CRUD del camino B: no hay que tocarlo.
 
 **Crea el archivo:** `OpenApiConfig.java`  
 **En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\config\`  
+**Cómo:** clic derecho en la carpeta `config` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/config/OpenApiConfig.java}}
@@ -398,6 +412,7 @@ Ya sirve para el CRUD del camino B: no hay que tocarlo.
 
 **Crea el archivo:** `KafkaTopicsConfig.java`  
 **En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\config\`  
+**Cómo:** clic derecho en la carpeta `config` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/config/KafkaTopicsConfig.java}}
@@ -406,6 +421,7 @@ Ya sirve para el CRUD del camino B: no hay que tocarlo.
 
 **Crea el archivo:** `MiEvento.java`  
 **En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\event\`  
+**Cómo:** clic derecho en la carpeta `event` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/event/MiEvento.java}}
@@ -417,6 +433,7 @@ Ya sirve para el CRUD del camino B: no hay que tocarlo.
 
 **Crea el archivo:** `EventosProducer.java`  
 **En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\messaging\`  
+**Cómo:** clic derecho en la carpeta `messaging` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/messaging/EventosProducer.java}}
@@ -425,6 +442,7 @@ Ya sirve para el CRUD del camino B: no hay que tocarlo.
 
 **Crea el archivo:** `EventosConsumer.java`  
 **En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\messaging\`  
+**Cómo:** clic derecho en la carpeta `messaging` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/messaging/EventosConsumer.java}}
@@ -439,6 +457,7 @@ Va en **los dos caminos**.
 
 **Crea el archivo:** `HolaController.java`  
 **En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\controller\`  
+**Cómo:** clic derecho en la carpeta `controller` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/controller/HolaController.java}}
@@ -471,6 +490,7 @@ Flyway la ejecuta sola al arrancar el servicio.
 
 **Crea el archivo:** `V1__create_productos.sql`  
 **En la ruta:** `mi-servicio\src\main\resources\db\migration\`  
+**Cómo:** clic derecho en la carpeta `migration` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** El nombre lleva **dos** guiones bajos (`V1__`).  
 **Y pega el siguiente código:**
 
@@ -499,6 +519,7 @@ Un atributo por cada columna de la tabla.
 
 **Crea el archivo:** `Producto.java`  
 **En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\entity\`  
+**Cómo:** clic derecho en la carpeta `entity` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-con-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/entity/Producto.java}}
@@ -526,6 +547,7 @@ Con solo esto ya tienes `findAll`, `findById`, `save` y `delete`.
 
 **Crea el archivo:** `ProductoRepository.java`  
 **En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\repository\`  
+**Cómo:** clic derecho en la carpeta `repository` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{file:version-con-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/repository/ProductoRepository.java}}
@@ -546,6 +568,7 @@ Cada cambio se avisa por Kafka (`producto.creado`, `producto.editado`, `producto
 
 **Crea el archivo:** `ProductoController.java`  
 **En la ruta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\controller\`  
+**Cómo:** clic derecho en la carpeta `controller` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Va al lado de `HolaController.java`.  
 **Y pega el siguiente código:**
 
@@ -586,6 +609,7 @@ Deben quedar `static\js\keycloak.js` y `static\js\deprecations.js`.
 
 **Crea el archivo:** `index.html`  
 **En la ruta:** `mi-servicio\src\main\resources\static\`  
+**Cómo:** clic derecho en la carpeta `static` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Camino A. Va en `static` (no dentro de `js`).  
 **Y pega el siguiente código:**
 
@@ -598,6 +622,7 @@ tabla con botones *Editar* / *Eliminar*.
 
 **Crea el archivo:** `index.html`  
 **En la ruta:** `mi-servicio\src\main\resources\static\`  
+**Cómo:** clic derecho en la carpeta `static` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Camino B (si ya creaste la del camino A, **reemplaza** todo su contenido).  
 **Y pega el siguiente código:**
 

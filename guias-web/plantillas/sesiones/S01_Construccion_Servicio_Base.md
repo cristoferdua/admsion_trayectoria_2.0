@@ -263,6 +263,7 @@ Todos los archivos Java van dentro de `services\lamb-biblioteca-ms\src\main\java
 
 **Crea el archivo:** `LambBibliotecaMsApplication.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\`  
+**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/LambBibliotecaMsApplication.java}}
@@ -276,6 +277,7 @@ Igual que Admisión y Trayectoria en desarrollo: todo abierto. En la **S7** se c
 
 **Crea el archivo:** `SecurityConfig.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\`  
+**Cómo:** clic derecho en la carpeta `config` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
@@ -304,6 +306,7 @@ public class SecurityConfig {
 
 **Crea el archivo:** `OpenApiConfig.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\`  
+**Cómo:** clic derecho en la carpeta `config` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/config/OpenApiConfig.java}}
@@ -314,6 +317,7 @@ Cada petición lleva un `X-Trace-ID` que sale en los logs. Se usa en la **S10**.
 
 **Crea el archivo:** `CorrelationIdFilter.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\filter\`  
+**Cómo:** clic derecho en la carpeta `filter` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/filter/CorrelationIdFilter.java}}
@@ -325,6 +329,7 @@ Cada petición lleva un `X-Trace-ID` que sale en los logs. Se usa en la **S10**.
 
 **Crea el archivo:** `logback-spring.xml`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\resources\`  
+**Cómo:** clic derecho en la carpeta `resources` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Va en `resources`, **no** en la carpeta `java`.  
 **Y pega el siguiente código:**
 
@@ -339,6 +344,7 @@ Cada petición lleva un `X-Trace-ID` que sale en los logs. Se usa en la **S10**.
 
 **Crea el archivo:** `SaludoController.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\controller\`  
+**Cómo:** clic derecho en la carpeta `controller` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
@@ -396,6 +402,7 @@ Flyway crea la tabla sola al arrancar el servicio.
 
 **Crea el archivo:** `V1__create_libros.sql`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\resources\db\migration\`  
+**Cómo:** clic derecho en la carpeta `migration` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** El nombre lleva **dos** guiones bajos después de `V1` (`V1__`).  
 **Y pega el siguiente código:**
 
@@ -425,6 +432,7 @@ Una propiedad por columna.
 
 **Crea el archivo:** `Libro.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\entity\`  
+**Cómo:** clic derecho en la carpeta `entity` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/entity/Libro.java}}
@@ -446,12 +454,14 @@ Una propiedad por columna.
 
 **Crea el archivo:** `LibroRequest.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\dto\`  
+**Cómo:** clic derecho en la carpeta `dto` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/dto/LibroRequest.java}}
 
 **Crea el archivo:** `LibroResponse.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\dto\`  
+**Cómo:** clic derecho en la carpeta `dto` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/dto/LibroResponse.java}}
@@ -465,6 +475,7 @@ MapStruct genera solo el código que copia los datos entre la entidad y los DTO.
 
 **Crea el archivo:** `LibroMapper.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\mapper\`  
+**Cómo:** clic derecho en la carpeta `mapper` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/mapper/LibroMapper.java}}
@@ -502,6 +513,7 @@ En **cada una**, debajo del `</path>` que cierra el de Lombok (`<artifactId>lomb
 
 **Crea el archivo:** `LibroRepository.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\repository\`  
+**Cómo:** clic derecho en la carpeta `repository` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/repository/LibroRepository.java}}
@@ -512,12 +524,14 @@ Responden `404` cuando no existe el registro y `400` cuando los datos no pasan l
 
 **Crea el archivo:** `ResourceNotFoundException.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\exception\`  
+**Cómo:** clic derecho en la carpeta `exception` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/exception/ResourceNotFoundException.java}}
 
 **Crea el archivo:** `GlobalExceptionHandler.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\exception\`  
+**Cómo:** clic derecho en la carpeta `exception` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/exception/GlobalExceptionHandler.java}}
@@ -528,6 +542,7 @@ En la **S8** se le agrega el aviso a Kafka.
 
 **Crea el archivo:** `LibroService.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\service\`  
+**Cómo:** clic derecho en la carpeta `service` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
@@ -605,6 +620,7 @@ public class LibroService {
 
 **Crea el archivo:** `LibroController.java`  
 **En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\controller\`  
+**Cómo:** clic derecho en la carpeta `controller` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Va en la misma carpeta que `SaludoController.java`.  
 **Y pega el siguiente código:**
 
@@ -617,6 +633,7 @@ public class LibroService {
 
 **Crea el archivo:** `compose-dev.yml`  
 **En la ruta:** `services\lamb-biblioteca-ms\`  
+**Cómo:** clic derecho en la carpeta `lamb-biblioteca-ms` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Va **directo** en la carpeta del servicio (al lado del `pom.xml`), no dentro de `src`.  
 **Y pega el siguiente código:**
 
