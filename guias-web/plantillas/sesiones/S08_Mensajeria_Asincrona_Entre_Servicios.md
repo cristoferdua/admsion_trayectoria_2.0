@@ -42,8 +42,7 @@ La configuración de Kafka ya quedó lista en la S2 (`spring.kafka...` y `app.ka
 
 Crea las carpetas `event` y `messaging` dentro de `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\`:
 
-!!! info "🔵 TERMINAL"
-    - 📍 **Dónde:** en la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*.
+**Terminal:** en la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*.
 
 ```powershell
 $java = "services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca"   # cambia por tu nombre
@@ -54,10 +53,7 @@ $java = "services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca" 
 
 ### 2.1 `config\KafkaTopicsConfig.java` (crea el topic al arrancar)
 
-!!! success "🟢 CREAR archivo nuevo"
-    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\`
-    - 📄 **Archivo:** `KafkaTopicsConfig.java`
-    - ✍️ Va en `config`, al lado de `SecurityConfig.java`. Pega **todo** el código de abajo → `Ctrl+S`.
+**Crea el archivo** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\KafkaTopicsConfig.java` y pega este código. Va en `config`, al lado de `SecurityConfig.java`.
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/config/KafkaTopicsConfig.java}}
 
@@ -68,10 +64,7 @@ $java = "services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca" 
 
 Mismo formato que `OrdenCreadaEvento` / `PagoValidadoEvento` de Pagatu.
 
-!!! success "🟢 CREAR archivo nuevo"
-    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\event\`
-    - 📄 **Archivo:** `BibliotecaEvento.java`
-    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+**Crea el archivo** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\event\BibliotecaEvento.java` y pega este código.
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/event/BibliotecaEvento.java}}
 
@@ -87,19 +80,13 @@ Mismo formato que `OrdenCreadaEvento` / `PagoValidadoEvento` de Pagatu.
 
 Igual que `PagoEventosProducer`. `publicarTrasCommit` se explica en la [S9](S09_Consistencia_Distribuida_Procesos_Negocio.md).
 
-!!! success "🟢 CREAR archivo nuevo"
-    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\messaging\`
-    - 📄 **Archivo:** `BibliotecaEventosProducer.java`
-    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+**Crea el archivo** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\messaging\BibliotecaEventosProducer.java` y pega este código.
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/messaging/BibliotecaEventosProducer.java}}
 
 ### 2.4 `messaging\BibliotecaEventosConsumer.java` (RECIBE)
 
-!!! success "🟢 CREAR archivo nuevo"
-    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\messaging\`
-    - 📄 **Archivo:** `BibliotecaEventosConsumer.java`
-    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+**Crea el archivo** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\messaging\BibliotecaEventosConsumer.java` y pega este código.
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/messaging/BibliotecaEventosConsumer.java}}
 
@@ -113,9 +100,7 @@ Igual que `PagoEventosProducer`. `publicarTrasCommit` se explica en la [S9](S09_
 **Si elegiste el servicio sin CRUD (solo Hola mundo), reemplaza `controller\SaludoController.java` por esta versión**
 (agrega `POST /api/v1/biblioteca/saludo/evento`):
 
-!!! danger "🔴 REEMPLAZAR todo el archivo"
-    - 📄 **Archivo:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\controller\SaludoController.java`
-    - ✍️ Ábrelo → `Ctrl+A` → `Supr` → pega **todo** el código de abajo → `Ctrl+S`.
+**Reemplaza todo** el contenido de `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\controller\SaludoController.java` por este código.
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/controller/SaludoController.java}}
 
@@ -126,9 +111,7 @@ Igual que `PagoEventosProducer`. `publicarTrasCommit` se explica en la [S9](S09_
 1. Reemplaza `controller\SaludoController.java` por la versión de la sección 3 (también va en el camino B).
 2. Reemplaza `service\LibroService.java` por esta versión, que publica un evento en cada `crear`, `actualizar` y `eliminar`:
 
-!!! danger "🔴 REEMPLAZAR todo el archivo"
-    - 📄 **Archivo:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\service\LibroService.java`
-    - ✍️ Ábrelo → `Ctrl+A` → `Supr` → pega **todo** el código de abajo → `Ctrl+S`.
+**Reemplaza todo** el contenido de `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\service\LibroService.java` por este código.
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/service/LibroService.java}}
 

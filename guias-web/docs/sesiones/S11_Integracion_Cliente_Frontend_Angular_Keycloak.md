@@ -60,10 +60,7 @@ clients\lamb-frontend\src\app\
 
 ### 2.1 `biblioteca-service.ts`
 
-!!! success "🟢 CREAR archivo nuevo"
-    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
-    - 📄 **Archivo:** `biblioteca-service.ts`
-    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\biblioteca-service.ts` y pega este código.
 
 ```ts
 import { Injectable, inject } from '@angular/core';
@@ -90,10 +87,7 @@ export class BibliotecaService {
 
 ### 2.2 `saludo.ts`
 
-!!! success "🟢 CREAR archivo nuevo"
-    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
-    - 📄 **Archivo:** `saludo.ts`
-    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\saludo.ts` y pega este código.
 
 ```ts
 import { Component, OnInit, inject, signal } from '@angular/core';
@@ -132,10 +126,7 @@ export class Saludo implements OnInit {
 
 **Camino A - Sin CRUD:** quita la última línea (el link *Ver libros*). **Camino B:** pégalo completo.
 
-!!! success "🟢 CREAR archivo nuevo"
-    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
-    - 📄 **Archivo:** `saludo.html`
-    - ✍️ Pega el código de abajo (camino A: sin la última línea) → `Ctrl+S`.
+**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\saludo.html` y pega este código.
 
 ```html
 <h1>{{ mensaje() }}</h1>
@@ -154,10 +145,7 @@ export class Saludo implements OnInit {
 
 ### 2.4 La ruta: `clients\lamb-frontend\src\app\app.routes.ts`
 
-!!! warning "🟠 MODIFICAR archivo que ya existe"
-    - 📄 **Archivo:** `clients\lamb-frontend\src\app\app.routes.ts`
-    - ✍️ Busca (`Ctrl+F`) la línea `{ path: '**', redirectTo: '' }` (casi al final) y pega **justo arriba** de ella.
-    - ⛔ No borres lo demás del archivo.
+**Modifica** `clients\lamb-frontend\src\app\app.routes.ts`: busca (`Ctrl+F`) la línea `{ path: '**', redirectTo: '' }` (casi al final) y pega **justo arriba** de ella. No borres lo demás.
 
 
 ```ts
@@ -179,10 +167,7 @@ export class Saludo implements OnInit {
 
 ### 3.1 `libro.model.ts`
 
-!!! success "🟢 CREAR archivo nuevo"
-    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
-    - 📄 **Archivo:** `libro.model.ts`
-    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\libro.model.ts` y pega este código.
 
 ```ts
 export interface Libro {
@@ -198,10 +183,7 @@ export interface Libro {
 
 ### 3.2 `libro-service.ts`
 
-!!! success "🟢 CREAR archivo nuevo"
-    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
-    - 📄 **Archivo:** `libro-service.ts`
-    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\libro-service.ts` y pega este código.
 
 ```ts
 import { Injectable, inject } from '@angular/core';
@@ -241,10 +223,7 @@ export class LibroService {
 
 ### 3.3 `libro-list.ts` (la tabla)
 
-!!! success "🟢 CREAR archivo nuevo"
-    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
-    - 📄 **Archivo:** `libro-list.ts`
-    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\libro-list.ts` y pega este código.
 
 ```ts
 import { Component, OnInit, inject, signal } from '@angular/core';
@@ -302,10 +281,7 @@ export class LibroList implements OnInit {
 
 ### 3.4 `libro-list.html`
 
-!!! success "🟢 CREAR archivo nuevo"
-    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
-    - 📄 **Archivo:** `libro-list.html`
-    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\libro-list.html` y pega este código.
 
 ```html
 <h1>Libros</h1>
@@ -351,10 +327,7 @@ export class LibroList implements OnInit {
 
 Si la ruta trae `:id`, carga el libro y al guardar hace `PUT`; si no, hace `POST`.
 
-!!! success "🟢 CREAR archivo nuevo"
-    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
-    - 📄 **Archivo:** `libro-form.ts`
-    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\libro-form.ts` y pega este código.
 
 ```ts
 import { Component, inject, signal } from '@angular/core';
@@ -452,10 +425,7 @@ export class LibroForm {
 
 ### 3.6 `libro-form.html`
 
-!!! success "🟢 CREAR archivo nuevo"
-    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
-    - 📄 **Archivo:** `libro-form.html`
-    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+**Crea el archivo** `clients\lamb-frontend\src\app\features\biblioteca\libro-form.html` y pega este código.
 
 ```html
 <h1>{{ id() ? 'Editar libro' : 'Nuevo libro' }}</h1>
@@ -496,10 +466,7 @@ export class LibroForm {
 
 ### 3.7 Las rutas: `app.routes.ts`
 
-!!! warning "🟠 MODIFICAR archivo que ya existe"
-    - 📄 **Archivo:** `clients\lamb-frontend\src\app\app.routes.ts`
-    - ✍️ El mismo archivo del paso 2.4. Busca la ruta `path: 'biblioteca'` que pegaste y pega esto **debajo** de su `},`.
-    - ⛔ No borres lo demás del archivo.
+**Modifica** `clients\lamb-frontend\src\app\app.routes.ts`: el mismo archivo del paso 2.4. Busca la ruta `path: 'biblioteca'` que pegaste y pega esto **debajo** de su `},`. No borres lo demás.
 
 
 ```ts
@@ -522,9 +489,7 @@ export class LibroForm {
 
 ## 4. Probar
 
-!!! info "🔵 TERMINAL"
-    - 📍 **Dónde:** en la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*.
-    - ✍️ Déjala abierta: el frontend se queda corriendo ahí.
+**Terminal:** en la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*. Déjala abierta: el frontend se queda corriendo ahí.
 
 ```powershell
 cd clients\lamb-frontend

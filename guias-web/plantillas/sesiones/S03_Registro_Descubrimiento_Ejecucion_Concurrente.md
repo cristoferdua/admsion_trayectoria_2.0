@@ -70,8 +70,7 @@ Abre http://localhost:18761 → en *Instances currently registered with Eureka* 
 Para demostrar que el sistema escala, levanta una **segunda instancia** de tu servicio en otro puerto
 (otra terminal, en la carpeta del servicio):
 
-!!! info "🔵 TERMINAL"
-    - 📍 **Dónde:** terminal **nueva** dentro de `services\lamb-biblioteca-ms` (primero `cd services\lamb-biblioteca-ms` desde la raíz). La primera instancia sigue corriendo en su terminal.
+**Terminal:** terminal **nueva** dentro de `services\lamb-biblioteca-ms` (primero `cd services\lamb-biblioteca-ms` desde la raíz). La primera instancia sigue corriendo en su terminal.
 
 ```powershell
 .\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--server.port=8096"

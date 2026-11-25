@@ -52,9 +52,7 @@ flowchart LR
 
 Reemplaza **todo** el archivo de la S1 por este (igual que `pagatu-pago-ms`). Es igual para los dos caminos:
 
-!!! danger "🔴 REEMPLAZAR todo el archivo"
-    - 📄 **Archivo:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\SecurityConfig.java`
-    - ✍️ Es el de **tu servicio** (el que creaste en la S1), **no** el del Gateway. Ábrelo → `Ctrl+A` → `Supr` → pega **todo** el código de abajo → `Ctrl+S`.
+**Reemplaza todo** el contenido de `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\SecurityConfig.java` por este código. Es el de **tu servicio** (el que creaste en la S1), **no** el del Gateway.
 
 ```java
 package pe.edu.upeu.lamb.biblioteca.config;
@@ -85,10 +83,7 @@ public class SecurityConfig {
 
 ## 3. El Gateway: reglas por rol
 
-!!! warning "🟠 MODIFICAR archivo que ya existe"
-    - 📄 **Archivo:** `infra\lamb-gateway\src\main\java\pe\edu\upeu\lamb\gateway\config\SecurityConfig.java`
-    - ✍️ Este es el del **Gateway** (no el de tu servicio). Busca (`Ctrl+F`) `/api/v1/biblioteca/**` → **borra** la línea `...permitAll()` que pegaste en la S4 → en ese mismo lugar pega las líneas de tu camino (A **o** B).
-    - ⛔ No borres lo demás del archivo.
+**Modifica** `infra\lamb-gateway\src\main\java\pe\edu\upeu\lamb\gateway\config\SecurityConfig.java`: este es el del **Gateway** (no el de tu servicio). Busca (`Ctrl+F`) `/api/v1/biblioteca/**` → **borra** la línea `...permitAll()` que pegaste en la S4 → en ese mismo lugar pega las líneas de tu camino (A **o** B). No borres lo demás.
 
 
 ### Camino A - Sin CRUD
