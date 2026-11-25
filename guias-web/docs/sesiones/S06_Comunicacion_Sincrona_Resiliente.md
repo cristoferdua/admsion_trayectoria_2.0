@@ -18,7 +18,7 @@ para responder algo controlado si el otro servicio está caído.
 
 | En Pagatu (S6 original) | En tu servicio |
 |---|---|
-| `pagatu-orden-ms` (el que llama) | `lamb-biblioteca-ms` |
+| `pagatu-orden-ms` (el que llama) | `lamb-evaluacionn-ms` |
 | `pagatu-catalogo-ms` (el llamado) | el servicio que te pidan consultar (ej. `lamb-admision-ms`) |
 | `ProductoClient` (`@FeignClient(name = "pagatu-catalogo-ms")`) | `TuClient` con `@FeignClient(name = "lamb-admision-ms")` |
 | `ProductoDto` | un DTO con solo los campos que necesitas del otro servicio |

@@ -9,7 +9,7 @@
 
     ```powershell
     docker compose -f keycloak/compose-dev.yml up -d    # Keycloak (tarda ~1 min)
-    docker compose -f services/lamb-biblioteca-ms/compose-dev.yml up -d    # BD de tu servicio
+    docker compose -f services/lamb-evaluacionn-ms/compose-dev.yml up -d    # BD de tu servicio
     ```
 
     **Servicios** (cada uno en **su propia terminal**, en este orden, esperando que diga `Started ...`):
@@ -17,15 +17,15 @@
     ```powershell
     cd infra\lamb-config; .\mvnw.cmd spring-boot:run    # Config Server
     cd infra\lamb-eureka; .\mvnw.cmd spring-boot:run    # Eureka
-    cd services\lamb-biblioteca-ms; .\mvnw.cmd spring-boot:run    # Tu servicio
+    cd services\lamb-evaluacionn-ms; .\mvnw.cmd spring-boot:run    # Tu servicio
     cd infra\lamb-gateway; .\mvnw.cmd spring-boot:run    # Gateway (al final)
     ```
 
     Comprueba que responden:
 
     - Keycloak: http://localhost:18180/realms/lamb
-    - BD de tu servicio: `docker ps` → `lamb-postgres-biblioteca-dev` *Up*
-    - Config Server: http://localhost:18888/lamb-biblioteca-ms/dev
+    - BD de tu servicio: `docker ps` → `lamb-postgres-evaluacionn-dev` *Up*
+    - Config Server: http://localhost:18888/lamb-evaluacionn-ms/dev
     - Eureka: http://localhost:18761
     - Tu servicio: http://localhost:8095/actuator/health
     - Gateway: http://localhost:18080/actuator/health
@@ -43,7 +43,7 @@ Hasta ahora todo estaba abierto (fase 1). En esta sesión:
 ```mermaid
 flowchart LR
     U["Usuario logueado"] -->|"token de Keycloak"| G["Gateway: revisa el rol"]
-    G -->|"GET: todos"| S["lamb-biblioteca-ms"]
+    G -->|"GET: todos"| S["lamb-evaluacionn-ms"]
     G -->|"POST / PUT / DELETE: solo ADMIN"| S
     G -.->|"sin token: 401 / sin rol: 403"| X["Rechazado"]
 ```
@@ -53,7 +53,7 @@ flowchart LR
 Reemplaza **todo** el archivo de la S1 por este (igual que `pagatu-pago-ms`). Es igual para los dos caminos:
 
 **Abre el archivo:** `SecurityConfig.java`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\config\`  
 **Ojo:** Es el de **tu servicio** (el que creaste en la S1), **no** el del Gateway.  
 **Borra todo su contenido y pega el siguiente código:**
 
@@ -67,23 +67,23 @@ Reemplaza **todo** el archivo de la S1 por este (igual que `pagatu-pago-ms`). Es
 
 **Abre el archivo:** `SecurityConfig.java`  
 **En la ruta:** `infra\lamb-gateway\src\main\java\pe\edu\upeu\lamb\gateway\config\`  
-**Qué hacer:** Este es el del **Gateway** (no el de tu servicio). Busca (`Ctrl+F`) `/api/v1/biblioteca/**` → **borra** la línea `...permitAll()` que pegaste en la S4 → en ese mismo lugar pega las líneas de tu camino (A **o** B). No borres lo demás del archivo.
+**Qué hacer:** Este es el del **Gateway** (no el de tu servicio). Busca (`Ctrl+F`) `/api/v1/evaluacionn/**` → **borra** la línea `...permitAll()` que pegaste en la S4 → en ese mismo lugar pega las líneas de tu camino (A **o** B). No borres lo demás del archivo.
 
 
 ### Camino A - Sin CRUD
 
 ```java
-                        .requestMatchers(HttpMethod.GET, "/api/v1/biblioteca/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/biblioteca/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/evaluacionn/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/evaluacionn/**").hasRole("ADMIN")
 ```
 
 ### Camino B - Con CRUD
 
 ```java
-                        .requestMatchers(HttpMethod.GET, "/api/v1/biblioteca/**", "/api/v1/libros/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/biblioteca/**", "/api/v1/libros/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/libros/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/libros/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/evaluacionn/**", "/api/v1/examenes/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/evaluacionn/**", "/api/v1/examenes/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/examenes/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/examenes/**").hasRole("ADMIN")
 ```
 
 Guarda (`Ctrl+S`) y **reinicia el Gateway**: en su terminal `Ctrl+C` y otra vez `.\mvnw.cmd spring-boot:run`.
@@ -111,8 +111,8 @@ Roles que ya existen en el realm `lamb`: `ADMIN`, `COORDINADOR`, `DOCENTE`, `EST
 Sin iniciar sesión (PowerShell):
 
 ```powershell
-Invoke-RestMethod http://localhost:18080/api/v1/biblioteca/saludo                 # 200: GET es libre
-Invoke-RestMethod -Method Post http://localhost:18080/api/v1/biblioteca/saludo    # 401: no hay token
+Invoke-RestMethod http://localhost:18080/api/v1/evaluacionn/saludo                 # 200: GET es libre
+Invoke-RestMethod -Method Post http://localhost:18080/api/v1/evaluacionn/saludo    # 401: no hay token
 ```
 
 !!! note "El POST de arriba da 401 aunque aún no exista"
@@ -121,8 +121,8 @@ Invoke-RestMethod -Method Post http://localhost:18080/api/v1/biblioteca/saludo  
 **Camino B:**
 
 ```powershell
-Invoke-RestMethod http://localhost:18080/api/v1/libros                            # 200
-Invoke-RestMethod -Method Post http://localhost:18080/api/v1/libros -ContentType "application/json" -Body '{"titulo":"x"}'   # 401
+Invoke-RestMethod http://localhost:18080/api/v1/examenes                            # 200
+Invoke-RestMethod -Method Post http://localhost:18080/api/v1/examenes -ContentType "application/json" -Body '{"titulo":"x"}'   # 401
 ```
 
 Con usuarios reales se prueba desde el frontend en la S11:
@@ -135,7 +135,7 @@ Con usuarios reales se prueba desde el frontend en la S11:
 !!! note "Archivos de esta sesión"
     **Reemplazas:**
 
-    - `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\SecurityConfig.java` - versión final con Keycloak
+    - `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\config\SecurityConfig.java` - versión final con Keycloak
 
     **Modificas:**
 

@@ -9,7 +9,7 @@ Todos los links del proyecto Lamb en desarrollo. Solo funcionan si el componente
 
 | Componente | Link | Usuario / contraseña | Para qué |
 |---|---|---|---|
-| Config Server | http://localhost:18888/lamb-biblioteca-ms/dev | — | Ver la configuración de un servicio |
+| Config Server | http://localhost:18888/lamb-evaluacionn-ms/dev | — | Ver la configuración de un servicio |
 | Config Server (Gateway) | http://localhost:18888/lamb-gateway/dev | — | Ver las rutas del Gateway |
 | Eureka | http://localhost:18761 | — | Servicios registrados e instancias |
 | Gateway | http://localhost:18080 | — | Punto único de acceso a la API |
@@ -31,7 +31,7 @@ Usuarios de prueba del frontend: `admin` / `admin123`, `docente1` / `docente123`
 | Componente | Link | Para qué |
 |---|---|---|
 | Kafka UI | http://localhost:18090 | Topics, mensajes y consumidores |
-| Kafka UI - topics | http://localhost:18090/ui/clusters/lamb-dev/all-topics | Lista de topics (`biblioteca-eventos`, `admision-eventos`...) |
+| Kafka UI - topics | http://localhost:18090/ui/clusters/lamb-dev/all-topics | Lista de topics (`evaluacionn-eventos`, `admision-eventos`...) |
 | Kafka (broker) | `localhost:18092` | No se abre en el navegador: lo usan los servicios |
 
 ## 4. Observabilidad
@@ -45,22 +45,22 @@ Usuarios de prueba del frontend: `admin` / `admin123`, `docente1` / `docente123`
 | Prometheus - targets | http://localhost:19090/targets | — | Qué servicios está leyendo (UP / DOWN) |
 | Loki - servicios con logs | http://localhost:13100/loki/api/v1/label/application/values | — | Lista de servicios que ya mandan logs (debe salir el tuyo) |
 
-## 5. Tu servicio nuevo (ejemplo `lamb-biblioteca-ms`)
+## 5. Tu servicio nuevo (ejemplo `lamb-evaluacionn-ms`)
 
-Cambia `8095`, `biblioteca` y `libros` por los tuyos.
+Cambia `8095`, `evaluacionn` y `examenes` por los tuyos.
 
 | Qué | Link |
 |---|---|
-| Hola mundo (por Gateway) | http://localhost:18080/api/v1/biblioteca/saludo |
-| CRUD (por Gateway, camino B) | http://localhost:18080/api/v1/libros |
-| Hola mundo (directo) | http://localhost:8095/api/v1/biblioteca/saludo |
-| CRUD (directo, camino B) | http://localhost:8095/api/v1/libros |
+| Hola mundo (por Gateway) | http://localhost:18080/api/v1/evaluacionn/saludo |
+| CRUD (por Gateway, camino B) | http://localhost:18080/api/v1/examenes |
+| Hola mundo (directo) | http://localhost:8095/api/v1/evaluacionn/saludo |
+| CRUD (directo, camino B) | http://localhost:8095/api/v1/examenes |
 | Swagger | http://localhost:8095/swagger-ui.html |
 | Salud | http://localhost:8095/actuator/health |
 | Métricas | http://localhost:8095/actuator/prometheus |
-| Frontend - Hola mundo | http://localhost:4200/biblioteca |
-| Frontend - CRUD (camino B) | http://localhost:4200/biblioteca/libros |
-| Base de datos | `localhost:15460` · BD `lamb_biblioteca_db` · `lamb` / `lamb` |
+| Frontend - Hola mundo | http://localhost:4200/evaluacionn |
+| Frontend - CRUD (camino B) | http://localhost:4200/evaluacionn/examenes |
+| Base de datos | `localhost:15460` · BD `lamb_evaluacionn_db` · `lamb` / `lamb` |
 
 ## 6. Servicios de Lamb (Admisión y Trayectoria)
 
@@ -79,7 +79,7 @@ Para ver estas bases de datos en VS Code (extensión **Database Client**), usa H
 | Postulación | http://localhost:4200/postular |
 | Seguimiento | http://localhost:4200/seguimiento |
 | Panel de administración (pide login) | http://localhost:4200/admin |
-| Tu servicio | http://localhost:4200/biblioteca |
+| Tu servicio | http://localhost:4200/evaluacionn |
 
 ## 8. Puertos
 

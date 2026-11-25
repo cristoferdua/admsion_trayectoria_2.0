@@ -12,7 +12,7 @@
 | Eureka | ¿Qué es `lb://`? | "Busca este nombre en Eureka y reparte entre sus instancias". |
 | Gateway | ¿Por qué el frontend no llama al 8095? | Todo entra por un solo punto que aplica seguridad y balanceo. |
 | Seguridad | ¿Cómo llega el rol al Gateway? | Dentro del token de Keycloak (`realm_access.roles`). |
-| Kafka | ¿Qué es un topic y una partición? | El topic es el "canal" (`biblioteca-eventos`); se divide en 3 particiones para repartir carga. |
+| Kafka | ¿Qué es un topic y una partición? | El topic es el "canal" (`evaluacionn-eventos`); se divide en 3 particiones para repartir carga. |
 | Kafka | ¿Qué pasa si el consumidor está apagado? | Los mensajes quedan en Kafka; al volver, los lee desde donde se quedó (su `group-id`). |
 | Consistencia | ¿Qué pasa si falla la BD después de publicar? | No pasa: se publica **después** del commit (`publicarTrasCommit`). |
 | Observabilidad | ¿Cómo encuentras el error de una petición? | Tomo su `X-Trace-ID` y lo busco en Loki. |

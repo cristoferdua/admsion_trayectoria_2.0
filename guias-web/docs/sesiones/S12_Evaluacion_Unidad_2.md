@@ -11,7 +11,7 @@
     docker compose -f kafka/compose-dev.yml up -d    # Kafka + Kafka UI
     docker compose -f keycloak/compose-dev.yml up -d    # Keycloak (tarda ~1 min)
     docker compose -f obs/compose-dev.yml up -d    # Prometheus + Loki + Promtail + Grafana
-    docker compose -f services/lamb-biblioteca-ms/compose-dev.yml up -d    # BD de tu servicio
+    docker compose -f services/lamb-evaluacionn-ms/compose-dev.yml up -d    # BD de tu servicio
     ```
 
     **Servicios** (cada uno en **su propia terminal**, en este orden, esperando que diga `Started ...`):
@@ -19,7 +19,7 @@
     ```powershell
     cd infra\lamb-config; .\mvnw.cmd spring-boot:run    # Config Server
     cd infra\lamb-eureka; .\mvnw.cmd spring-boot:run    # Eureka
-    cd services\lamb-biblioteca-ms; .\mvnw.cmd spring-boot:run    # Tu servicio
+    cd services\lamb-evaluacionn-ms; .\mvnw.cmd spring-boot:run    # Tu servicio
     cd infra\lamb-gateway; .\mvnw.cmd spring-boot:run    # Gateway (al final)
     cd clients\lamb-frontend; npm start    # Frontend
     ```
@@ -29,8 +29,8 @@
     - Kafka + Kafka UI: http://localhost:18090
     - Keycloak: http://localhost:18180/realms/lamb
     - Prometheus + Loki + Promtail + Grafana: http://localhost:13000
-    - BD de tu servicio: `docker ps` → `lamb-postgres-biblioteca-dev` *Up*
-    - Config Server: http://localhost:18888/lamb-biblioteca-ms/dev
+    - BD de tu servicio: `docker ps` → `lamb-postgres-evaluacionn-dev` *Up*
+    - Config Server: http://localhost:18888/lamb-evaluacionn-ms/dev
     - Eureka: http://localhost:18761
     - Tu servicio: http://localhost:8095/actuator/health
     - Gateway: http://localhost:18080/actuator/health
@@ -50,13 +50,13 @@ Toma una captura de cada una (sirven para el [Producto U2](../proyecto-sello/u2-
 | 1 | `GET` libre, `POST` con `401` sin token | PowerShell (S7, paso 4) | S7 |
 | 2 | Roles en Keycloak | http://localhost:18180 → realm `lamb` → *Realm roles* | S7b |
 | 3 | Eventos publicados y consumidos | log: `status=published` / `status=consumed` | S8 |
-| 4 | Topic en Kafka UI | http://localhost:18090 → `biblioteca-eventos` | S8 |
+| 4 | Topic en Kafka UI | http://localhost:18090 → `evaluacionn-eventos` | S8 |
 | 5 | **Camino B:** dato inválido → `400` sin evento | PowerShell (S9, paso 4) | S9 |
 | 6 | Logs en Grafana | http://localhost:13000 → Explore → Loki | S10 |
 | 7 | Seguimiento por traceId | buscar un `X-Trace-ID` en Loki | S10 |
 | 8 | Métricas | http://localhost:19090/targets → UP | S10 |
-| 9 | Frontend Hola mundo + evento | http://localhost:4200/biblioteca | S11 |
-| 10 | **Camino B:** CRUD en el frontend | `/biblioteca/libros`: nuevo, editar, eliminar | S11 |
+| 9 | Frontend Hola mundo + evento | http://localhost:4200/evaluacionn | S11 |
+| 10 | **Camino B:** CRUD en el frontend | `/evaluacionn/examenes`: nuevo, editar, eliminar | S11 |
 | 11 | `403` para `estudiante1` | "No tienes permiso para esta acción." | S11 |
 
 ## 3. Preguntas que te pueden hacer

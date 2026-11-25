@@ -8,12 +8,12 @@
     **Docker** (Docker Desktop abierto; se pueden pegar en la misma terminal):
 
     ```powershell
-    docker compose -f services/lamb-biblioteca-ms/compose-dev.yml up -d    # BD de tu servicio
+    docker compose -f services/lamb-evaluacionn-ms/compose-dev.yml up -d    # BD de tu servicio
     ```
 
     Comprueba que responden:
 
-    - BD de tu servicio: `docker ps` → `lamb-postgres-biblioteca-dev` *Up*
+    - BD de tu servicio: `docker ps` → `lamb-postgres-evaluacionn-dev` *Up*
 
     El Config Server y tu servicio se arrancan **en esta sesión** (paso 4).
 
@@ -26,12 +26,12 @@ hace lo mismo. **Es igual para los dos caminos (A y B).**
 | Archivo | Dónde | Qué tiene |
 |---|---|---|
 | `application.yml` | dentro de tu servicio | solo el nombre y dónde está el Config Server |
-| `lamb-biblioteca-ms-dev.yml` | `infra\lamb-config\config-repo\` | toda la configuración del ambiente DEV |
+| `lamb-evaluacionn-ms-dev.yml` | `infra\lamb-config\config-repo\` | toda la configuración del ambiente DEV |
 
 ## 2. `src\main\resources\application.yml` (en tu servicio)
 
 **Crea el archivo:** `application.yml`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\resources\`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\resources\`  
 **Cómo:** clic derecho en la carpeta `resources` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Va en `resources`, al lado de `logback-spring.xml`.  
 **Y pega el siguiente código:**
@@ -39,14 +39,14 @@ hace lo mismo. **Es igual para los dos caminos (A y B).**
 {{lamb:services/lamb-biblioteca-ms/src/main/resources/application.yml}}
 
 !!! note "Qué cambia"
-    Solo `name: lamb-biblioteca-ms`. No cambies `profiles.active: dev` ni la línea `config.import`.
+    Solo `name: lamb-evaluacionn-ms`. No cambies `profiles.active: dev` ni la línea `config.import`.
 
-## 3. `infra\lamb-config\config-repo\lamb-biblioteca-ms-dev.yml`
+## 3. `infra\lamb-config\config-repo\lamb-evaluacionn-ms-dev.yml`
 
 Crea este archivo en el Config Server. Ya trae todo lo que se usará en las siguientes sesiones
 (Eureka en S3, Keycloak en S7, Kafka en S8, métricas en S10), así no vuelves a tocarlo.
 
-**Crea el archivo:** `lamb-biblioteca-ms-dev.yml`  
+**Crea el archivo:** `lamb-evaluacionn-ms-dev.yml`  
 **En la ruta:** `infra\lamb-config\config-repo\`  
 **Cómo:** clic derecho en la carpeta `config-repo` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Esta carpeta está en `infra` (**fuera** de tu servicio), junto a los `-dev.yml` de los otros servicios.  
@@ -60,19 +60,19 @@ Crea este archivo en el Config Server. Ya trae todo lo que se usará en las sigu
 |---|---|---|
 | `server.port: 8095` | tu puerto | |
 | `issuer-uri: .../realms/lamb` | | el realm de Lamb es siempre `lamb` |
-| `datasource.url: ...localhost:15460/lamb_biblioteca_db` | puerto y nombre de BD (los del `compose-dev.yml`) | `jdbc:postgresql://localhost:` |
+| `datasource.url: ...localhost:15460/lamb_evaluacionn_db` | puerto y nombre de BD (los del `compose-dev.yml`) | `jdbc:postgresql://localhost:` |
 | `username` / `password` | solo si los cambiaste en el `compose-dev.yml` | |
 | `flyway`, `jpa`, `devtools` | | todo |
 | `kafka.bootstrap-servers: localhost:18092` | | el Kafka de Lamb |
-| `group-id: lamb-biblioteca-ms` | tu nombre de servicio | |
+| `group-id: lamb-evaluacionn-ms` | tu nombre de servicio | |
 | `spring.json.value.default.type` | `pe.edu.upeu.lamb.TUSERVICIO.event.TuEvento` | |
 | `spring.json.trusted.packages` | `pe.edu.upeu.lamb.TUSERVICIO.event` | |
-| `app.kafka.topic.biblioteca: biblioteca-eventos` | la clave y el nombre del topic | |
-| `logging.level.pe.edu.upeu.lamb.biblioteca` | tu paquete | |
+| `app.kafka.topic.evaluacionn: evaluacionn-eventos` | la clave y el nombre del topic | |
+| `logging.level.pe.edu.upeu.lamb.evaluacionn` | tu paquete | |
 | `management`, `eureka` | | todo |
 
 !!! note "El nombre del archivo importa"
-    Debe ser exactamente `spring.application.name` + `-dev.yml` → `lamb-biblioteca-ms-dev.yml`.
+    Debe ser exactamente `spring.application.name` + `-dev.yml` → `lamb-evaluacionn-ms-dev.yml`.
     Si no coincide, el servicio arranca sin configuración y falla.
 
 ## 4. Probar
@@ -84,13 +84,13 @@ Crea este archivo en el Config Server. Ya trae todo lo que se usará en las sigu
     .\mvnw.cmd spring-boot:run
     ```
 
-2. Abre http://localhost:18888/lamb-biblioteca-ms/dev → debe mostrar un JSON con tu configuración
+2. Abre http://localhost:18888/lamb-evaluacionn-ms/dev → debe mostrar un JSON con tu configuración
    (busca `"server.port": 8095`).
 
 3. Arranca tu servicio desde **su** carpeta (siempre desde ahí, para que los logs queden en `logs\`). Otra terminal **nueva** en la raíz del proyecto (el Config Server debe seguir corriendo en la suya):
 
     ```powershell
-    cd services\lamb-biblioteca-ms
+    cd services\lamb-evaluacionn-ms
     .\mvnw.cmd spring-boot:run
     ```
 
@@ -98,9 +98,9 @@ En el log debe salir:
 
 ```text
 Fetching config from server at : http://localhost:18888
-Located environment: name=lamb-biblioteca-ms, profiles=[dev]
+Located environment: name=lamb-evaluacionn-ms, profiles=[dev]
 ...
-Started LambBibliotecaMsApplication in ... seconds
+Started LambEvaluacionnMsApplication in ... seconds
 ```
 
 **Camino B:** además debe salir `Successfully applied 1 migration to schema "public", now at version v1` (Flyway creó la tabla).
@@ -110,7 +110,7 @@ Started LambBibliotecaMsApplication in ... seconds
 Con la extensión **Database Client** (ícono de base de datos en la barra izquierda de VS Code) ves tu BD,
 sus tablas y sus datos sin usar comandos.
 
-**1. Instalar la extensión (solo la primera vez):** `Ctrl+Shift+X` → busca **Database Client** (autor *Weijan Chen*) → *Install*.
+**1. Instalar la extensión (solo la primera vez):** `Ctrl+Shift+X` → busca **Database Client** (curso *Weijan Chen*) → *Install*.
 
 **2. Crear la conexión:** clic en el ícono de base de datos → botón **+** (*Create Connection*) → en *Server Type*
 elige **PostgreSQL** y llena:
@@ -121,7 +121,7 @@ elige **PostgreSQL** y llena:
 | Port | `15460` |
 | Username | `lamb` |
 | Password | `lamb` |
-| Database | `lamb_biblioteca_db` |
+| Database | `lamb_evaluacionn_db` |
 
 Clic en **Connect** (o *Save*). La conexión queda guardada para la próxima vez.
 
@@ -129,17 +129,17 @@ Clic en **Connect** (o *Save*). La conexión queda guardada para la próxima vez
     Port, Database, Username y Password son **los de tu `compose-dev.yml`** (`ports:` el número de la izquierda,
     `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`). Host siempre es `127.0.0.1`.
 
-**3. Ver las tablas:** despliega la conexión → `lamb_biblioteca_db` → `public` → *Tables*. Aparecen cuando tu servicio arrancó una vez (Flyway las crea al arrancar).
+**3. Ver las tablas:** despliega la conexión → `lamb_evaluacionn_db` → `public` → *Tables*. Aparecen cuando tu servicio arrancó una vez (Flyway las crea al arrancar).
 
 | Tabla | Qué es |
 |---|---|
-| `libros` | **Camino B:** tu tabla. Clic en ella para ver los registros (se llenan al agregar desde la página o la API) |
+| `examenes` | **Camino B:** tu tabla. Clic en ella para ver los registros (se llenan al agregar desde la página o la API) |
 | `flyway_schema_history` | La crea Flyway: lista de migraciones aplicadas (`V1`, `V2`...). **No la modifiques** |
 
 **4. Hacer una consulta:** clic derecho en la conexión → *New Query* (o el ícono de consulta), escribe y ejecuta (`Ctrl+Enter`):
 
 ```sql
-SELECT * FROM libros;
+SELECT * FROM examenes;
 SELECT * FROM flyway_schema_history;
 ```
 
@@ -156,18 +156,18 @@ Si agregas registros desde la página, clic derecho en la tabla → *Refresh* pa
 !!! note "Archivos de esta sesión"
     Creas:
 
-    - `services\lamb-biblioteca-ms\src\main\resources\application.yml`
-    - `infra\lamb-config\config-repo\lamb-biblioteca-ms-dev.yml`
+    - `services\lamb-evaluacionn-ms\src\main\resources\application.yml`
+    - `infra\lamb-config\config-repo\lamb-evaluacionn-ms-dev.yml`
 
 ## 6. Evidencia de cierre de la S2
 
 | Qué | Link | Qué debes ver |
 |---|---|---|
-| Config Server | http://localhost:18888/lamb-biblioteca-ms/dev | Tu configuración |
+| Config Server | http://localhost:18888/lamb-evaluacionn-ms/dev | Tu configuración |
 | Salud | http://localhost:8095/actuator/health | `"status":"UP"` (y `db` UP) |
-| Hola mundo directo | http://localhost:8095/api/v1/biblioteca/saludo | `Hola mundo desde lamb-biblioteca-ms` |
+| Hola mundo directo | http://localhost:8095/api/v1/evaluacionn/saludo | `Hola mundo desde lamb-evaluacionn-ms` |
 | Swagger | http://localhost:8095/swagger-ui.html | Tus endpoints |
-| **Camino B:** CRUD directo | http://localhost:8095/api/v1/libros | `[]` |
-| BD en VS Code | Database Client → `lamb_biblioteca_db` | `flyway_schema_history` (y en B, `libros`) |
+| **Camino B:** CRUD directo | http://localhost:8095/api/v1/examenes | `[]` |
+| BD en VS Code | Database Client → `lamb_evaluacionn_db` | `flyway_schema_history` (y en B, `examenes`) |
 
 Siguiente: [S3 - Registro y descubrimiento](S03_Registro_Descubrimiento_Ejecucion_Concurrente.md).

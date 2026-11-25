@@ -9,7 +9,7 @@
 
     ```powershell
     docker compose -f obs/compose-dev.yml up -d    # Prometheus + Loki + Promtail + Grafana
-    docker compose -f services/lamb-biblioteca-ms/compose-dev.yml up -d    # BD de tu servicio
+    docker compose -f services/lamb-evaluacionn-ms/compose-dev.yml up -d    # BD de tu servicio
     ```
 
     **Servicios** (cada uno en **su propia terminal**, en este orden, esperando que diga `Started ...`):
@@ -17,18 +17,18 @@
     ```powershell
     cd infra\lamb-config; .\mvnw.cmd spring-boot:run    # Config Server
     cd infra\lamb-eureka; .\mvnw.cmd spring-boot:run    # Eureka
-    cd services\lamb-biblioteca-ms; .\mvnw.cmd spring-boot:run    # Tu servicio
+    cd services\lamb-evaluacionn-ms; .\mvnw.cmd spring-boot:run    # Tu servicio
     ```
 
     Comprueba que responden:
 
     - Prometheus + Loki + Promtail + Grafana: http://localhost:13000
-    - BD de tu servicio: `docker ps` → `lamb-postgres-biblioteca-dev` *Up*
-    - Config Server: http://localhost:18888/lamb-biblioteca-ms/dev
+    - BD de tu servicio: `docker ps` → `lamb-postgres-evaluacionn-dev` *Up*
+    - Config Server: http://localhost:18888/lamb-evaluacionn-ms/dev
     - Eureka: http://localhost:18761
     - Tu servicio: http://localhost:8095/actuator/health
 
-    Tu servicio **debe** arrancarse desde su carpeta (así se crea `logs\biblioteca.log`).
+    Tu servicio **debe** arrancarse desde su carpeta (así se crea `logs\evaluacionn.log`).
 
 ## 1. Introducción
 
@@ -37,7 +37,7 @@ Tu servicio ya produce todo lo necesario para verlo en **Grafana** (igual en los
 | Qué | Lo produce | Lo recoge | Configuración |
 |---|---|---|---|
 | **Métricas** | Actuator + Micrometer (`/actuator/prometheus`) | Prometheus (descubre vía Eureka) | ninguna, ya funciona |
-| **Logs** | `logback-spring.xml` → `logs\biblioteca.log` | Promtail → Loki | **1 job** (paso 2) |
+| **Logs** | `logback-spring.xml` → `logs\evaluacionn.log` | Promtail → Loki | **1 job** (paso 2) |
 | **traceId** | `CorrelationIdFilter` (header `X-Trace-ID`) | sale en cada línea de log | ninguna |
 
 ## 2. Logs: agrega tu servicio a Promtail
@@ -48,16 +48,16 @@ Tu servicio ya produce todo lo necesario para verlo en **Grafana** (igual en los
 
 
 ```yaml
-  - job_name: lamb-biblioteca-ms
+  - job_name: lamb-evaluacionn-ms
     static_configs:
       - targets: [localhost]
         labels:
-          application: lamb-biblioteca-ms
-          __path__: /var/log/lamb/lamb-biblioteca-ms/logs/*.log
+          application: lamb-evaluacionn-ms
+          __path__: /var/log/lamb/lamb-evaluacionn-ms/logs/*.log
 ```
 
 !!! note "Qué cambia"
-    Las 3 apariciones de `lamb-biblioteca-ms` (tu `spring.application.name`, que también es el nombre de la carpeta
+    Las 3 apariciones de `lamb-evaluacionn-ms` (tu `spring.application.name`, que también es el nombre de la carpeta
     en `services\`). No cambies `/var/log/lamb/` ni `/logs/*.log`: Promtail ve la carpeta `services\` montada ahí.
 
 Levanta (o reinicia) la observabilidad para que lea el job nuevo:
@@ -70,7 +70,7 @@ docker restart lamb-promtail-dev
 ```
 
 !!! note "Arranca tu servicio desde su carpeta"
-    `logs\biblioteca.log` se crea **donde arrancas el servicio**. Si lo arrancas desde otra carpeta, Promtail no lo encuentra.
+    `logs\evaluacionn.log` se crea **donde arrancas el servicio**. Si lo arrancas desde otra carpeta, Promtail no lo encuentra.
 
 ## 3. Ver todo en Grafana
 
@@ -78,15 +78,15 @@ Abre http://localhost:13000 (`admin` / `admin`) → *Explore*.
 
 | Quieres ver | Fuente | Consulta |
 |---|---|---|
-| Todos los logs de tu servicio | **Loki** | `{application="lamb-biblioteca-ms"}` |
-| Solo errores | Loki | `{application="lamb-biblioteca-ms"} \|= "ERROR"` |
-| Eventos de Kafka | Loki | `{application="lamb-biblioteca-ms"} \|= "component="` |
-| Una petición concreta | Loki | `{application="lamb-biblioteca-ms"} \|= "PEGA-AQUI-EL-TRACE-ID"` |
-| ¿Está arriba? | **Prometheus** | `up{application="LAMB-BIBLIOTECA-MS"}` |
-| Peticiones por segundo | Prometheus | `rate(http_server_requests_seconds_count{application="LAMB-BIBLIOTECA-MS"}[1m])` |
+| Todos los logs de tu servicio | **Loki** | `{application="lamb-evaluacionn-ms"}` |
+| Solo errores | Loki | `{application="lamb-evaluacionn-ms"} \|= "ERROR"` |
+| Eventos de Kafka | Loki | `{application="lamb-evaluacionn-ms"} \|= "component="` |
+| Una petición concreta | Loki | `{application="lamb-evaluacionn-ms"} \|= "PEGA-AQUI-EL-TRACE-ID"` |
+| ¿Está arriba? | **Prometheus** | `up{application="LAMB-EVALUACIONN-MS"}` |
+| Peticiones por segundo | Prometheus | `rate(http_server_requests_seconds_count{application="LAMB-EVALUACIONN-MS"}[1m])` |
 
 !!! note "Mayúsculas en Prometheus"
-    En Prometheus el nombre sale en **MAYÚSCULAS** (`LAMB-BIBLIOTECA-MS`) porque viene de Eureka. En Loki va en minúsculas.
+    En Prometheus el nombre sale en **MAYÚSCULAS** (`LAMB-EVALUACIONN-MS`) porque viene de Eureka. En Loki va en minúsculas.
 
 El dashboard *Lamb → Lamb - Infraestructura* ya incluye tu servicio.
 
@@ -95,7 +95,7 @@ El dashboard *Lamb → Lamb - Infraestructura* ya incluye tu servicio.
 1. Haz una petición y mira el header de respuesta:
 
     ```powershell
-    (Invoke-WebRequest http://localhost:18080/api/v1/biblioteca/saludo -UseBasicParsing).Headers["X-Trace-ID"]
+    (Invoke-WebRequest http://localhost:18080/api/v1/evaluacionn/saludo -UseBasicParsing).Headers["X-Trace-ID"]
     ```
 
 2. Copia ese valor y búscalo en Loki (tabla de arriba). Verás **solo** las líneas de esa petición:
@@ -115,7 +115,7 @@ Así encuentras qué pasó en una petición que falló, aunque haya miles de lí
 
 | Qué | Link | Qué debes ver |
 |---|---|---|
-| Prometheus | http://localhost:19090/targets | `lamb-biblioteca-ms` UP |
+| Prometheus | http://localhost:19090/targets | `lamb-evaluacionn-ms` UP |
 | Grafana - logs | http://localhost:13000 → Explore → Loki | Tus logs con `traceId` |
 | Grafana - métricas | Explore → Prometheus | Gráfico de peticiones por segundo |
 

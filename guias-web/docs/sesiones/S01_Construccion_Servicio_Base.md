@@ -53,7 +53,7 @@ PostgreSQL, Kafka, Prometheus, Loki, Grafana y un frontend Angular simple, **sin
 El código sigue el mismo estilo que el proyecto `pagatu` (entidad, DTO, mapper MapStruct, servicio,
 controlador, `CorrelationIdFilter`, productor/consumidor Kafka).
 
-Todo el código fue ejecutado y probado. El ejemplo es un servicio **`lamb-biblioteca-ms`** con un CRUD de **libros**.
+Todo el código fue ejecutado y probado. El ejemplo es un servicio **`lamb-evaluacionn-ms`** con un CRUD de **examenes**.
 
 ### 1.2 Elige tu camino
 
@@ -62,7 +62,7 @@ En cada sesión vas a encontrar dos caminos. Elige **uno** al inicio y síguelo 
 | Camino | Cuándo elegirlo | Qué obtienes al final |
 |---|---|---|
 | **A - Sin CRUD** | El profe pide "un servicio conectado a todo", sin lógica ni tablas | Página "Hola mundo" + botón que manda un evento a Kafka |
-| **B - Con CRUD** | El profe pide registrar algo (libros, pagos, alumnos...): agregar, editar, eliminar | Lo del camino A + lista y formulario para agregar, editar y eliminar |
+| **B - Con CRUD** | El profe pide registrar algo (examenes, pagos, alumnos...): agregar, editar, eliminar | Lo del camino A + lista y formulario para agregar, editar y eliminar |
 
 !!! note "Cómo se ve en cada sesión"
     - Lo que está fuera de los caminos es **común**: hazlo siempre.
@@ -104,7 +104,7 @@ En cada sesión vas a encontrar dos caminos. Elige **uno** al inicio y síguelo 
 ```mermaid
 flowchart LR
     Front["Frontend Angular - 4200"] --> Gateway["Gateway - 18080"]
-    Gateway --> Servicio["lamb-biblioteca-ms - 8095"]
+    Gateway --> Servicio["lamb-evaluacionn-ms - 8095"]
     Servicio --> BD[("PostgreSQL - 15460")]
     Servicio -->|"eventos"| Kafka["Kafka - 18092"]
     Config["Config Server - 18888"] -. "configuración" .-> Servicio
@@ -214,16 +214,16 @@ Si **ya tienes Lamb levantado**, es normal que salgan ocupados (por `java`, `nod
 
 ## 2. Elige tus nombres
 
-Toda la guía usa **biblioteca** y **libro**. Antes de empezar, decide tus nombres según lo que te pidan
+Toda la guía usa **evaluacionn** y **examen**. Antes de empezar, decide tus nombres según lo que te pidan
 y reemplázalos **en todos los pasos** (en VS Code: `Ctrl+Shift+H`, respetando mayúsculas).
 
 | En la guía dice | Lo cambias por (ej. te piden "Tesorería" con "Pagos") | Se usa en |
 |---|---|---|
-| `biblioteca` | `tesoreria` | carpeta, paquete Java, rutas, BD, topic Kafka |
-| `Biblioteca` | `Tesoreria` | nombres de clases Java |
-| `libro` / `libros` (camino B) | `pago` / `pagos` | variables, tabla, ruta `/api/v1/pagos` |
-| `Libro` (camino B) | `Pago` | clases Java (`Pago`, `PagoRequest`...) |
-| `titulo`, `autor` (camino B) | los atributos que te pidan | tabla, entidad, DTOs, formulario |
+| `evaluacionn` | `tesoreria` | carpeta, paquete Java, rutas, BD, topic Kafka |
+| `Evaluacionn` | `Tesoreria` | nombres de clases Java |
+| `examen` / `examenes` (camino B) | `pago` / `pagos` | variables, tabla, ruta `/api/v1/pagos` |
+| `Examen` (camino B) | `Pago` | clases Java (`Pago`, `PagoRequest`...) |
+| `titulo`, `curso` (camino B) | los atributos que te pidan | tabla, entidad, DTOs, formulario |
 | `8095` | un puerto libre | puerto del servicio |
 | `15460` | otro puerto libre (15461, 15462...) | puerto de su PostgreSQL |
 
@@ -249,17 +249,17 @@ el `pom.xml` y el Maven Wrapper de Trayectoria, que ya traen todas las dependenc
 **Dónde abrir la terminal:** En la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*. **Comprueba** que estás en la raíz: escribe `ls` y deben salir las carpetas `services`, `infra`, `clients`, `kafka`, `keycloak`, `obs`. Pega todo el bloque de una vez y pulsa `Enter`. Si no sale nada, está bien.
 
 ```powershell
-$nuevo = "services\lamb-biblioteca-ms"                              # cambia por tu nombre
-$java  = "$nuevo\src\main\java\pe\edu\upeu\lamb\biblioteca"        # cambia por tu nombre
+$nuevo = "services\lamb-evaluacionn-ms"                              # cambia por tu nombre
+$java  = "$nuevo\src\main\java\pe\edu\upeu\lamb\evaluacionn"        # cambia por tu nombre
 New-Item -ItemType Directory $nuevo | Out-Null
 Copy-Item -Recurse services\lamb-trayectoria-ms\.mvn $nuevo
 Copy-Item services\lamb-trayectoria-ms\mvnw, services\lamb-trayectoria-ms\mvnw.cmd, services\lamb-trayectoria-ms\pom.xml, services\lamb-trayectoria-ms\.gitignore $nuevo
-(Get-Content "$nuevo\pom.xml") -replace 'lamb-trayectoria-ms','lamb-biblioteca-ms' -replace '<description>.*</description>','<description>Microservicio de biblioteca</description>' | Set-Content -Encoding utf8 "$nuevo\pom.xml"
+(Get-Content "$nuevo\pom.xml") -replace 'lamb-trayectoria-ms','lamb-evaluacionn-ms' -replace '<description>.*</description>','<description>Microservicio de evaluacionn</description>' | Set-Content -Encoding utf8 "$nuevo\pom.xml"
 "config","controller","filter" | ForEach-Object { New-Item -ItemType Directory -Force "$java\$_" | Out-Null }
 New-Item -ItemType Directory -Force "$nuevo\src\main\resources\db\migration" | Out-Null
 ```
 
-!!! note "Solo cambian las 2 primeras líneas y `lamb-biblioteca-ms` / `biblioteca` del `-replace`"
+!!! note "Solo cambian las 2 primeras líneas y `lamb-evaluacionn-ms` / `evaluacionn` del `-replace`"
     El resto del bloque se pega tal cual.
 
 **Camino B - Con CRUD:** crea además estas carpetas (en **la misma terminal**, justo después del bloque anterior,
@@ -275,11 +275,11 @@ archivos `.java` los creas tú en los pasos siguientes.
 ```text
 Lamb-Modulo02-Admision-Trayectoria\              <- raíz (la carpeta abierta en VS Code)
 └── services\
-    └── lamb-biblioteca-ms\                      <- tu servicio (NUEVO)
+    └── lamb-evaluacionn-ms\                      <- tu servicio (NUEVO)
         ├── .mvn\                                <- copiado (no lo toques)
         ├── mvnw, mvnw.cmd, pom.xml, .gitignore  <- copiados
         └── src\main\
-            ├── java\pe\edu\upeu\lamb\biblioteca\  <- AQUÍ van los .java
+            ├── java\pe\edu\upeu\lamb\evaluacionn\  <- AQUÍ van los .java
             │   ├── config\
             │   ├── controller\
             │   ├── filter\
@@ -289,40 +289,40 @@ Lamb-Modulo02-Admision-Trayectoria\              <- raíz (la carpeta abierta en
 ```
 
 !!! note "En VS Code las carpetas salen juntas"
-    VS Code muestra `java\pe\edu\upeu\lamb\biblioteca` en **una sola línea** (`java/pe/edu/upeu/lamb/biblioteca`).
-    Es normal: haz clic derecho sobre esa línea para crear archivos dentro de `biblioteca`.
+    VS Code muestra `java\pe\edu\upeu\lamb\evaluacionn` en **una sola línea** (`java/pe/edu/upeu/lamb/evaluacionn`).
+    Es normal: haz clic derecho sobre esa línea para crear archivos dentro de `evaluacionn`.
 
 ## 4. Código común (los dos caminos)
 
-Todos los archivos Java van dentro de `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\`
+Todos los archivos Java van dentro de `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\`
 (o en una de sus subcarpetas: `config\`, `controller\`...). Cada paso te dice cuál.
 
-### 4.1 `LambBibliotecaMsApplication.java`
+### 4.1 `LambEvaluacionnMsApplication.java`
 
-**Crea el archivo:** `LambBibliotecaMsApplication.java`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**Crea el archivo:** `LambEvaluacionnMsApplication.java`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
-package pe.edu.upeu.lamb.biblioteca;
+package pe.edu.upeu.lamb.evaluacionn;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LambBibliotecaMsApplication {
+public class LambEvaluacionnMsApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(LambBibliotecaMsApplication.class, args);
+        SpringApplication.run(LambEvaluacionnMsApplication.class, args);
     }
 }
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `Biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
+- `evaluacionn` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Evaluacionn` (aparece 2 veces) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Más detalle"
@@ -333,12 +333,12 @@ public class LambBibliotecaMsApplication {
 Igual que Admisión y Trayectoria en desarrollo: todo abierto. En la **S7** se cambia por la versión con Keycloak.
 
 **Crea el archivo:** `SecurityConfig.java`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\config\`  
 **Cómo:** clic derecho en la carpeta `config` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
-package pe.edu.upeu.lamb.biblioteca.config;
+package pe.edu.upeu.lamb.evaluacionn.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -361,18 +361,18 @@ public class SecurityConfig {
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `evaluacionn` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 ### 4.3 `config\OpenApiConfig.java` (Swagger) - copia tal cual
 
 **Crea el archivo:** `OpenApiConfig.java`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\config\`  
 **Cómo:** clic derecho en la carpeta `config` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
-package pe.edu.upeu.lamb.biblioteca.config;
+package pe.edu.upeu.lamb.evaluacionn.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -401,7 +401,7 @@ public class OpenApiConfig {
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `evaluacionn` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 ### 4.4 `filter\CorrelationIdFilter.java` (traceId) - copia tal cual
@@ -409,12 +409,12 @@ public class OpenApiConfig {
 Cada petición lleva un `X-Trace-ID` que sale en los logs. Se usa en la **S10**.
 
 **Crea el archivo:** `CorrelationIdFilter.java`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\filter\`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\filter\`  
 **Cómo:** clic derecho en la carpeta `filter` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
-package pe.edu.upeu.lamb.biblioteca.filter;
+package pe.edu.upeu.lamb.evaluacionn.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -454,16 +454,16 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `evaluacionn` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "En los archivos que dicen “copia tal cual”"
-    Solo cambia la línea `package pe.edu.upeu.lamb.biblioteca...` por tu nombre.
+    Solo cambia la línea `package pe.edu.upeu.lamb.evaluacionn...` por tu nombre.
 
 ### 4.5 `src\main\resources\logback-spring.xml` (logs a archivo)
 
 **Crea el archivo:** `logback-spring.xml`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\resources\`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\resources\`  
 **Cómo:** clic derecho en la carpeta `resources` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Va en `resources`, **no** en la carpeta `java`.  
 **Y pega el siguiente código:**
@@ -483,12 +483,12 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/biblioteca.log</file>
+        <file>logs/evaluacionn.log</file>
         <encoder>
             <pattern>${LOG_PATTERN}</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/biblioteca-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>logs/evaluacionn-%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
     </appender>
@@ -502,23 +502,23 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `evaluacionn` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Más detalle"
-    Solo `biblioteca` en `logs/biblioteca.log` y `logs/biblioteca-%d...`. El patrón (`LOG_PATTERN`) no se toca.
+    Solo `evaluacionn` en `logs/evaluacionn.log` y `logs/evaluacionn-%d...`. El patrón (`LOG_PATTERN`) no se toca.
 
 ## 5. Camino A - Sin CRUD: el Hola mundo
 
 **Si quieres agregar un servicio sin CRUD, sin lógica, solo un Hola mundo, sigue este paso y salta a la sección 7.**
 
 **Crea el archivo:** `SaludoController.java`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\controller\`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\controller\`  
 **Cómo:** clic derecho en la carpeta `controller` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
-package pe.edu.upeu.lamb.biblioteca.controller;
+package pe.edu.upeu.lamb.evaluacionn.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -528,7 +528,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/biblioteca")
+@RequestMapping("/api/v1/evaluacionn")
 public class SaludoController {
 
     @Value("${spring.application.name}")
@@ -544,11 +544,11 @@ public class SaludoController {
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `evaluacionn` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Más detalle"
-    Solo `biblioteca` en el `package` y en `@RequestMapping("/api/v1/biblioteca")`. En la **S8** se le agrega el envío a Kafka.
+    Solo `evaluacionn` en el `package` y en `@RequestMapping("/api/v1/evaluacionn")`. En la **S8** se le agrega el envío a Kafka.
 
 ## 6. Camino B - Con CRUD: tabla, entidad, DTO, mapper, servicio y controlador
 
@@ -557,7 +557,7 @@ Haz también el `SaludoController` de la sección 5 (la página de inicio lo usa
 
 ### 6.1 Traduce los atributos que te piden
 
-El ejemplo tiene 2 atributos: `titulo` (obligatorio) y `autor` (opcional). **Depende del caso que te den,
+El ejemplo tiene 2 atributos: `titulo` (obligatorio) y `curso` (opcional). **Depende del caso que te den,
 cambia estos atributos** en: la tabla (6.2), la entidad (6.3), el Request y el Response (6.4),
 el servicio en `actualizar` (6.8) y el frontend (S11). Usa esta tabla:
 
@@ -571,29 +571,29 @@ el servicio en `actualizar` (6.8) y el frontend (S11). Usa esta tabla:
 
 Para un atributo **opcional**: quita `NOT NULL` del SQL, `nullable = false` de la entidad y `@NotBlank`/`@NotNull` del Request.
 
-### 6.2 La tabla: `src\main\resources\db\migration\V1__create_libros.sql`
+### 6.2 La tabla: `src\main\resources\db\migration\V1__create_examenes.sql`
 
 Flyway crea la tabla sola al arrancar el servicio.
 
-**Crea el archivo:** `V1__create_libros.sql`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\resources\db\migration\`  
+**Crea el archivo:** `V1__create_examenes.sql`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\resources\db\migration\`  
 **Cómo:** clic derecho en la carpeta `migration` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** El nombre lleva **dos** guiones bajos después de `V1` (`V1__`).  
 **Y pega el siguiente código:**
 
 ```sql
-CREATE TABLE IF NOT EXISTS libros (
+CREATE TABLE IF NOT EXISTS examenes (
     id BIGINT GENERATED BY DEFAULT AS IDENTITY,
     titulo VARCHAR(150) NOT NULL,
-    autor VARCHAR(100),
+    curso VARCHAR(100),
     PRIMARY KEY (id)
 );
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `libro` / `libros` (aparece 1 vez) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
-- `titulo`, `autor` (aparece 2 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- `examen` / `examenes` (aparece 1 vez) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `titulo`, `curso` (aparece 2 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Ejemplo: te piden “Pagos” con monto, fecha y método de pago"
@@ -612,31 +612,31 @@ CREATE TABLE IF NOT EXISTS libros (
 
 !!! note "Nunca edites una migración ya aplicada"
     Si ya arrancaste el servicio y quieres cambiar la tabla, crea `V2__...sql`
-    (ej. `ALTER TABLE libros ADD COLUMN anio INTEGER;`). Si editas el `V1`, Flyway falla con `Migration checksum mismatch`.
+    (ej. `ALTER TABLE examenes ADD COLUMN anio INTEGER;`). Si editas el `V1`, Flyway falla con `Migration checksum mismatch`.
 
-### 6.3 `entity\Libro.java`
+### 6.3 `entity\Examen.java`
 
 Una propiedad por columna.
 
-**Crea el archivo:** `Libro.java`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\entity\`  
+**Crea el archivo:** `Examen.java`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\entity\`  
 **Cómo:** clic derecho en la carpeta `entity` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
-package pe.edu.upeu.lamb.biblioteca.entity;
+package pe.edu.upeu.lamb.evaluacionn.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "libros")
+@Table(name = "examenes")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Libro {
+public class Examen {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -645,17 +645,17 @@ public class Libro {
     @Column(name = "titulo", nullable = false, length = 150)
     private String titulo;
 
-    @Column(name = "autor", length = 100)
-    private String autor;
+    @Column(name = "curso", length = 100)
+    private String curso;
 }
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `libro` / `libros` (aparece 1 vez) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
-- `Libro` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
-- `titulo`, `autor` (aparece 4 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- `evaluacionn` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `examen` / `examenes` (aparece 1 vez) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Examen` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `titulo`, `curso` (aparece 4 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Ejemplo para “Pagos”"
@@ -671,15 +671,15 @@ public class Libro {
     ```
     No cambies: las anotaciones de la clase y el bloque del `id`.
 
-### 6.4 `dto\LibroRequest.java` (lo que entra) y `dto\LibroResponse.java` (lo que sale)
+### 6.4 `dto\ExamenRequest.java` (lo que entra) y `dto\ExamenResponse.java` (lo que sale)
 
-**Crea el archivo:** `LibroRequest.java`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\dto\`  
+**Crea el archivo:** `ExamenRequest.java`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\dto\`  
 **Cómo:** clic derecho en la carpeta `dto` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
-package pe.edu.upeu.lamb.biblioteca.dto;
+package pe.edu.upeu.lamb.evaluacionn.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -688,31 +688,31 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LibroRequest {
+public class ExamenRequest {
 
     @NotBlank
     @Size(max = 150)
     private String titulo;
 
     @Size(max = 100)
-    private String autor;
+    private String curso;
 }
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `Libro` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
-- `titulo`, `autor` (aparece 2 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- `evaluacionn` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Examen` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `titulo`, `curso` (aparece 2 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
-**Crea el archivo:** `LibroResponse.java`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\dto\`  
+**Crea el archivo:** `ExamenResponse.java`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\dto\`  
 **Cómo:** clic derecho en la carpeta `dto` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
-package pe.edu.upeu.lamb.biblioteca.dto;
+package pe.edu.upeu.lamb.evaluacionn.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -725,65 +725,65 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LibroResponse {
+public class ExamenResponse {
     private Long id;
     private String titulo;
-    private String autor;
+    private String curso;
 }
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `Libro` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
-- `titulo`, `autor` (aparece 2 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- `evaluacionn` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Examen` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `titulo`, `curso` (aparece 2 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Más detalle"
     Los atributos (los mismos de la entidad, **sin `id`** en el Request y **con `id`** en el Response) y sus validaciones (tabla 6.1).
 
-### 6.5 `mapper\LibroMapper.java` (MapStruct)
+### 6.5 `mapper\ExamenMapper.java` (MapStruct)
 
 MapStruct genera solo el código que copia los datos entre la entidad y los DTO.
 
-**Crea el archivo:** `LibroMapper.java`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\mapper\`  
+**Crea el archivo:** `ExamenMapper.java`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\mapper\`  
 **Cómo:** clic derecho en la carpeta `mapper` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
-package pe.edu.upeu.lamb.biblioteca.mapper;
+package pe.edu.upeu.lamb.evaluacionn.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import pe.edu.upeu.lamb.biblioteca.dto.LibroRequest;
-import pe.edu.upeu.lamb.biblioteca.dto.LibroResponse;
-import pe.edu.upeu.lamb.biblioteca.entity.Libro;
+import pe.edu.upeu.lamb.evaluacionn.dto.ExamenRequest;
+import pe.edu.upeu.lamb.evaluacionn.dto.ExamenResponse;
+import pe.edu.upeu.lamb.evaluacionn.entity.Examen;
 
 @Mapper(componentModel = "spring")
-public interface LibroMapper {
+public interface ExamenMapper {
 
-    LibroResponse toResponse(Libro libro);
+    ExamenResponse toResponse(Examen examen);
 
     @Mapping(target = "id", ignore = true)
-    Libro toEntity(LibroRequest request);
+    Examen toEntity(ExamenRequest request);
 }
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 4 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `libro` / `libros` (aparece 1 vez) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
-- `Libro` (aparece 8 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `evaluacionn` (aparece 4 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `examen` / `examenes` (aparece 1 vez) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Examen` (aparece 8 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Más detalle"
-    Solo los nombres (`Libro` → tu entidad). No tienes que escribir los atributos: MapStruct los copia solo si se llaman igual.
+    Solo los nombres (`Examen` → tu entidad). No tienes que escribir los atributos: MapStruct los copia solo si se llaman igual.
 
 **Agrega MapStruct al `pom.xml`** (copia tal cual). Son **2 cambios** en el mismo archivo.
 
 **Abre el archivo:** `pom.xml`  
-**En la ruta:** `services\lamb-biblioteca-ms\`  
+**En la ruta:** `services\lamb-evaluacionn-ms\`  
 **Qué hacer:** Busca la **primera** línea `</dependencies>` (cierra la lista de dependencias, cerca de la línea 112) y pega este bloque **justo arriba** de ella. No borres lo demás del archivo.
 
 
@@ -810,27 +810,27 @@ En **cada una**, debajo del `</path>` que cierra el de Lombok (`<artifactId>lomb
 
 **Qué cambiar en este código:** nada, se pega tal cual.
 
-### 6.6 `repository\LibroRepository.java`
+### 6.6 `repository\ExamenRepository.java`
 
-**Crea el archivo:** `LibroRepository.java`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\repository\`  
+**Crea el archivo:** `ExamenRepository.java`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\repository\`  
 **Cómo:** clic derecho en la carpeta `repository` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
-package pe.edu.upeu.lamb.biblioteca.repository;
+package pe.edu.upeu.lamb.evaluacionn.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pe.edu.upeu.lamb.biblioteca.entity.Libro;
+import pe.edu.upeu.lamb.evaluacionn.entity.Examen;
 
-public interface LibroRepository extends JpaRepository<Libro, Long> {
+public interface ExamenRepository extends JpaRepository<Examen, Long> {
 }
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `Libro` (aparece 3 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `evaluacionn` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Examen` (aparece 3 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 ### 6.7 `exception\ResourceNotFoundException.java` y `exception\GlobalExceptionHandler.java` - copia tal cual
@@ -838,12 +838,12 @@ public interface LibroRepository extends JpaRepository<Libro, Long> {
 Responden `404` cuando no existe el registro y `400` cuando los datos no pasan la validación.
 
 **Crea el archivo:** `ResourceNotFoundException.java`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\exception\`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\exception\`  
 **Cómo:** clic derecho en la carpeta `exception` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
-package pe.edu.upeu.lamb.biblioteca.exception;
+package pe.edu.upeu.lamb.evaluacionn.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String mensaje) {
@@ -854,16 +854,16 @@ public class ResourceNotFoundException extends RuntimeException {
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `evaluacionn` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 **Crea el archivo:** `GlobalExceptionHandler.java`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\exception\`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\exception\`  
 **Cómo:** clic derecho en la carpeta `exception` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
-package pe.edu.upeu.lamb.biblioteca.exception;
+package pe.edu.upeu.lamb.evaluacionn.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -902,235 +902,235 @@ public class GlobalExceptionHandler {
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `evaluacionn` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
-### 6.8 `service\LibroService.java`
+### 6.8 `service\ExamenService.java`
 
 En la **S8** se le agrega el aviso a Kafka.
 
-**Crea el archivo:** `LibroService.java`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\service\`  
+**Crea el archivo:** `ExamenService.java`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\service\`  
 **Cómo:** clic derecho en la carpeta `service` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```java
-package pe.edu.upeu.lamb.biblioteca.service;
+package pe.edu.upeu.lamb.evaluacionn.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pe.edu.upeu.lamb.biblioteca.dto.LibroRequest;
-import pe.edu.upeu.lamb.biblioteca.dto.LibroResponse;
-import pe.edu.upeu.lamb.biblioteca.entity.Libro;
-import pe.edu.upeu.lamb.biblioteca.exception.ResourceNotFoundException;
-import pe.edu.upeu.lamb.biblioteca.mapper.LibroMapper;
-import pe.edu.upeu.lamb.biblioteca.repository.LibroRepository;
+import pe.edu.upeu.lamb.evaluacionn.dto.ExamenRequest;
+import pe.edu.upeu.lamb.evaluacionn.dto.ExamenResponse;
+import pe.edu.upeu.lamb.evaluacionn.entity.Examen;
+import pe.edu.upeu.lamb.evaluacionn.exception.ResourceNotFoundException;
+import pe.edu.upeu.lamb.evaluacionn.mapper.ExamenMapper;
+import pe.edu.upeu.lamb.evaluacionn.repository.ExamenRepository;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class LibroService {
+public class ExamenService {
 
-    private final LibroRepository libroRepository;
-    private final LibroMapper libroMapper;
+    private final ExamenRepository examenRepository;
+    private final ExamenMapper examenMapper;
 
-    public List<LibroResponse> listar() {
-        return libroRepository.findAll().stream()
-                .map(libroMapper::toResponse)
+    public List<ExamenResponse> listar() {
+        return examenRepository.findAll().stream()
+                .map(examenMapper::toResponse)
                 .toList();
     }
 
-    public LibroResponse obtener(Long id) {
-        return libroMapper.toResponse(buscarOFallar(id));
+    public ExamenResponse obtener(Long id) {
+        return examenMapper.toResponse(buscarOFallar(id));
     }
 
     @Transactional
-    public LibroResponse crear(LibroRequest request) {
-        Libro libro = libroRepository.save(libroMapper.toEntity(request));
-        return libroMapper.toResponse(libro);
+    public ExamenResponse crear(ExamenRequest request) {
+        Examen examen = examenRepository.save(examenMapper.toEntity(request));
+        return examenMapper.toResponse(examen);
     }
 
     @Transactional
-    public LibroResponse actualizar(Long id, LibroRequest request) {
-        Libro libro = buscarOFallar(id);
-        libro.setTitulo(request.getTitulo());
-        libro.setAutor(request.getAutor());
-        return libroMapper.toResponse(libroRepository.save(libro));
+    public ExamenResponse actualizar(Long id, ExamenRequest request) {
+        Examen examen = buscarOFallar(id);
+        examen.setTitulo(request.getTitulo());
+        examen.setCurso(request.getCurso());
+        return examenMapper.toResponse(examenRepository.save(examen));
     }
 
     @Transactional
     public void eliminar(Long id) {
-        libroRepository.delete(buscarOFallar(id));
+        examenRepository.delete(buscarOFallar(id));
     }
 
-    private Libro buscarOFallar(Long id) {
-        return libroRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Libro no encontrado: " + id));
+    private Examen buscarOFallar(Long id) {
+        return examenRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Examen no encontrado: " + id));
     }
 }
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 7 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `libro` / `libros` (aparece 18 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
-- `Libro` (aparece 18 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `evaluacionn` (aparece 7 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `examen` / `examenes` (aparece 18 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Examen` (aparece 18 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Más detalle"
-    Los nombres (`Libro` → tu entidad), el mensaje `"Libro no encontrado: "` y, en `actualizar`,
-    **un `libro.setX(request.getX());` por cada atributo**. Ej. para Pagos:
+    Los nombres (`Examen` → tu entidad), el mensaje `"Examen no encontrado: "` y, en `actualizar`,
+    **un `examen.setX(request.getX());` por cada atributo**. Ej. para Pagos:
     `pago.setMonto(request.getMonto()); pago.setFecha(request.getFecha()); pago.setMetodoPago(request.getMetodoPago());`
 
-### 6.9 `controller\LibroController.java`
+### 6.9 `controller\ExamenController.java`
 
 | Método | Ruta | Responde |
 |---|---|---|
-| `GET` | `/api/v1/libros` | `200` lista |
-| `GET` | `/api/v1/libros/{id}` | `200` o `404` |
-| `POST` | `/api/v1/libros` | `201` o `400` |
-| `PUT` | `/api/v1/libros/{id}` | `200`, `400` o `404` |
-| `DELETE` | `/api/v1/libros/{id}` | `204` o `404` |
+| `GET` | `/api/v1/examenes` | `200` lista |
+| `GET` | `/api/v1/examenes/{id}` | `200` o `404` |
+| `POST` | `/api/v1/examenes` | `201` o `400` |
+| `PUT` | `/api/v1/examenes/{id}` | `200`, `400` o `404` |
+| `DELETE` | `/api/v1/examenes/{id}` | `204` o `404` |
 
-**Crea el archivo:** `LibroController.java`  
-**En la ruta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\controller\`  
+**Crea el archivo:** `ExamenController.java`  
+**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\controller\`  
 **Cómo:** clic derecho en la carpeta `controller` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Va en la misma carpeta que `SaludoController.java`.  
 **Y pega el siguiente código:**
 
 ```java
-package pe.edu.upeu.lamb.biblioteca.controller;
+package pe.edu.upeu.lamb.evaluacionn.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import pe.edu.upeu.lamb.biblioteca.dto.LibroRequest;
-import pe.edu.upeu.lamb.biblioteca.dto.LibroResponse;
-import pe.edu.upeu.lamb.biblioteca.service.LibroService;
+import pe.edu.upeu.lamb.evaluacionn.dto.ExamenRequest;
+import pe.edu.upeu.lamb.evaluacionn.dto.ExamenResponse;
+import pe.edu.upeu.lamb.evaluacionn.service.ExamenService;
 
 import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/libros")
+@RequestMapping("/api/v1/examenes")
 @RequiredArgsConstructor
-public class LibroController {
+public class ExamenController {
 
-    private final LibroService libroService;
+    private final ExamenService examenService;
 
     @GetMapping
-    public List<LibroResponse> listar() {
-        log.info("Listando libros");
-        return libroService.listar();
+    public List<ExamenResponse> listar() {
+        log.info("Listando examenes");
+        return examenService.listar();
     }
 
     @GetMapping("/{id}")
-    public LibroResponse obtener(@PathVariable Long id) {
-        return libroService.obtener(id);
+    public ExamenResponse obtener(@PathVariable Long id) {
+        return examenService.obtener(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LibroResponse crear(@Valid @RequestBody LibroRequest request) {
-        return libroService.crear(request);
+    public ExamenResponse crear(@Valid @RequestBody ExamenRequest request) {
+        return examenService.crear(request);
     }
 
     @PutMapping("/{id}")
-    public LibroResponse actualizar(@PathVariable Long id, @Valid @RequestBody LibroRequest request) {
-        return libroService.actualizar(id, request);
+    public ExamenResponse actualizar(@PathVariable Long id, @Valid @RequestBody ExamenRequest request) {
+        return examenService.actualizar(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
-        libroService.eliminar(id);
+        examenService.eliminar(id);
     }
 }
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 4 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `libro` / `libros` (aparece 8 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
-- `Libro` (aparece 11 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `evaluacionn` (aparece 4 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `examen` / `examenes` (aparece 8 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Examen` (aparece 11 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Más detalle"
-    Los nombres y la ruta `@RequestMapping("/api/v1/libros")` (en plural: `/api/v1/pagos`). Los 5 métodos se quedan igual.
+    Los nombres y la ruta `@RequestMapping("/api/v1/examenes")` (en plural: `/api/v1/pagos`). Los 5 métodos se quedan igual.
 
 ## 7. Base de datos en Docker (los dos caminos)
 
 **Crea el archivo:** `compose-dev.yml`  
-**En la ruta:** `services\lamb-biblioteca-ms\`  
-**Cómo:** clic derecho en la carpeta `lamb-biblioteca-ms` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**En la ruta:** `services\lamb-evaluacionn-ms\`  
+**Cómo:** clic derecho en la carpeta `lamb-evaluacionn-ms` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Ojo:** Va **directo** en la carpeta del servicio (al lado del `pom.xml`), no dentro de `src`.  
 **Y pega el siguiente código:**
 
 ```yaml
-name: lamb-biblioteca-dev
+name: lamb-evaluacionn-dev
 
 services:
-  postgres-biblioteca-dev:
+  postgres-evaluacionn-dev:
     image: postgres:16-alpine
-    container_name: lamb-postgres-biblioteca-dev
+    container_name: lamb-postgres-evaluacionn-dev
     restart: unless-stopped
     environment:
-      POSTGRES_DB: lamb_biblioteca_db
+      POSTGRES_DB: lamb_evaluacionn_db
       POSTGRES_USER: lamb
       POSTGRES_PASSWORD: lamb
     ports:
       - "15460:5432"
     volumes:
-      - lamb_biblioteca_dev_data:/var/lib/postgresql/data
+      - lamb_evaluacionn_dev_data:/var/lib/postgresql/data
 
 volumes:
-  lamb_biblioteca_dev_data:
-    name: lamb-biblioteca-data
+  lamb_evaluacionn_dev_data:
+    name: lamb-evaluacionn-data
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 7 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `evaluacionn` (aparece 7 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
 - `15460` (aparece 1 vez) → el puerto de la **base de datos** de tu servicio.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Más detalle"
-    `biblioteca` en todos los nombres y el puerto `15460`. No cambies `5432` (puerto interno) ni la imagen.
+    `evaluacionn` en todos los nombres y el puerto `15460`. No cambies `5432` (puerto interno) ni la imagen.
 
 !!! note "El `name:` del volumen es obligatorio"
     Si dos proyectos usan el mismo nombre de volumen, **comparten la base de datos** y Flyway falla.
 
 Levántala:
 
-**Dónde abrir la terminal:** En la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*. Docker Desktop debe estar abierto. Al final, `docker ps` debe mostrar `lamb-postgres-biblioteca-dev`.
+**Dónde abrir la terminal:** En la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*. Docker Desktop debe estar abierto. Al final, `docker ps` debe mostrar `lamb-postgres-evaluacionn-dev`.
 
 ```powershell
-docker compose -f services/lamb-biblioteca-ms/compose-dev.yml up -d
+docker compose -f services/lamb-evaluacionn-ms/compose-dev.yml up -d
 ```
 
 !!! note "Archivos de esta sesión"
     **Los dos caminos** - creas:
 
-    - `services\lamb-biblioteca-ms\pom.xml`, `mvnw`, `mvnw.cmd`, `.mvn`, `.gitignore` (copiados de Trayectoria)
-    - `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\LambBibliotecaMsApplication.java`
-    - `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\SecurityConfig.java` - temporal, **se reemplaza en la S7**
-    - `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\OpenApiConfig.java`
-    - `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\filter\CorrelationIdFilter.java`
-    - `services\lamb-biblioteca-ms\src\main\resources\logback-spring.xml`
-    - `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\controller\SaludoController.java` - **se reemplaza en la S8**
-    - `services\lamb-biblioteca-ms\compose-dev.yml`
+    - `services\lamb-evaluacionn-ms\pom.xml`, `mvnw`, `mvnw.cmd`, `.mvn`, `.gitignore` (copiados de Trayectoria)
+    - `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\LambEvaluacionnMsApplication.java`
+    - `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\config\SecurityConfig.java` - temporal, **se reemplaza en la S7**
+    - `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\config\OpenApiConfig.java`
+    - `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\filter\CorrelationIdFilter.java`
+    - `services\lamb-evaluacionn-ms\src\main\resources\logback-spring.xml`
+    - `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\controller\SaludoController.java` - **se reemplaza en la S8**
+    - `services\lamb-evaluacionn-ms\compose-dev.yml`
 
     **Solo camino B** - además creas (en la misma carpeta Java):
 
-    - `services\lamb-biblioteca-ms\src\main\resources\db\migration\V1__create_libros.sql`
-    - `entity\Libro.java`, `dto\LibroRequest.java`, `dto\LibroResponse.java`, `mapper\LibroMapper.java`, `repository\LibroRepository.java`
+    - `services\lamb-evaluacionn-ms\src\main\resources\db\migration\V1__create_examenes.sql`
+    - `entity\Examen.java`, `dto\ExamenRequest.java`, `dto\ExamenResponse.java`, `mapper\ExamenMapper.java`, `repository\ExamenRepository.java`
     - `exception\ResourceNotFoundException.java`, `exception\GlobalExceptionHandler.java`
-    - `service\LibroService.java` - **se reemplaza en la S8**
-    - `controller\LibroController.java`
+    - `service\ExamenService.java` - **se reemplaza en la S8**
+    - `controller\ExamenController.java`
     - y **modificas** `pom.xml` (MapStruct)
 
 ## 8. Evidencia de cierre de la S1
@@ -1140,11 +1140,11 @@ El servicio todavía **no arranca** (le falta su configuración, que se agrega e
 **Dónde abrir la terminal:** En la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*. El bloque entra a la carpeta de tu servicio. La primera vez tarda (descarga librerías).
 
 ```powershell
-cd services\lamb-biblioteca-ms
+cd services\lamb-evaluacionn-ms
 .\mvnw.cmd -DskipTests package
 ```
 
 Debe terminar en `BUILD SUCCESS`. En el camino B, revisa que exista
-`target\generated-sources\annotations\...\mapper\LibroMapperImpl.java` (lo generó MapStruct).
+`target\generated-sources\annotations\...\mapper\ExamenMapperImpl.java` (lo generó MapStruct).
 
 Siguiente: [S2 - Configuración centralizada](S02_Configuracion_Centralizada_Ambientes.md).

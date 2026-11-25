@@ -10,7 +10,7 @@
     ```powershell
     docker compose -f kafka/compose-dev.yml up -d    # Kafka + Kafka UI
     docker compose -f keycloak/compose-dev.yml up -d    # Keycloak (tarda ~1 min)
-    docker compose -f services/lamb-biblioteca-ms/compose-dev.yml up -d    # BD de tu servicio
+    docker compose -f services/lamb-evaluacionn-ms/compose-dev.yml up -d    # BD de tu servicio
     ```
 
     **Servicios** (cada uno en **su propia terminal**, en este orden, esperando que diga `Started ...`):
@@ -18,7 +18,7 @@
     ```powershell
     cd infra\lamb-config; .\mvnw.cmd spring-boot:run    # Config Server
     cd infra\lamb-eureka; .\mvnw.cmd spring-boot:run    # Eureka
-    cd services\lamb-biblioteca-ms; .\mvnw.cmd spring-boot:run    # Tu servicio
+    cd services\lamb-evaluacionn-ms; .\mvnw.cmd spring-boot:run    # Tu servicio
     cd infra\lamb-gateway; .\mvnw.cmd spring-boot:run    # Gateway (al final)
     ```
 
@@ -26,8 +26,8 @@
 
     - Kafka + Kafka UI: http://localhost:18090
     - Keycloak: http://localhost:18180/realms/lamb
-    - BD de tu servicio: `docker ps` → `lamb-postgres-biblioteca-dev` *Up*
-    - Config Server: http://localhost:18888/lamb-biblioteca-ms/dev
+    - BD de tu servicio: `docker ps` → `lamb-postgres-evaluacionn-dev` *Up*
+    - Config Server: http://localhost:18888/lamb-evaluacionn-ms/dev
     - Eureka: http://localhost:18761
     - Tu servicio: http://localhost:8095/actuator/health
     - Gateway: http://localhost:18080/actuator/health
@@ -42,27 +42,27 @@ Gateway y componentes con su `.ts` y su `.html`. El login de Keycloak y el enví
 
 | Camino | Páginas |
 |---|---|
-| A - Sin CRUD | `/biblioteca`: "Hola mundo" + botón *Enviar evento a Kafka* |
-| B - Con CRUD | lo del camino A + `/biblioteca/libros` (tabla), `/biblioteca/libros/nuevo` y `/biblioteca/libros/:id/editar` (formulario) |
+| A - Sin CRUD | `/evaluacionn`: "Hola mundo" + botón *Enviar evento a Kafka* |
+| B - Con CRUD | lo del camino A + `/evaluacionn/examenes` (tabla), `/evaluacionn/examenes/nuevo` y `/evaluacionn/examenes/:id/editar` (formulario) |
 
-Crea la carpeta `biblioteca` (cambia por tu nombre): en VS Code, clic derecho en `clients\lamb-frontend\src\app\features\`
-→ **New Folder** → `biblioteca`. Ahí van **todos** los archivos `.ts` y `.html` de esta sesión (salvo `app.routes.ts`).
+Crea la carpeta `evaluacionn` (cambia por tu nombre): en VS Code, clic derecho en `clients\lamb-frontend\src\app\features\`
+→ **New Folder** → `evaluacionn`. Ahí van **todos** los archivos `.ts` y `.html` de esta sesión (salvo `app.routes.ts`).
 
 ```text
 clients\lamb-frontend\src\app\
 ├── app.routes.ts          <- se MODIFICA (rutas)
 └── features\
     ├── admision\  inicio\  trayectoria\ ...   <- ya existen, no se tocan
-    └── biblioteca\        <- NUEVA: aquí creas todos los archivos
+    └── evaluacionn\        <- NUEVA: aquí creas todos los archivos
 ```
 
 ## 2. Código común (los dos caminos): la página Hola mundo
 
-### 2.1 `biblioteca-service.ts`
+### 2.1 `evaluacionn-service.ts`
 
-**Crea el archivo:** `biblioteca-service.ts`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**Crea el archivo:** `evaluacionn-service.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```ts
@@ -72,40 +72,40 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
-export class BibliotecaService {
+export class EvaluacionnService {
   private readonly http = inject(HttpClient);
 
   saludo(): Observable<string> {
-    return this.http.get(`${environment.apiUrl}/api/v1/biblioteca/saludo`, { responseType: 'text' });
+    return this.http.get(`${environment.apiUrl}/api/v1/evaluacionn/saludo`, { responseType: 'text' });
   }
 
   enviarEvento(): Observable<unknown> {
-    return this.http.post(`${environment.apiUrl}/api/v1/biblioteca/saludo/evento`, {});
+    return this.http.post(`${environment.apiUrl}/api/v1/evaluacionn/saludo/evento`, {});
   }
 }
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `Biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
+- `evaluacionn` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Evaluacionn` (aparece 1 vez) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Más detalle"
-    El nombre de la clase y las rutas `/api/v1/biblioteca/...`. `environment.apiUrl` es el Gateway (`http://localhost:18080`): no lo cambies.
+    El nombre de la clase y las rutas `/api/v1/evaluacionn/...`. `environment.apiUrl` es el Gateway (`http://localhost:18080`): no lo cambies.
 
 ### 2.2 `saludo.ts`
 
 **Crea el archivo:** `saludo.ts`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```ts
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
-import { BibliotecaService } from './biblioteca-service';
+import { EvaluacionnService } from './evaluacionn-service';
 
 @Component({
   selector: 'app-saludo',
@@ -113,19 +113,19 @@ import { BibliotecaService } from './biblioteca-service';
   templateUrl: './saludo.html',
 })
 export class Saludo implements OnInit {
-  private readonly bibliotecaService = inject(BibliotecaService);
+  private readonly evaluacionnService = inject(EvaluacionnService);
   protected readonly mensaje = signal('Cargando...');
   protected readonly resultado = signal<string | null>(null);
 
   ngOnInit(): void {
-    this.bibliotecaService.saludo().subscribe({
+    this.evaluacionnService.saludo().subscribe({
       next: (texto) => this.mensaje.set(texto),
       error: () => this.mensaje.set('No se pudo conectar con el servicio.'),
     });
   }
 
   enviarEvento(): void {
-    this.bibliotecaService.enviarEvento().subscribe({
+    this.evaluacionnService.enviarEvento().subscribe({
       next: () => this.resultado.set('Evento enviado a Kafka.'),
       error: (err: HttpErrorResponse) =>
         this.resultado.set(err.status === 403 ? 'No tienes permiso para esta acción.' : 'No se pudo enviar el evento.'),
@@ -136,17 +136,17 @@ export class Saludo implements OnInit {
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 4 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `Biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
+- `evaluacionn` (aparece 4 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `Evaluacionn` (aparece 2 veces) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 ### 2.3 `saludo.html`
 
-**Camino A - Sin CRUD:** quita la última línea (el link *Ver libros*). **Camino B:** pégalo completo.
+**Camino A - Sin CRUD:** quita la última línea (el link *Ver examenes*). **Camino B:** pégalo completo.
 
 **Crea el archivo:** `saludo.html`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```html
@@ -157,13 +157,13 @@ export class Saludo implements OnInit {
   <p>{{ resultado() }}</p>
 }
 
-<p><a routerLink="/biblioteca/libros">Ver libros</a></p>
+<p><a routerLink="/evaluacionn/examenes">Ver examenes</a></p>
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `libro` / `libros` (aparece 2 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `evaluacionn` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `examen` / `examenes` (aparece 2 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Camino A: el aviso de `RouterLink`"
@@ -178,18 +178,18 @@ export class Saludo implements OnInit {
 
 
 ```ts
-  // ====== BIBLIOTECA (paginas simples, sin diseño; piden login de Keycloak) ======
+  // ====== EVALUACIONN (paginas simples, sin diseño; piden login de Keycloak) ======
   {
-    path: 'biblioteca',
+    path: 'evaluacionn',
     canActivate: [adminGuard],
-    loadComponent: () => import('./features/biblioteca/saludo').then((m) => m.Saludo)
+    loadComponent: () => import('./features/evaluacionn/saludo').then((m) => m.Saludo)
   },
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `BIBLIOTECA` (aparece 1 vez) → el nombre de **tu servicio**, en mayúsculas. Ej.: `TESORERIA`.
+- `evaluacionn` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `EVALUACIONN` (aparece 1 vez) → el nombre de **tu servicio**, en mayúsculas. Ej.: `TESORERIA`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 `adminGuard` (ya existe en Lamb) pide iniciar sesión en Keycloak. No lo cambies.
@@ -198,38 +198,38 @@ export class Saludo implements OnInit {
 
 ## 3. Camino B - Con CRUD: lista y formulario
 
-**Si quieres agregar el servicio con CRUD, sigue estos pasos.** Todos se crean en `clients\lamb-frontend\src\app\features\biblioteca\` (la misma carpeta del paso 2).
+**Si quieres agregar el servicio con CRUD, sigue estos pasos.** Todos se crean en `clients\lamb-frontend\src\app\features\evaluacionn\` (la misma carpeta del paso 2).
 
-### 3.1 `libro.model.ts`
+### 3.1 `examen.model.ts`
 
-**Crea el archivo:** `libro.model.ts`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**Crea el archivo:** `examen.model.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```ts
-export interface Libro {
+export interface Examen {
   id?: number;
   titulo: string;
-  autor?: string;
+  curso?: string;
 }
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `Libro` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
-- `titulo`, `autor` (aparece 2 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- `Examen` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `titulo`, `curso` (aparece 2 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Más detalle"
-    Un atributo por cada campo del `LibroResponse` (S1). `id?` siempre se queda. Tipos: texto → `string`,
+    Un atributo por cada campo del `ExamenResponse` (S1). `id?` siempre se queda. Tipos: texto → `string`,
     números → `number`, fecha → `string`, sí/no → `boolean`. Opcional → con `?`.
 
-### 3.2 `libro-service.ts`
+### 3.2 `examen-service.ts`
 
-**Crea el archivo:** `libro-service.ts`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**Crea el archivo:** `examen-service.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```ts
@@ -237,65 +237,65 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Libro } from './libro.model';
+import { Examen } from './examen.model';
 
 @Injectable({ providedIn: 'root' })
-export class LibroService {
+export class ExamenService {
   private readonly http = inject(HttpClient);
 
-  listar(): Observable<Libro[]> {
-    return this.http.get<Libro[]>(`${environment.apiUrl}/api/v1/libros`);
+  listar(): Observable<Examen[]> {
+    return this.http.get<Examen[]>(`${environment.apiUrl}/api/v1/examenes`);
   }
 
-  obtener(id: number): Observable<Libro> {
-    return this.http.get<Libro>(`${environment.apiUrl}/api/v1/libros/${id}`);
+  obtener(id: number): Observable<Examen> {
+    return this.http.get<Examen>(`${environment.apiUrl}/api/v1/examenes/${id}`);
   }
 
-  crear(libro: Libro): Observable<Libro> {
-    return this.http.post<Libro>(`${environment.apiUrl}/api/v1/libros`, libro);
+  crear(examen: Examen): Observable<Examen> {
+    return this.http.post<Examen>(`${environment.apiUrl}/api/v1/examenes`, examen);
   }
 
-  actualizar(id: number, libro: Libro): Observable<Libro> {
-    return this.http.put<Libro>(`${environment.apiUrl}/api/v1/libros/${id}`, libro);
+  actualizar(id: number, examen: Examen): Observable<Examen> {
+    return this.http.put<Examen>(`${environment.apiUrl}/api/v1/examenes/${id}`, examen);
   }
 
   eliminar(id: number): Observable<void> {
-    return this.http.delete<void>(`${environment.apiUrl}/api/v1/libros/${id}`);
+    return this.http.delete<void>(`${environment.apiUrl}/api/v1/examenes/${id}`);
   }
 }
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `libro` / `libros` (aparece 10 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
-- `Libro` (aparece 12 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `examen` / `examenes` (aparece 10 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Examen` (aparece 12 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Más detalle"
-    Los nombres y la ruta `/api/v1/libros`. Los 5 métodos se quedan igual.
+    Los nombres y la ruta `/api/v1/examenes`. Los 5 métodos se quedan igual.
 
-### 3.3 `libro-list.ts` (la tabla)
+### 3.3 `examen-list.ts` (la tabla)
 
-**Crea el archivo:** `libro-list.ts`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**Crea el archivo:** `examen-list.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```ts
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
-import { LibroService } from './libro-service';
-import { Libro } from './libro.model';
+import { ExamenService } from './examen-service';
+import { Examen } from './examen.model';
 
 @Component({
-  selector: 'app-libro-list',
+  selector: 'app-examen-list',
   imports: [RouterLink],
-  templateUrl: './libro-list.html',
+  templateUrl: './examen-list.html',
 })
-export class LibroList implements OnInit {
-  private readonly libroService = inject(LibroService);
-  protected readonly libros = signal<Libro[]>([]);
+export class ExamenList implements OnInit {
+  private readonly examenService = inject(ExamenService);
+  protected readonly examenes = signal<Examen[]>([]);
   protected readonly cargando = signal(true);
   protected readonly error = signal<string | null>(null);
   protected readonly errorAccion = signal<string | null>(null);
@@ -306,28 +306,28 @@ export class LibroList implements OnInit {
 
   private cargar(): void {
     this.cargando.set(true);
-    this.libroService.listar().subscribe({
+    this.examenService.listar().subscribe({
       next: (data) => {
-        this.libros.set(data);
+        this.examenes.set(data);
         this.cargando.set(false);
       },
       error: () => {
-        this.error.set('No se pudo cargar la lista de libros.');
+        this.error.set('No se pudo cargar la lista de examenes.');
         this.cargando.set(false);
       },
     });
   }
 
   eliminar(id: number): void {
-    if (!confirm(`¿Seguro que quieres eliminar el libro ${id}?`)) {
+    if (!confirm(`¿Seguro que quieres eliminar el examen ${id}?`)) {
       return;
     }
     this.errorAccion.set(null);
-    this.libroService.eliminar(id).subscribe({
+    this.examenService.eliminar(id).subscribe({
       next: () => this.cargar(),
       error: (err: HttpErrorResponse) => {
         this.errorAccion.set(
-          err.status === 403 ? 'No tienes permiso para esta acción.' : 'No se pudo eliminar el libro.',
+          err.status === 403 ? 'No tienes permiso para esta acción.' : 'No se pudo eliminar el examen.',
         );
       },
     });
@@ -337,26 +337,26 @@ export class LibroList implements OnInit {
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `libro` / `libros` (aparece 12 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
-- `Libro` (aparece 5 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `examen` / `examenes` (aparece 12 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Examen` (aparece 5 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
-### 3.4 `libro-list.html`
+### 3.4 `examen-list.html`
 
-**Crea el archivo:** `libro-list.html`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**Crea el archivo:** `examen-list.html`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```html
-<h1>Libros</h1>
+<h1>Examenes</h1>
 
 @if (cargando()) {
-  <p>Cargando libros...</p>
+  <p>Cargando examenes...</p>
 } @else if (error()) {
   <p>{{ error() }}</p>
 } @else {
-  <a routerLink="/biblioteca/libros/nuevo">Nuevo libro</a>
+  <a routerLink="/evaluacionn/examenes/nuevo">Nuevo examen</a>
 
   @if (errorAccion()) {
     <p class="error">{{ errorAccion() }}</p>
@@ -364,20 +364,20 @@ export class LibroList implements OnInit {
 
   <table>
     <thead>
-      <tr><th>Titulo</th><th>Autor</th><th></th></tr>
+      <tr><th>Titulo</th><th>Curso</th><th></th></tr>
     </thead>
     <tbody>
-      @for (libro of libros(); track libro.id) {
+      @for (examen of examenes(); track examen.id) {
         <tr>
-          <td>{{ libro.titulo }}</td>
-          <td>{{ libro.autor }}</td>
+          <td>{{ examen.titulo }}</td>
+          <td>{{ examen.curso }}</td>
           <td>
-            <a [routerLink]="['/biblioteca/libros', libro.id, 'editar']">Editar</a>
-            <button (click)="eliminar(libro.id!)">Eliminar</button>
+            <a [routerLink]="['/evaluacionn/examenes', examen.id, 'editar']">Editar</a>
+            <button (click)="eliminar(examen.id!)">Eliminar</button>
           </td>
         </tr>
       } @empty {
-        <tr><td colspan="3">No hay libros registrados.</td></tr>
+        <tr><td colspan="3">No hay examenes registrados.</td></tr>
       }
     </tbody>
   </table>
@@ -386,23 +386,23 @@ export class LibroList implements OnInit {
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `libro` / `libros` (aparece 12 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
-- `Libro` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
-- `titulo`, `autor` (aparece 4 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- `evaluacionn` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `examen` / `examenes` (aparece 12 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Examen` (aparece 1 vez) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `titulo`, `curso` (aparece 4 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Más detalle"
-    Un `<th>` y un `<td>{{ libro.x }}</td>` por cada atributo que quieras mostrar, y las rutas `/biblioteca/libros...`.
+    Un `<th>` y un `<td>{{ examen.x }}</td>` por cada atributo que quieras mostrar, y las rutas `/evaluacionn/examenes...`.
     Ajusta el `colspan="3"` al número de columnas.
 
-### 3.5 `libro-form.ts` (agregar y editar con el mismo formulario)
+### 3.5 `examen-form.ts` (agregar y editar con el mismo formulario)
 
-Si la ruta trae `:id`, carga el libro y al guardar hace `PUT`; si no, hace `POST`.
+Si la ruta trae `:id`, carga el examen y al guardar hace `PUT`; si no, hace `POST`.
 
-**Crea el archivo:** `libro-form.ts`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**Crea el archivo:** `examen-form.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```ts
@@ -410,16 +410,16 @@ import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { LibroService } from './libro-service';
+import { ExamenService } from './examen-service';
 
 @Component({
-  selector: 'app-libro-form',
+  selector: 'app-examen-form',
   imports: [ReactiveFormsModule],
-  templateUrl: './libro-form.html',
+  templateUrl: './examen-form.html',
 })
-export class LibroForm {
+export class ExamenForm {
   private readonly fb = inject(FormBuilder);
-  private readonly libroService = inject(LibroService);
+  private readonly examenService = inject(ExamenService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -429,7 +429,7 @@ export class LibroForm {
 
   protected readonly form = this.fb.nonNullable.group({
     titulo: ['', [Validators.required, Validators.maxLength(150)]],
-    autor: ['', [Validators.maxLength(100)]],
+    curso: ['', [Validators.maxLength(100)]],
   });
 
   constructor() {
@@ -438,13 +438,13 @@ export class LibroForm {
       const id = Number(idParam);
       this.id.set(id);
       this.cargando.set(true);
-      this.libroService.obtener(id).subscribe({
-        next: (libro) => {
-          this.form.patchValue(libro);
+      this.examenService.obtener(id).subscribe({
+        next: (examen) => {
+          this.form.patchValue(examen);
           this.cargando.set(false);
         },
         error: () => {
-          this.error.set('No se pudo cargar el libro.');
+          this.error.set('No se pudo cargar el examen.');
           this.cargando.set(false);
         },
       });
@@ -458,23 +458,23 @@ export class LibroForm {
     }
     const valor = this.form.getRawValue();
     const id = this.id();
-    const peticion = id ? this.libroService.actualizar(id, valor) : this.libroService.crear(valor);
+    const peticion = id ? this.examenService.actualizar(id, valor) : this.examenService.crear(valor);
 
     peticion.subscribe({
-      next: () => this.router.navigate(['/biblioteca/libros']),
+      next: () => this.router.navigate(['/evaluacionn/examenes']),
       error: (err: HttpErrorResponse) => {
         this.error.set(
-          err.status === 403 ? 'No tienes permiso para esta acción.' : 'No se pudo guardar el libro.',
+          err.status === 403 ? 'No tienes permiso para esta acción.' : 'No se pudo guardar el examen.',
         );
       },
     });
   }
 
   cancelar(): void {
-    this.router.navigate(['/biblioteca/libros']);
+    this.router.navigate(['/evaluacionn/examenes']);
   }
 
-  protected mensajeValidacion(campo: 'titulo' | 'autor'): string {
+  protected mensajeValidacion(campo: 'titulo' | 'curso'): string {
     const control = this.form.controls[campo];
 
     if (!control.touched) return '';
@@ -489,15 +489,15 @@ export class LibroForm {
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `libro` / `libros` (aparece 13 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
-- `Libro` (aparece 3 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
-- `titulo`, `autor` (aparece 4 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- `evaluacionn` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `examen` / `examenes` (aparece 13 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Examen` (aparece 3 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `titulo`, `curso` (aparece 4 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Más detalle"
     En `form = this.fb.nonNullable.group({...})` va **un control por atributo** con sus validaciones
-    (las mismas del Request), y en `mensajeValidacion(campo: 'titulo' | 'autor')` la lista de tus atributos.
+    (las mismas del Request), y en `mensajeValidacion(campo: 'titulo' | 'curso')` la lista de tus atributos.
     Ejemplo para Pagos:
     ```ts
     protected readonly form = this.fb.nonNullable.group({
@@ -507,15 +507,15 @@ export class LibroForm {
     });
     ```
 
-### 3.6 `libro-form.html`
+### 3.6 `examen-form.html`
 
-**Crea el archivo:** `libro-form.html`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**Crea el archivo:** `examen-form.html`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 ```html
-<h1>{{ id() ? 'Editar libro' : 'Nuevo libro' }}</h1>
+<h1>{{ id() ? 'Editar examen' : 'Nuevo examen' }}</h1>
 
 <form [formGroup]="form" (ngSubmit)="guardar()">
   @if (cargando()) {
@@ -531,10 +531,10 @@ export class LibroForm {
   }
 
   <label>
-    Autor
-    <input type="text" formControlName="autor" />
+    Curso
+    <input type="text" formControlName="curso" />
   </label>
-  @if (mensajeValidacion('autor'); as mensaje) {
+  @if (mensajeValidacion('curso'); as mensaje) {
     <p class="error">{{ mensaje }}</p>
   }
 
@@ -549,8 +549,8 @@ export class LibroForm {
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `libro` / `libros` (aparece 2 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
-- `titulo`, `autor` (aparece 6 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
+- `examen` / `examenes` (aparece 2 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `titulo`, `curso` (aparece 6 veces) → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden).
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Más detalle"
@@ -561,32 +561,32 @@ export class LibroForm {
 
 **Abre el archivo:** `app.routes.ts`  
 **En la ruta:** `clients\lamb-frontend\src\app\`  
-**Qué hacer:** El mismo archivo del paso 2.4. Busca la ruta `path: 'biblioteca'` que pegaste y pega esto **debajo** de su `},`. No borres lo demás del archivo.
+**Qué hacer:** El mismo archivo del paso 2.4. Busca la ruta `path: 'evaluacionn'` que pegaste y pega esto **debajo** de su `},`. No borres lo demás del archivo.
 
 
 ```ts
   {
-    path: 'biblioteca/libros',
+    path: 'evaluacionn/examenes',
     canActivate: [adminGuard],
-    loadComponent: () => import('./features/biblioteca/libro-list').then((m) => m.LibroList)
+    loadComponent: () => import('./features/evaluacionn/examen-list').then((m) => m.ExamenList)
   },
   {
-    path: 'biblioteca/libros/nuevo',
+    path: 'evaluacionn/examenes/nuevo',
     canActivate: [adminGuard],
-    loadComponent: () => import('./features/biblioteca/libro-form').then((m) => m.LibroForm)
+    loadComponent: () => import('./features/evaluacionn/examen-form').then((m) => m.ExamenForm)
   },
   {
-    path: 'biblioteca/libros/:id/editar',
+    path: 'evaluacionn/examenes/:id/editar',
     canActivate: [adminGuard],
-    loadComponent: () => import('./features/biblioteca/libro-form').then((m) => m.LibroForm)
+    loadComponent: () => import('./features/evaluacionn/examen-form').then((m) => m.ExamenForm)
   },
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 6 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `libro` / `libros` (aparece 6 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
-- `Libro` (aparece 3 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
+- `evaluacionn` (aparece 6 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `examen` / `examenes` (aparece 6 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `Examen` (aparece 3 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 ## 4. Probar
@@ -600,15 +600,15 @@ npm start
 
 ### Camino A - Sin CRUD
 
-1. Abre http://localhost:4200/biblioteca → te pide login → `admin` / `admin123`.
-2. Si te deja en la página de inicio, vuelve a abrir http://localhost:4200/biblioteca.
-3. Ves **"Hola mundo desde lamb-biblioteca-ms"**. Pulsa *Enviar evento a Kafka* → "Evento enviado a Kafka."
+1. Abre http://localhost:4200/evaluacionn → te pide login → `admin` / `admin123`.
+2. Si te deja en la página de inicio, vuelve a abrir http://localhost:4200/evaluacionn.
+3. Ves **"Hola mundo desde lamb-evaluacionn-ms"**. Pulsa *Enviar evento a Kafka* → "Evento enviado a Kafka."
 4. Cierra sesión, entra como `estudiante1` / `estudiante123` y pulsa el botón → "No tienes permiso para esta acción."
 
 ### Camino B - Con CRUD
 
-1. Entra como `admin` → http://localhost:4200/biblioteca → *Ver libros*.
-2. *Nuevo libro* → llena el formulario → *Guardar* → aparece en la tabla.
+1. Entra como `admin` → http://localhost:4200/evaluacionn → *Ver examenes*.
+2. *Nuevo examen* → llena el formulario → *Guardar* → aparece en la tabla.
 3. *Editar* → cambia el título → *Guardar* → se actualiza.
 4. *Eliminar* → confirma → desaparece.
 5. Como `estudiante1`: ve la tabla, pero al guardar sale "No tienes permiso para esta acción."
@@ -617,13 +617,13 @@ npm start
     Lamb muestra un error de CORS al cargar el perfil (`/realms/lamb/account`). Ya existía y no afecta a tus páginas.
 
 !!! note "Archivos de esta sesión"
-    **Los dos caminos** - creas en `clients\lamb-frontend\src\app\features\biblioteca\`:
+    **Los dos caminos** - creas en `clients\lamb-frontend\src\app\features\evaluacionn\`:
 
-    - `biblioteca-service.ts`, `saludo.ts`, `saludo.html`
+    - `evaluacionn-service.ts`, `saludo.ts`, `saludo.html`
 
     **Solo camino B** - además creas (en la misma carpeta):
 
-    - `libro.model.ts`, `libro-service.ts`, `libro-list.ts`, `libro-list.html`, `libro-form.ts`, `libro-form.html`
+    - `examen.model.ts`, `examen-service.ts`, `examen-list.ts`, `examen-list.html`, `examen-form.ts`, `examen-form.html`
 
     **Modificas:**
 

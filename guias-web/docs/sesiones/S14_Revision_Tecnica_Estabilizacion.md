@@ -11,12 +11,12 @@ Resumen rápido. La explicación completa, con el archivo a abrir y qué cambiar
 
 | Síntoma | Causa | Solución |
 |---|---|---|
-| `Could not resolve placeholder 'app.kafka.topic.biblioteca'` | El servicio no encontró su configuración | Config Server apagado, o el archivo no se llama `spring.application.name` + `-dev.yml` (S2) |
-| `Connection refused ... 15460` | La BD de tu servicio no está levantada | `docker compose -f services/lamb-biblioteca-ms/compose-dev.yml up -d` |
+| `Could not resolve placeholder 'app.kafka.topic.evaluacionn'` | El servicio no encontró su configuración | Config Server apagado, o el archivo no se llama `spring.application.name` + `-dev.yml` (S2) |
+| `Connection refused ... 15460` | La BD de tu servicio no está levantada | `docker compose -f services/lamb-evaluacionn-ms/compose-dev.yml up -d` |
 | `Migration checksum mismatch` | Editaste un `V1__...sql` ya aplicado | Devuelve el V1 como estaba y crea un `V2`. En desarrollo: `docker compose -f ... down -v` (**borra los datos**) |
 | `Schema-validation: missing column` | La entidad tiene un atributo que no está en la tabla | Agrega la columna con una migración `V2` o corrige el nombre (`metodoPago` ↔ `metodo_pago`) |
 | `Port 8095 was already in use` | Otra instancia sigue corriendo | Cierra la otra terminal o usa otro puerto |
-| `No qualifying bean of type '...LibroMapper'` | Falta `mapstruct-processor` en el `pom.xml` | S1, paso 6.5 (en **las dos** `annotationProcessorPaths`) |
+| `No qualifying bean of type '...ExamenMapper'` | Falta `mapstruct-processor` en el `pom.xml` | S1, paso 6.5 (en **las dos** `annotationProcessorPaths`) |
 | Gateway `404` | Falta la ruta o no reiniciaste el Gateway | S4, paso 2 |
 | Gateway `401` en un `GET` | Falta la regla `permitAll` | S7, paso 3 |
 | Gateway `503` | Tu servicio aún no está en Eureka | Espera 30 s y revisa http://localhost:18761 |
@@ -49,7 +49,7 @@ Si te dan otro servicio (ej. **Tesorería** con **Pagos**), revisa que cambiaste
 Para encontrar lo que olvidaste, busca la palabra vieja en tu servicio (si no imprime nada, está limpio):
 
 ```powershell
-Get-ChildItem services\lamb-tesoreria-ms\src -Recurse -File | Select-String -Pattern "biblioteca|libro"
+Get-ChildItem services\lamb-tesoreria-ms\src -Recurse -File | Select-String -Pattern "evaluacionn|examen"
 ```
 
 !!! note "Lo que nunca cambias"

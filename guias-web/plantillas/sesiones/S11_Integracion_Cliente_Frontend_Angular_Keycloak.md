@@ -10,7 +10,7 @@
     ```powershell
     docker compose -f kafka/compose-dev.yml up -d    # Kafka + Kafka UI
     docker compose -f keycloak/compose-dev.yml up -d    # Keycloak (tarda ~1 min)
-    docker compose -f services/lamb-biblioteca-ms/compose-dev.yml up -d    # BD de tu servicio
+    docker compose -f services/lamb-evaluacionn-ms/compose-dev.yml up -d    # BD de tu servicio
     ```
 
     **Servicios** (cada uno en **su propia terminal**, en este orden, esperando que diga `Started ...`):
@@ -18,7 +18,7 @@
     ```powershell
     cd infra\lamb-config; .\mvnw.cmd spring-boot:run    # Config Server
     cd infra\lamb-eureka; .\mvnw.cmd spring-boot:run    # Eureka
-    cd services\lamb-biblioteca-ms; .\mvnw.cmd spring-boot:run    # Tu servicio
+    cd services\lamb-evaluacionn-ms; .\mvnw.cmd spring-boot:run    # Tu servicio
     cd infra\lamb-gateway; .\mvnw.cmd spring-boot:run    # Gateway (al final)
     ```
 
@@ -26,8 +26,8 @@
 
     - Kafka + Kafka UI: http://localhost:18090
     - Keycloak: http://localhost:18180/realms/lamb
-    - BD de tu servicio: `docker ps` → `lamb-postgres-biblioteca-dev` *Up*
-    - Config Server: http://localhost:18888/lamb-biblioteca-ms/dev
+    - BD de tu servicio: `docker ps` → `lamb-postgres-evaluacionn-dev` *Up*
+    - Config Server: http://localhost:18888/lamb-evaluacionn-ms/dev
     - Eureka: http://localhost:18761
     - Tu servicio: http://localhost:8095/actuator/health
     - Gateway: http://localhost:18080/actuator/health
@@ -42,50 +42,50 @@ Gateway y componentes con su `.ts` y su `.html`. El login de Keycloak y el enví
 
 | Camino | Páginas |
 |---|---|
-| A - Sin CRUD | `/biblioteca`: "Hola mundo" + botón *Enviar evento a Kafka* |
-| B - Con CRUD | lo del camino A + `/biblioteca/libros` (tabla), `/biblioteca/libros/nuevo` y `/biblioteca/libros/:id/editar` (formulario) |
+| A - Sin CRUD | `/evaluacionn`: "Hola mundo" + botón *Enviar evento a Kafka* |
+| B - Con CRUD | lo del camino A + `/evaluacionn/examenes` (tabla), `/evaluacionn/examenes/nuevo` y `/evaluacionn/examenes/:id/editar` (formulario) |
 
-Crea la carpeta `biblioteca` (cambia por tu nombre): en VS Code, clic derecho en `clients\lamb-frontend\src\app\features\`
-→ **New Folder** → `biblioteca`. Ahí van **todos** los archivos `.ts` y `.html` de esta sesión (salvo `app.routes.ts`).
+Crea la carpeta `evaluacionn` (cambia por tu nombre): en VS Code, clic derecho en `clients\lamb-frontend\src\app\features\`
+→ **New Folder** → `evaluacionn`. Ahí van **todos** los archivos `.ts` y `.html` de esta sesión (salvo `app.routes.ts`).
 
 ```text
 clients\lamb-frontend\src\app\
 ├── app.routes.ts          <- se MODIFICA (rutas)
 └── features\
     ├── admision\  inicio\  trayectoria\ ...   <- ya existen, no se tocan
-    └── biblioteca\        <- NUEVA: aquí creas todos los archivos
+    └── evaluacionn\        <- NUEVA: aquí creas todos los archivos
 ```
 
 ## 2. Código común (los dos caminos): la página Hola mundo
 
-### 2.1 `biblioteca-service.ts`
+### 2.1 `evaluacionn-service.ts`
 
-**Crea el archivo:** `biblioteca-service.ts`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**Crea el archivo:** `evaluacionn-service.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/biblioteca-service.ts}}
 
 !!! note "Qué cambia"
-    El nombre de la clase y las rutas `/api/v1/biblioteca/...`. `environment.apiUrl` es el Gateway (`http://localhost:18080`): no lo cambies.
+    El nombre de la clase y las rutas `/api/v1/evaluacionn/...`. `environment.apiUrl` es el Gateway (`http://localhost:18080`): no lo cambies.
 
 ### 2.2 `saludo.ts`
 
 **Crea el archivo:** `saludo.ts`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/saludo.ts}}
 
 ### 2.3 `saludo.html`
 
-**Camino A - Sin CRUD:** quita la última línea (el link *Ver libros*). **Camino B:** pégalo completo.
+**Camino A - Sin CRUD:** quita la última línea (el link *Ver examenes*). **Camino B:** pégalo completo.
 
 **Crea el archivo:** `saludo.html`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/saludo.html}}
@@ -102,11 +102,11 @@ clients\lamb-frontend\src\app\
 
 
 ```ts
-  // ====== BIBLIOTECA (paginas simples, sin diseño; piden login de Keycloak) ======
+  // ====== EVALUACIONN (paginas simples, sin diseño; piden login de Keycloak) ======
   {
-    path: 'biblioteca',
+    path: 'evaluacionn',
     canActivate: [adminGuard],
-    loadComponent: () => import('./features/biblioteca/saludo').then((m) => m.Saludo)
+    loadComponent: () => import('./features/evaluacionn/saludo').then((m) => m.Saludo)
   },
 ```
 
@@ -116,69 +116,69 @@ clients\lamb-frontend\src\app\
 
 ## 3. Camino B - Con CRUD: lista y formulario
 
-**Si quieres agregar el servicio con CRUD, sigue estos pasos.** Todos se crean en `clients\lamb-frontend\src\app\features\biblioteca\` (la misma carpeta del paso 2).
+**Si quieres agregar el servicio con CRUD, sigue estos pasos.** Todos se crean en `clients\lamb-frontend\src\app\features\evaluacionn\` (la misma carpeta del paso 2).
 
-### 3.1 `libro.model.ts`
+### 3.1 `examen.model.ts`
 
-**Crea el archivo:** `libro.model.ts`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**Crea el archivo:** `examen.model.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro.model.ts}}
 
 !!! note "Qué cambia"
-    Un atributo por cada campo del `LibroResponse` (S1). `id?` siempre se queda. Tipos: texto → `string`,
+    Un atributo por cada campo del `ExamenResponse` (S1). `id?` siempre se queda. Tipos: texto → `string`,
     números → `number`, fecha → `string`, sí/no → `boolean`. Opcional → con `?`.
 
-### 3.2 `libro-service.ts`
+### 3.2 `examen-service.ts`
 
-**Crea el archivo:** `libro-service.ts`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**Crea el archivo:** `examen-service.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro-service.ts}}
 
 !!! note "Qué cambia"
-    Los nombres y la ruta `/api/v1/libros`. Los 5 métodos se quedan igual.
+    Los nombres y la ruta `/api/v1/examenes`. Los 5 métodos se quedan igual.
 
-### 3.3 `libro-list.ts` (la tabla)
+### 3.3 `examen-list.ts` (la tabla)
 
-**Crea el archivo:** `libro-list.ts`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**Crea el archivo:** `examen-list.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro-list.ts}}
 
-### 3.4 `libro-list.html`
+### 3.4 `examen-list.html`
 
-**Crea el archivo:** `libro-list.html`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**Crea el archivo:** `examen-list.html`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro-list.html}}
 
 !!! note "Qué cambia"
-    Un `<th>` y un `<td>{{ libro.x }}</td>` por cada atributo que quieras mostrar, y las rutas `/biblioteca/libros...`.
+    Un `<th>` y un `<td>{{ examen.x }}</td>` por cada atributo que quieras mostrar, y las rutas `/evaluacionn/examenes...`.
     Ajusta el `colspan="3"` al número de columnas.
 
-### 3.5 `libro-form.ts` (agregar y editar con el mismo formulario)
+### 3.5 `examen-form.ts` (agregar y editar con el mismo formulario)
 
-Si la ruta trae `:id`, carga el libro y al guardar hace `PUT`; si no, hace `POST`.
+Si la ruta trae `:id`, carga el examen y al guardar hace `PUT`; si no, hace `POST`.
 
-**Crea el archivo:** `libro-form.ts`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**Crea el archivo:** `examen-form.ts`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro-form.ts}}
 
 !!! note "Qué cambia"
     En `form = this.fb.nonNullable.group({...})` va **un control por atributo** con sus validaciones
-    (las mismas del Request), y en `mensajeValidacion(campo: 'titulo' | 'autor')` la lista de tus atributos.
+    (las mismas del Request), y en `mensajeValidacion(campo: 'titulo' | 'curso')` la lista de tus atributos.
     Ejemplo para Pagos:
     ```ts
     protected readonly form = this.fb.nonNullable.group({
@@ -188,11 +188,11 @@ Si la ruta trae `:id`, carga el libro y al guardar hace `PUT`; si no, hace `POST
     });
     ```
 
-### 3.6 `libro-form.html`
+### 3.6 `examen-form.html`
 
-**Crea el archivo:** `libro-form.html`  
-**En la ruta:** `clients\lamb-frontend\src\app\features\biblioteca\`  
-**Cómo:** clic derecho en la carpeta `biblioteca` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
+**Crea el archivo:** `examen-form.html`  
+**En la ruta:** `clients\lamb-frontend\src\app\features\evaluacionn\`  
+**Cómo:** clic derecho en la carpeta `evaluacionn` → **New File** (es un archivo, no una carpeta) → escribe el nombre exacto.  
 **Y pega el siguiente código:**
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro-form.html}}
@@ -205,24 +205,24 @@ Si la ruta trae `:id`, carga el libro y al guardar hace `PUT`; si no, hace `POST
 
 **Abre el archivo:** `app.routes.ts`  
 **En la ruta:** `clients\lamb-frontend\src\app\`  
-**Qué hacer:** El mismo archivo del paso 2.4. Busca la ruta `path: 'biblioteca'` que pegaste y pega esto **debajo** de su `},`. No borres lo demás del archivo.
+**Qué hacer:** El mismo archivo del paso 2.4. Busca la ruta `path: 'evaluacionn'` que pegaste y pega esto **debajo** de su `},`. No borres lo demás del archivo.
 
 
 ```ts
   {
-    path: 'biblioteca/libros',
+    path: 'evaluacionn/examenes',
     canActivate: [adminGuard],
-    loadComponent: () => import('./features/biblioteca/libro-list').then((m) => m.LibroList)
+    loadComponent: () => import('./features/evaluacionn/examen-list').then((m) => m.ExamenList)
   },
   {
-    path: 'biblioteca/libros/nuevo',
+    path: 'evaluacionn/examenes/nuevo',
     canActivate: [adminGuard],
-    loadComponent: () => import('./features/biblioteca/libro-form').then((m) => m.LibroForm)
+    loadComponent: () => import('./features/evaluacionn/examen-form').then((m) => m.ExamenForm)
   },
   {
-    path: 'biblioteca/libros/:id/editar',
+    path: 'evaluacionn/examenes/:id/editar',
     canActivate: [adminGuard],
-    loadComponent: () => import('./features/biblioteca/libro-form').then((m) => m.LibroForm)
+    loadComponent: () => import('./features/evaluacionn/examen-form').then((m) => m.ExamenForm)
   },
 ```
 
@@ -237,15 +237,15 @@ npm start
 
 ### Camino A - Sin CRUD
 
-1. Abre http://localhost:4200/biblioteca → te pide login → `admin` / `admin123`.
-2. Si te deja en la página de inicio, vuelve a abrir http://localhost:4200/biblioteca.
-3. Ves **"Hola mundo desde lamb-biblioteca-ms"**. Pulsa *Enviar evento a Kafka* → "Evento enviado a Kafka."
+1. Abre http://localhost:4200/evaluacionn → te pide login → `admin` / `admin123`.
+2. Si te deja en la página de inicio, vuelve a abrir http://localhost:4200/evaluacionn.
+3. Ves **"Hola mundo desde lamb-evaluacionn-ms"**. Pulsa *Enviar evento a Kafka* → "Evento enviado a Kafka."
 4. Cierra sesión, entra como `estudiante1` / `estudiante123` y pulsa el botón → "No tienes permiso para esta acción."
 
 ### Camino B - Con CRUD
 
-1. Entra como `admin` → http://localhost:4200/biblioteca → *Ver libros*.
-2. *Nuevo libro* → llena el formulario → *Guardar* → aparece en la tabla.
+1. Entra como `admin` → http://localhost:4200/evaluacionn → *Ver examenes*.
+2. *Nuevo examen* → llena el formulario → *Guardar* → aparece en la tabla.
 3. *Editar* → cambia el título → *Guardar* → se actualiza.
 4. *Eliminar* → confirma → desaparece.
 5. Como `estudiante1`: ve la tabla, pero al guardar sale "No tienes permiso para esta acción."
@@ -254,13 +254,13 @@ npm start
     Lamb muestra un error de CORS al cargar el perfil (`/realms/lamb/account`). Ya existía y no afecta a tus páginas.
 
 !!! note "Archivos de esta sesión"
-    **Los dos caminos** - creas en `clients\lamb-frontend\src\app\features\biblioteca\`:
+    **Los dos caminos** - creas en `clients\lamb-frontend\src\app\features\evaluacionn\`:
 
-    - `biblioteca-service.ts`, `saludo.ts`, `saludo.html`
+    - `evaluacionn-service.ts`, `saludo.ts`, `saludo.html`
 
     **Solo camino B** - además creas (en la misma carpeta):
 
-    - `libro.model.ts`, `libro-service.ts`, `libro-list.ts`, `libro-list.html`, `libro-form.ts`, `libro-form.html`
+    - `examen.model.ts`, `examen-service.ts`, `examen-list.ts`, `examen-list.html`, `examen-form.ts`, `examen-form.html`
 
     **Modificas:**
 

@@ -6,42 +6,42 @@ Esta página junta **todo lo que tocas** en la guía, con la sesión donde está
 Si es tu primera vez, mejor sigue las sesiones en orden desde la [S1](S01_Construccion_Servicio_Base.md).
 
 !!! note "Cuidado con los archivos que se reemplazan"
-    `SecurityConfig.java` (del servicio), `SaludoController.java` y `LibroService.java` tienen una versión
+    `SecurityConfig.java` (del servicio), `SaludoController.java` y `ExamenService.java` tienen una versión
     temprana y una final. Copia **siempre la versión de la sesión que dice la tabla**.
 
 ## 1. Cómo queda tu servicio
 
 ```text
-services\lamb-biblioteca-ms\
+services\lamb-evaluacionn-ms\
 ├── compose-dev.yml                          S1
 ├── pom.xml  mvnw  mvnw.cmd  .mvn\           S1 (copiados de Trayectoria; + MapStruct en camino B)
 └── src\main\
-    ├── java\pe\edu\upeu\lamb\biblioteca\
-    │   ├── LambBibliotecaMsApplication.java     S1
+    ├── java\pe\edu\upeu\lamb\evaluacionn\
+    │   ├── LambEvaluacionnMsApplication.java     S1
     │   ├── config\
     │   │   ├── SecurityConfig.java              S7  (versión final)
     │   │   ├── OpenApiConfig.java               S1
     │   │   └── KafkaTopicsConfig.java           S8
     │   ├── filter\CorrelationIdFilter.java      S1
-    │   ├── event\BibliotecaEvento.java          S8
+    │   ├── event\EvaluacionnEvento.java          S8
     │   ├── messaging\
-    │   │   ├── BibliotecaEventosProducer.java   S8
-    │   │   └── BibliotecaEventosConsumer.java   S8
+    │   │   ├── EvaluacionnEventosProducer.java   S8
+    │   │   └── EvaluacionnEventosConsumer.java   S8
     │   ├── controller\
     │   │   ├── SaludoController.java            S8  (versión final)
-    │   │   └── LibroController.java             S1  (B)
-    │   ├── entity\Libro.java                    S1  (B)
-    │   ├── dto\LibroRequest.java                S1  (B)
-    │   ├── dto\LibroResponse.java               S1  (B)
-    │   ├── mapper\LibroMapper.java              S1  (B)
-    │   ├── repository\LibroRepository.java      S1  (B)
+    │   │   └── ExamenController.java             S1  (B)
+    │   ├── entity\Examen.java                    S1  (B)
+    │   ├── dto\ExamenRequest.java                S1  (B)
+    │   ├── dto\ExamenResponse.java               S1  (B)
+    │   ├── mapper\ExamenMapper.java              S1  (B)
+    │   ├── repository\ExamenRepository.java      S1  (B)
     │   ├── exception\ResourceNotFoundException.java   S1  (B)
     │   ├── exception\GlobalExceptionHandler.java      S1  (B)
-    │   └── service\LibroService.java            S8  (B, versión final)
+    │   └── service\ExamenService.java            S8  (B, versión final)
     └── resources\
         ├── application.yml                      S2
         ├── logback-spring.xml                   S1
-        └── db\migration\V1__create_libros.sql   S1  (B)
+        └── db\migration\V1__create_examenes.sql   S1  (B)
 ```
 
 `(B)` = solo si elegiste el camino **con CRUD**.
@@ -50,25 +50,25 @@ services\lamb-biblioteca-ms\
 
 | Archivo | Qué haces | Sesión |
 |---|---|---|
-| `infra\lamb-config\config-repo\lamb-biblioteca-ms-dev.yml` | Creas (toda la configuración) | [S2](S02_Configuracion_Centralizada_Ambientes.md) |
+| `infra\lamb-config\config-repo\lamb-evaluacionn-ms-dev.yml` | Creas (toda la configuración) | [S2](S02_Configuracion_Centralizada_Ambientes.md) |
 | `infra\lamb-config\config-repo\lamb-gateway-dev.yml` | Agregas 1 ruta (A) o 2 rutas (B) | [S4](S04_Punto_Unico_Acceso_Distribucion_Trafico.md) |
 | `infra\lamb-gateway\...\config\SecurityConfig.java` (Gateway) | Agregas las reglas por rol | [S7](S07_Seguridad_Distribuida_Control_Acceso.md) |
 | `obs\promtail\promtail-config-dev.yml` | Agregas 1 job | [S10](S10_Observabilidad_Diagnostico_Sistemas_Distribuidos.md) |
-| `clients\lamb-frontend\src\app\features\biblioteca\` | Creas las páginas | [S11](S11_Integracion_Cliente_Frontend_Angular_Keycloak.md) |
+| `clients\lamb-frontend\src\app\features\evaluacionn\` | Creas las páginas | [S11](S11_Integracion_Cliente_Frontend_Angular_Keycloak.md) |
 | `clients\lamb-frontend\src\app\app.routes.ts` | Agregas 1 ruta (A) o 4 rutas (B) | [S11](S11_Integracion_Cliente_Frontend_Angular_Keycloak.md) |
 | Keycloak (consola web) | Solo si te piden un rol o usuario nuevo | [S7b](S07b_Seguridad_Distribuida_Keycloak.md) |
 
 ## 3. Frontend
 
 ```text
-clients\lamb-frontend\src\app\features\biblioteca\
-├── biblioteca-service.ts     S11
+clients\lamb-frontend\src\app\features\evaluacionn\
+├── evaluacionn-service.ts     S11
 ├── saludo.ts                 S11
-├── saludo.html               S11  (camino A: sin el link "Ver libros")
-├── libro.model.ts            S11  (B)
-├── libro-service.ts          S11  (B)
-├── libro-list.ts / .html     S11  (B)
-└── libro-form.ts / .html     S11  (B)
+├── saludo.html               S11  (camino A: sin el link "Ver examenes")
+├── examen.model.ts            S11  (B)
+├── examen-service.ts          S11  (B)
+├── examen-list.ts / .html     S11  (B)
+└── examen-form.ts / .html     S11  (B)
 ```
 
 ## 4. Pasos en orden (lista corta)
@@ -84,7 +84,7 @@ clients\lamb-frontend\src\app\features\biblioteca\
 | 7 | Arrancar y verlo en Eureka | [S3](S03_Registro_Descubrimiento_Ejecucion_Concurrente.md) |
 | 8 | Ruta en el Gateway | [S4](S04_Punto_Unico_Acceso_Distribucion_Trafico.md) |
 | 9 | `SecurityConfig` final + roles en el Gateway | [S7](S07_Seguridad_Distribuida_Control_Acceso.md) |
-| 10 | Kafka: topic, evento, productor, consumidor; reemplazar `SaludoController` (y `LibroService` en B) | [S8](S08_Mensajeria_Asincrona_Entre_Servicios.md) |
+| 10 | Kafka: topic, evento, productor, consumidor; reemplazar `SaludoController` (y `ExamenService` en B) | [S8](S08_Mensajeria_Asincrona_Entre_Servicios.md) |
 | 11 | Job de Promtail | [S10](S10_Observabilidad_Diagnostico_Sistemas_Distribuidos.md) |
 | 12 | Frontend y rutas | [S11](S11_Integracion_Cliente_Frontend_Angular_Keycloak.md) |
 | 13 | Probar todo | [S13](S13_Validacion_End_to_End_Producto.md) |

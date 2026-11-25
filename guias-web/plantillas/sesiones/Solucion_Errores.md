@@ -13,7 +13,7 @@
     `Caused by:`, o la que está debajo de `APPLICATION FAILED TO START` → `Description:`.
     En Angular, mira la terminal de `npm start` y la consola del navegador (`F12` → *Console*).
 
-En todos los ejemplos cambia `biblioteca`, `libros`, `8095` y `15460` por los de tu servicio.
+En todos los ejemplos cambia `evaluacionn`, `examenes`, `8095` y `15460` por los de tu servicio.
 
 ## 2. Puertos ocupados
 
@@ -37,7 +37,7 @@ Stop-Process -Id 12345 -Force   # ciérralo si es un java viejo tuyo
 
 **Solución B - cambiar el puerto de tu servicio:**
 
-1. Abre `infra\lamb-config\config-repo\lamb-biblioteca-ms-dev.yml`.
+1. Abre `infra\lamb-config\config-repo\lamb-evaluacionn-ms-dev.yml`.
 2. Cambia `server.port: 8095` por un puerto libre, ej. `server.port: 8097`.
 3. Vuelve a arrancar tu servicio (el Config Server lee el cambio solo, no hace falta reiniciarlo).
 4. El Gateway **no** se toca (busca tu servicio por nombre en Eureka). Solo cambian los links directos
@@ -68,11 +68,11 @@ docker stop NOMBRE-DEL-CONTENEDOR
 
 **Solución B - cambiar el puerto de tu BD** (son **2 archivos**, deben coincidir):
 
-1. `services\lamb-biblioteca-ms\compose-dev.yml` → `"15460:5432"` por `"15461:5432"`
+1. `services\lamb-evaluacionn-ms\compose-dev.yml` → `"15460:5432"` por `"15461:5432"`
    (cambia solo el número de la **izquierda**; `5432` no se toca).
-2. `infra\lamb-config\config-repo\lamb-biblioteca-ms-dev.yml` →
+2. `infra\lamb-config\config-repo\lamb-evaluacionn-ms-dev.yml` →
    `url: jdbc:postgresql://localhost:15460/...` por `localhost:15461/...`.
-3. `docker compose -f services/lamb-biblioteca-ms/compose-dev.yml up -d` y reinicia tu servicio.
+3. `docker compose -f services/lamb-evaluacionn-ms/compose-dev.yml up -d` y reinicia tu servicio.
 
 ### 2.3 `Port 4200 is already in use` (frontend)
 
@@ -94,19 +94,19 @@ mira el proceso como en 2.1 o el contenedor como en 2.2.
 
 ## 3. Arranque del servicio y configuración
 
-### 3.1 `Could not resolve placeholder 'app.kafka.topic.biblioteca'`
+### 3.1 `Could not resolve placeholder 'app.kafka.topic.evaluacionn'`
 
 **Por qué:** tu servicio arrancó **sin su configuración**: o el Config Server está apagado, o el archivo no se llama
 igual que el servicio, o falta la clave.
 
 **Solución:**
 
-1. Abre http://localhost:18888/lamb-biblioteca-ms/dev. Si no carga, arranca el Config Server (S2).
+1. Abre http://localhost:18888/lamb-evaluacionn-ms/dev. Si no carga, arranca el Config Server (S2).
 2. Si carga pero `propertySources` está vacío (`[]`): el archivo debe llamarse **exactamente**
-   `spring.application.name` + `-dev.yml`. Compara `src\main\resources\application.yml` (`name: lamb-biblioteca-ms`)
-   con el archivo `infra\lamb-config\config-repo\lamb-biblioteca-ms-dev.yml`.
-3. Si el archivo está bien: la clave `app.kafka.topic.biblioteca` del `-dev.yml` debe ser **igual** a la del
-   `@Value("${app.kafka.topic.biblioteca}")` de `KafkaTopicsConfig.java`.
+   `spring.application.name` + `-dev.yml`. Compara `src\main\resources\application.yml` (`name: lamb-evaluacionn-ms`)
+   con el archivo `infra\lamb-config\config-repo\lamb-evaluacionn-ms-dev.yml`.
+3. Si el archivo está bien: la clave `app.kafka.topic.evaluacionn` del `-dev.yml` debe ser **igual** a la del
+   `@Value("${app.kafka.topic.evaluacionn}")` de `KafkaTopicsConfig.java`.
 
 ### 3.2 `Connection refused` a `localhost:18888` al arrancar
 
@@ -148,7 +148,7 @@ Si dice otro número, instala el JDK 21 (Temurin) y configura `JAVA_HOME` a su c
 
 ## 4. Compilación (código Java)
 
-### 4.1 `package pe.edu.upeu.lamb.biblioteca... does not exist` / `cannot find symbol`
+### 4.1 `package pe.edu.upeu.lamb.evaluacionn... does not exist` / `cannot find symbol`
 
 **Por qué:** al cambiar los nombres, quedó un `package` o un `import` con el nombre viejo, o el archivo está en otra
 carpeta que su `package`.
@@ -157,7 +157,7 @@ carpeta que su `package`.
 Busca lo que quedó con el nombre viejo:
 
 ```powershell
-Get-ChildItem services\lamb-tesoreria-ms\src -Recurse -File | Select-String -Pattern "biblioteca|libro"
+Get-ChildItem services\lamb-tesoreria-ms\src -Recurse -File | Select-String -Pattern "evaluacionn|examen"
 ```
 
 ### 4.2 `cannot find symbol: method getTitulo()` / `builder()`
@@ -167,12 +167,12 @@ Get-ChildItem services\lamb-tesoreria-ms\src -Recurse -File | Select-String -Pat
 **Solución:** revisa que la clase tenga sus anotaciones (como en la S1) y que el `pom.xml` sea el copiado de
 Trayectoria. Si usas otro atributo, el método cambia de nombre (`metodoPago` → `getMetodoPago()`).
 
-### 4.3 `No qualifying bean of type '...LibroMapper'` / `LibroMapperImpl` no existe
+### 4.3 `No qualifying bean of type '...ExamenMapper'` / `ExamenMapperImpl` no existe
 
 **Por qué:** falta el procesador de MapStruct.
 
 **Solución:** en el `pom.xml` agrega `mapstruct-processor` en **las dos** `<annotationProcessorPaths>`
-([S1, paso 6.5](S01_Construccion_Servicio_Base.md#65-mapperlibromapperjava-mapstruct)) y recompila
+([S1, paso 6.5](S01_Construccion_Servicio_Base.md#65-mapperexamenmapperjava-mapstruct)) y recompila
 con `.\mvnw.cmd clean package -DskipTests`.
 
 ### 4.4 `Unmapped target property: "x"` (aviso de MapStruct)
@@ -189,8 +189,8 @@ con `.\mvnw.cmd clean package -DskipTests`.
 **Solución:** la BD no está levantada. Abre **Docker Desktop** y ejecuta:
 
 ```powershell
-docker compose -f services/lamb-biblioteca-ms/compose-dev.yml up -d
-docker ps     # debe salir lamb-postgres-biblioteca-dev "Up"
+docker compose -f services/lamb-evaluacionn-ms/compose-dev.yml up -d
+docker ps     # debe salir lamb-postgres-evaluacionn-dev "Up"
 ```
 
 ### 5.2 `error during connect ... dockerDesktopLinuxEngine` / `docker` no responde
@@ -206,34 +206,34 @@ antes con otra contraseña.
 Si ya son iguales, recrea la BD (**borra los datos de prueba**):
 
 ```powershell
-docker compose -f services/lamb-biblioteca-ms/compose-dev.yml down -v
-docker compose -f services/lamb-biblioteca-ms/compose-dev.yml up -d
+docker compose -f services/lamb-evaluacionn-ms/compose-dev.yml down -v
+docker compose -f services/lamb-evaluacionn-ms/compose-dev.yml up -d
 ```
 
-### 5.4 `database "lamb_biblioteca_db" does not exist`
+### 5.4 `database "lamb_evaluacionn_db" does not exist`
 
-**Solución:** el nombre de la BD del `-dev.yml` (`.../lamb_biblioteca_db`) debe ser igual a `POSTGRES_DB` del
+**Solución:** el nombre de la BD del `-dev.yml` (`.../lamb_evaluacionn_db`) debe ser igual a `POSTGRES_DB` del
 `compose-dev.yml`. Si los cambiaste después de crear el contenedor, recréalo con `down -v` (5.3).
 
 ### 5.5 `Migration checksum mismatch for migration version 1`
 
-**Por qué:** editaste `V1__create_libros.sql` después de que Flyway ya lo ejecutó.
+**Por qué:** editaste `V1__create_examenes.sql` después de que Flyway ya lo ejecutó.
 
 **Solución:** devuelve el `V1` como estaba y pon el cambio en un archivo nuevo `V2__...sql`
-(ej. `ALTER TABLE libros ADD COLUMN anio INTEGER;`). En desarrollo también puedes borrar la BD con `down -v` (5.3).
+(ej. `ALTER TABLE examenes ADD COLUMN anio INTEGER;`). En desarrollo también puedes borrar la BD con `down -v` (5.3).
 
 ### 5.6 `Found non-empty schema(s) "public" but no schema history table`
 
 **Por qué:** tu servicio se conectó a una BD que ya tenía tablas de **otro** servicio (puerto o volumen repetido).
 
 **Solución:** en `compose-dev.yml` usa un puerto propio y un `name:` de volumen **único**
-(`lamb-biblioteca-data`), y apunta el `-dev.yml` a ese puerto. Luego `down -v` y `up -d`.
+(`lamb-evaluacionn-data`), y apunta el `-dev.yml` a ese puerto. Luego `down -v` y `up -d`.
 
-### 5.7 `Schema-validation: missing table [libros]` / `missing column [x]`
+### 5.7 `Schema-validation: missing table [examenes]` / `missing column [x]`
 
 **Por qué:** la entidad no coincide con la tabla (`ddl-auto: validate` lo revisa).
 
-**Solución:** compara `@Table(name = "libros")` y cada `@Column(name = "...")` con el SQL. Si falta una columna,
+**Solución:** compara `@Table(name = "examenes")` y cada `@Column(name = "...")` con el SQL. Si falta una columna,
 agrégala con una migración `V2`. Recuerda: `metodo_pago` en SQL ↔ `metodoPago` en Java.
 
 ### 5.8 `Schema-validation: wrong column type ... found [numeric], but expecting [float(53)]`
@@ -267,7 +267,7 @@ pruébalo desde el frontend con `admin`.
 **Solución:** el usuario no tiene el rol que pide el Gateway. Asígnalo en Keycloak
 ([S7b](S07b_Seguridad_Distribuida_Keycloak.md)) y **cierra sesión y vuelve a entrar** (el token viejo no tiene el rol).
 
-### 6.5 `503 Service Unavailable` / `Unable to find instance for lamb-biblioteca-ms`
+### 6.5 `503 Service Unavailable` / `Unable to find instance for lamb-evaluacionn-ms`
 
 **Solución:** el Gateway no encuentra tu servicio en Eureka: arráncalo, espera 30 s y revisa que `uri: lb://...`
 sea **igual** a `spring.application.name`.
@@ -314,7 +314,7 @@ docker compose -f kafka/compose-dev.yml up -d
 ### 8.2 `The class '...' is not in the trusted packages` / el consumidor no recibe
 
 **Solución:** en el `-dev.yml`, `spring.json.trusted.packages` y `spring.json.value.default.type` deben tener
-**el paquete y nombre real** de tu clase de evento (`pe.edu.upeu.lamb.biblioteca.event.BibliotecaEvento`). Revisa
+**el paquete y nombre real** de tu clase de evento (`pe.edu.upeu.lamb.evaluacionn.event.EvaluacionnEvento`). Revisa
 también que el `group-id` sea el de tu servicio.
 
 ### 8.3 Se guarda pero no sale `component=producer` en el log
@@ -328,12 +328,12 @@ también que el `group-id` sea el de tu servicio.
 
 **Solución:**
 
-1. Revisa que exista `services\lamb-biblioteca-ms\logs\biblioteca.log`. Si no existe, arrancaste el servicio desde
-   otra carpeta: arráncalo desde `services\lamb-biblioteca-ms`.
+1. Revisa que exista `services\lamb-evaluacionn-ms\logs\evaluacionn.log`. Si no existe, arrancaste el servicio desde
+   otra carpeta: arráncalo desde `services\lamb-evaluacionn-ms`.
 2. Revisa el job en `obs\promtail\promtail-config-dev.yml` ([S10](S10_Observabilidad_Diagnostico_Sistemas_Distribuidos.md)):
    la ruta debe tener el **nombre exacto de la carpeta** de tu servicio.
 3. `docker restart lamb-promtail-dev`.
-4. Abre http://localhost:13100/loki/api/v1/label/application/values: debe aparecer `lamb-biblioteca-ms`.
+4. Abre http://localhost:13100/loki/api/v1/label/application/values: debe aparecer `lamb-evaluacionn-ms`.
 
 ### 9.2 Prometheus muestra tu servicio `DOWN`
 

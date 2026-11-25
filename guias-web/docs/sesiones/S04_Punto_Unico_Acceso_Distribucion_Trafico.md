@@ -8,7 +8,7 @@
     **Docker** (Docker Desktop abierto; se pueden pegar en la misma terminal):
 
     ```powershell
-    docker compose -f services/lamb-biblioteca-ms/compose-dev.yml up -d    # BD de tu servicio
+    docker compose -f services/lamb-evaluacionn-ms/compose-dev.yml up -d    # BD de tu servicio
     ```
 
     **Servicios** (cada uno en **su propia terminal**, en este orden, esperando que diga `Started ...`):
@@ -16,14 +16,14 @@
     ```powershell
     cd infra\lamb-config; .\mvnw.cmd spring-boot:run    # Config Server
     cd infra\lamb-eureka; .\mvnw.cmd spring-boot:run    # Eureka
-    cd services\lamb-biblioteca-ms; .\mvnw.cmd spring-boot:run    # Tu servicio
-    cd services\lamb-biblioteca-ms; .\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--server.port=8096"    # 2da instancia
+    cd services\lamb-evaluacionn-ms; .\mvnw.cmd spring-boot:run    # Tu servicio
+    cd services\lamb-evaluacionn-ms; .\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--server.port=8096"    # 2da instancia
     ```
 
     Comprueba que responden:
 
-    - BD de tu servicio: `docker ps` → `lamb-postgres-biblioteca-dev` *Up*
-    - Config Server: http://localhost:18888/lamb-biblioteca-ms/dev
+    - BD de tu servicio: `docker ps` → `lamb-postgres-evaluacionn-dev` *Up*
+    - Config Server: http://localhost:18888/lamb-evaluacionn-ms/dev
     - Eureka: http://localhost:18761
     - Tu servicio: http://localhost:8095/actuator/health
     - 2da instancia: http://localhost:8096/actuator/health
@@ -48,15 +48,15 @@ Una ruta **por recurso**.
 ### Camino A - Sin CRUD
 
 ```yaml
-            - id: lamb-biblioteca-saludo
-              uri: lb://lamb-biblioteca-ms
+            - id: lamb-evaluacionn-saludo
+              uri: lb://lamb-evaluacionn-ms
               predicates:
-                - Path=/api/v1/biblioteca/**
+                - Path=/api/v1/evaluacionn/**
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 3 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `evaluacionn` (aparece 3 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 ### Camino B - Con CRUD
@@ -64,25 +64,25 @@ Una ruta **por recurso**.
 Las dos rutas (la del Hola mundo y la del CRUD):
 
 ```yaml
-            - id: lamb-biblioteca-saludo
-              uri: lb://lamb-biblioteca-ms
+            - id: lamb-evaluacionn-saludo
+              uri: lb://lamb-evaluacionn-ms
               predicates:
-                - Path=/api/v1/biblioteca/**
-            - id: lamb-biblioteca-libros
-              uri: lb://lamb-biblioteca-ms
+                - Path=/api/v1/evaluacionn/**
+            - id: lamb-evaluacionn-examenes
+              uri: lb://lamb-evaluacionn-ms
               predicates:
-                - Path=/api/v1/libros/**
+                - Path=/api/v1/examenes/**
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 5 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `libro` / `libros` (aparece 2 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `evaluacionn` (aparece 5 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `examen` / `examenes` (aparece 2 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Más detalle"
     - `id`: un nombre único (`lamb-` + servicio + recurso).
-    - `uri: lb://lamb-biblioteca-ms`: el `spring.application.name` de tu servicio (`lb://` = buscarlo en Eureka y balancear).
+    - `uri: lb://lamb-evaluacionn-ms`: el `spring.application.name` de tu servicio (`lb://` = buscarlo en Eureka y balancear).
     - `Path`: la ruta de tu controlador (`@RequestMapping`). Si el profe pide otro CRUD, agrega otra ruta igual con su `Path`.
 
     No cambies la indentación (12 espacios antes de `- id:`): si está mal, el Gateway no arranca.
@@ -99,24 +99,24 @@ El Gateway de Lamb **rechaza** (`401`) toda ruta que no tenga permiso.
 ### Camino A - Sin CRUD
 
 ```java
-                        .requestMatchers("/api/v1/biblioteca/**").permitAll()
+                        .requestMatchers("/api/v1/evaluacionn/**").permitAll()
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `evaluacionn` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 ### Camino B - Con CRUD
 
 ```java
-                        .requestMatchers("/api/v1/biblioteca/**", "/api/v1/libros/**").permitAll()
+                        .requestMatchers("/api/v1/evaluacionn/**", "/api/v1/examenes/**").permitAll()
 ```
 
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
-- `biblioteca` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `libro` / `libros` (aparece 1 vez) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
+- `evaluacionn` (aparece 1 vez) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
+- `examen` / `examenes` (aparece 1 vez) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 !!! note "Es temporal"
@@ -141,18 +141,18 @@ cd infra\lamb-gateway
 
 | Qué | Link | Qué debes ver |
 |---|---|---|
-| Hola mundo por el Gateway | http://localhost:18080/api/v1/biblioteca/saludo | `Hola mundo desde lamb-biblioteca-ms` |
-| **Camino B:** CRUD por el Gateway | http://localhost:18080/api/v1/libros | `[]` o la lista |
+| Hola mundo por el Gateway | http://localhost:18080/api/v1/evaluacionn/saludo | `Hola mundo desde lamb-evaluacionn-ms` |
+| **Camino B:** CRUD por el Gateway | http://localhost:18080/api/v1/examenes | `[]` o la lista |
 
 **Camino B:** prueba el CRUD completo por el Gateway con PowerShell:
 
 **Dónde abrir la terminal:** Cualquier PowerShell (no importa la carpeta). Pega **una línea a la vez** para ver qué responde cada una.
 
 ```powershell
-$api = "http://localhost:18080/api/v1/libros"                       # cambia por tu ruta
-Invoke-RestMethod -Method Post $api -ContentType "application/json; charset=utf-8" -Body '{"titulo":"El principito","autor":"Saint-Exupery"}'
+$api = "http://localhost:18080/api/v1/examenes"                       # cambia por tu ruta
+Invoke-RestMethod -Method Post $api -ContentType "application/json; charset=utf-8" -Body '{"titulo":"Parcial 1","curso":"Matematica"}'
 Invoke-RestMethod $api                                              # mira el id
-Invoke-RestMethod -Method Put "$api/1" -ContentType "application/json; charset=utf-8" -Body '{"titulo":"El principito (ilustrado)","autor":"Saint-Exupery"}'
+Invoke-RestMethod -Method Put "$api/1" -ContentType "application/json; charset=utf-8" -Body '{"titulo":"Parcial 1 (recuperacion)","curso":"Matematica"}'
 Invoke-RestMethod -Method Delete "$api/1"
 ```
 
@@ -163,7 +163,7 @@ El `-Body` lleva **tus** atributos.
 Con las 2 instancias de la S3 levantadas, llama varias veces al Gateway:
 
 ```powershell
-1..6 | ForEach-Object { Invoke-RestMethod http://localhost:18080/api/v1/biblioteca/saludo }
+1..6 | ForEach-Object { Invoke-RestMethod http://localhost:18080/api/v1/evaluacionn/saludo }
 ```
 
 En las consolas de **las dos** instancias aparece `Saludo solicitado`: el Gateway reparte las peticiones (balanceo de carga).

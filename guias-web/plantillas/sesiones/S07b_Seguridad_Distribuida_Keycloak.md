@@ -46,15 +46,15 @@ Esta sesión es igual para los dos caminos y casi no tiene código: es saber **u
 
 ## 3. Si te piden un rol nuevo
 
-Ejemplo: "solo el **BIBLIOTECARIO** puede registrar libros".
+Ejemplo: "solo el **EVALUADOR** puede registrar examenes".
 
 1. http://localhost:18180 → `admin` / `admin123` → arriba a la izquierda elige el realm **lamb**.
-2. *Realm roles* → *Create role* → nombre `BIBLIOTECARIO` → *Save*.
-3. *Users* → elige el usuario → pestaña *Role mapping* → *Assign role* → filtra *realm roles* → marca `BIBLIOTECARIO` → *Assign*.
-4. En el Gateway (S7) usa `.hasAnyRole("ADMIN", "BIBLIOTECARIO")`. Reinicia el Gateway.
+2. *Realm roles* → *Create role* → nombre `EVALUADOR` → *Save*.
+3. *Users* → elige el usuario → pestaña *Role mapping* → *Assign role* → filtra *realm roles* → marca `EVALUADOR` → *Assign*.
+4. En el Gateway (S7) usa `.hasAnyRole("ADMIN", "EVALUADOR")`. Reinicia el Gateway.
 5. El usuario debe **cerrar sesión y volver a entrar** para que su token traiga el rol nuevo.
 
-Cambia `BIBLIOTECARIO` por el rol que te pidan. En el código el rol se escribe **sin** `ROLE_` delante.
+Cambia `EVALUADOR` por el rol que te pidan. En el código el rol se escribe **sin** `ROLE_` delante.
 
 ## 4. Si te piden un usuario nuevo
 

@@ -23,9 +23,31 @@ LANG = {".yml": "yaml", ".yaml": "yaml", ".json": "json", ".xml": "xml", ".java"
         ".sql": "sql", ".html": "html", ".ts": "ts", ".gitignore": "text"}
 
 
+# El ejemplo probado se llama "biblioteca" con CRUD "Libro" (titulo, autor); la guia lo muestra como
+# servicio "evaluacionn" con CRUD "Examen" (titulo, curso). Se aplica solo al codigo de {{lamb:...}}.
+RENOMBRE = [
+    (r"BIBLIOTECARIO", "EVALUADOR"), (r"Bibliotecario", "Evaluador"), (r"bibliotecario", "evaluador"),
+    (r"BIBLIOTECA", "EVALUACIONN"), (r"Biblioteca", "Evaluacionn"), (r"biblioteca", "evaluacionn"),
+    (r"LIBROS", "EXAMENES"), (r"LIBRO", "EXAMEN"),
+    (r"Libros", "Examenes"), (r"Libro", "Examen"),
+    (r"libros", "examenes"), (r"libro", "examen"),
+    (r"(?<![A-Za-z])autor(?![a-z])", "curso"), (r"Autor(?![a-z])", "Curso"),
+    (r"El principito", "Parcial 1"), (r"\(ilustrado\)", "(recuperacion)"),
+    (r"Antoine de Saint-Exup\S*?ry|Saint-Exup\S*?ry", "Matematica"),
+]
+
+
+def renombrar(txt: str) -> str:
+    for rx, nuevo in RENOMBRE:
+        txt = re.sub(rx, nuevo, txt)
+    return txt
+
+
 def bloque(tipo: str, rel: str) -> str:
     p = ORIGEN[tipo] / rel
     txt = p.read_text(encoding="utf-8").replace("\r\n", "\n").rstrip("\n")
+    if tipo == "lamb":
+        txt = renombrar(txt)
     lang = LANG.get(p.suffix or p.name, "text")
     return f"```{lang}\n{txt}\n```"
 
@@ -36,19 +58,19 @@ CAMBIOS = {
     "sesiones": {
         "ejemplo": "si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`",
         "reglas": [
-            (r"biblioteca", "`biblioteca` → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`"),
-            (r"Biblioteca", "`Biblioteca` → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`"),
-            (r"BIBLIOTECA", "`BIBLIOTECA` → el nombre de **tu servicio**, en mayúsculas. Ej.: `TESORERIA`"),
-            (r"libros?(?![a-z])", "`libro` / `libros` → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`"),
-            (r"Libros?(?![a-z])", "`Libro` → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`"),
-            (r"(?i)(?<![a-z])(titulo|autor)(?![a-z])",
-             "`titulo`, `autor` → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. "
+            (r"evaluacionn", "`evaluacionn` → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`"),
+            (r"Evaluacionn", "`Evaluacionn` → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`"),
+            (r"EVALUACIONN", "`EVALUACIONN` → el nombre de **tu servicio**, en mayúsculas. Ej.: `TESORERIA`"),
+            (r"examen(es)?(?![a-z])", "`examen` / `examenes` → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`"),
+            (r"Examen(es)?(?![a-z])", "`Examen` → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`"),
+            (r"(?i)(?<![a-z])(titulo|curso)(?![a-z])",
+             "`titulo`, `curso` → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. "
              "El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden)"),
             (r"(?<!\d)8095(?!\d)", "`8095` → el puerto de **tu servicio**"),
             (r"(?<!\d)8096(?!\d)", "`8096` → el puerto de la **2da instancia** de tu servicio"),
             (r"(?<!\d)15460(?!\d)", "`15460` → el puerto de la **base de datos** de tu servicio"),
         ],
-        "atributos": r"(?i)libro",
+        "atributos": r"(?i)examen",
     },
     "proyecto-sello": {
         "ejemplo": "si tu servicio es **tienda** y tu CRUD es **Alumnos** con `dni` y `fechaNacimiento`",
