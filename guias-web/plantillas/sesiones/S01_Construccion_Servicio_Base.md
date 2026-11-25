@@ -39,6 +39,22 @@ En cada sesión vas a encontrar dos caminos. Elige **uno** al inicio y síguelo 
 !!! note "Si ya sabes y solo quieres copiar"
     En [Resumen rápido](Resumen_Rapido.md) están todos los archivos, con la sesión donde está su versión final.
 
+!!! abstract "Cómo leer cada paso (los recuadros de colores)"
+    Antes de cada código hay un recuadro que te dice **en qué carpeta**, **qué archivo** y **qué hacer**:
+
+    | Recuadro | Significa | Qué haces |
+    |---|---|---|
+    | 🟢 **CREAR archivo nuevo** | El archivo todavía **no existe** | En VS Code: clic derecho en la carpeta indicada → **New File** → escribe el nombre exacto → pega **todo** el código → `Ctrl+S` |
+    | 🟠 **MODIFICAR archivo que ya existe** | El archivo **ya existe** (de Lamb o de una sesión anterior) | Ábrelo, busca la línea que se indica y pega **solo** ese pedazo donde dice. **No borres** lo demás |
+    | 🔴 **REEMPLAZAR todo el archivo** | Lo creaste en una sesión anterior y ahora cambia | Ábrelo → `Ctrl+A` → `Supr` → pega el código nuevo completo → `Ctrl+S` |
+    | 🔵 **TERMINAL** | Hay que ejecutar comandos | Abre PowerShell **en la carpeta que dice** y pega |
+
+    **Todas las rutas empiezan en la raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`), que es la carpeta
+    que abres en VS Code (*File → Open Folder*). Para abrir una terminal ahí: en VS Code, *Terminal → New Terminal*
+    (abre PowerShell ya ubicada en la raíz).
+
+    Si una carpeta no existe, créala: clic derecho en la carpeta de arriba → **New Folder**.
+
 ### 1.3 Mapa de la guía
 
 | Sesión | Qué agregas a tu servicio |
@@ -92,6 +108,10 @@ Hazlo **una sola vez** antes de empezar: así evitas errores más adelante.
 
 **1. Pega esto en PowerShell** (revisa todo de una vez):
 
+!!! info "🔵 TERMINAL"
+    - 📍 **Dónde:** cualquier PowerShell (no importa la carpeta).
+    - ✍️ Pega todo el bloque de una vez y pulsa `Enter`.
+
 ```powershell
 $script:faltan = 0
 function Revisar($nombre, [scriptblock]$comando, $esperado, $solucion) {
@@ -139,6 +159,9 @@ Todo listo.
 Tus números pueden ser otros: lo importante es que todo diga `[OK]`.
 
 **Angular** no se instala aparte: viene dentro del proyecto. Compruébalo (la primera vez tarda, descarga librerías):
+
+!!! info "🔵 TERMINAL"
+    - 📍 **Dónde:** en la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). El bloque entra a `clients\lamb-frontend` y al final vuelve a la raíz.
 
 ```powershell
 cd clients\lamb-frontend
@@ -198,9 +221,14 @@ Get-NetTCPConnection -LocalPort 8095 -State Listen -ErrorAction SilentlyContinue
 
 ## 3. Crear el proyecto
 
-Abre PowerShell **en la raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`) y pega.
-Se copia el `pom.xml` y el Maven Wrapper de Trayectoria, que ya traen todas las dependencias
-(web, JPA, Flyway, Kafka, seguridad OAuth2, Config, Eureka, Swagger, Actuator, Prometheus, Lombok):
+Aquí **no creas archivos a mano**: un comando crea la carpeta del servicio y sus subcarpetas, y copia
+el `pom.xml` y el Maven Wrapper de Trayectoria, que ya traen todas las dependencias
+(web, JPA, Flyway, Kafka, seguridad OAuth2, Config, Eureka, Swagger, Actuator, Prometheus, Lombok).
+
+!!! info "🔵 TERMINAL"
+    - 📍 **Dónde:** en la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*.
+    - ✅ **Comprueba** que estás en la raíz: escribe `ls` y deben salir las carpetas `services`, `infra`, `clients`, `kafka`, `keycloak`, `obs`.
+    - ✍️ Pega todo el bloque de una vez y pulsa `Enter`. Si no sale nada, está bien.
 
 ```powershell
 $nuevo = "services\lamb-biblioteca-ms"                              # cambia por tu nombre
@@ -216,17 +244,47 @@ New-Item -ItemType Directory -Force "$nuevo\src\main\resources\db\migration" | O
 !!! note "Solo cambian las 2 primeras líneas y `lamb-biblioteca-ms` / `biblioteca` del `-replace`"
     El resto del bloque se pega tal cual.
 
-**Camino B - Con CRUD:** crea además estas carpetas:
+**Camino B - Con CRUD:** crea además estas carpetas (en **la misma terminal**, justo después del bloque anterior,
+porque usa la variable `$java`):
 
 ```powershell
 "dto","entity","exception","mapper","repository","service" | ForEach-Object { New-Item -ItemType Directory -Force "$java\$_" | Out-Null }
 ```
 
+**Resultado:** en VS Code (panel izquierdo, *Explorer*) debe aparecer esto. Las carpetas están **vacías**: los
+archivos `.java` los creas tú en los pasos siguientes.
+
+```text
+Lamb-Modulo02-Admision-Trayectoria\              <- raíz (la carpeta abierta en VS Code)
+└── services\
+    └── lamb-biblioteca-ms\                      <- tu servicio (NUEVO)
+        ├── .mvn\                                <- copiado (no lo toques)
+        ├── mvnw, mvnw.cmd, pom.xml, .gitignore  <- copiados
+        └── src\main\
+            ├── java\pe\edu\upeu\lamb\biblioteca\  <- AQUÍ van los .java
+            │   ├── config\
+            │   ├── controller\
+            │   ├── filter\
+            │   └── dto\ entity\ exception\ mapper\ repository\ service\   (solo camino B)
+            └── resources\                       <- AQUÍ van .yml, .xml y .sql
+                └── db\migration\
+```
+
+!!! note "En VS Code las carpetas salen juntas"
+    VS Code muestra `java\pe\edu\upeu\lamb\biblioteca` en **una sola línea** (`java/pe/edu/upeu/lamb/biblioteca`).
+    Es normal: haz clic derecho sobre esa línea para crear archivos dentro de `biblioteca`.
+
 ## 4. Código común (los dos caminos)
 
-Todos los archivos Java van en `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\`.
+Todos los archivos Java van dentro de `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\`
+(o en una de sus subcarpetas: `config\`, `controller\`...). Cada paso te dice cuál.
 
 ### 4.1 `LambBibliotecaMsApplication.java`
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\`
+    - 📄 **Archivo:** `LambBibliotecaMsApplication.java`
+    - ✍️ Clic derecho en la carpeta `biblioteca` (no en una subcarpeta) → **New File** → pega **todo** el código de abajo → `Ctrl+S`.
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/LambBibliotecaMsApplication.java}}
 
@@ -236,6 +294,11 @@ Todos los archivos Java van en `services\lamb-biblioteca-ms\src\main\java\pe\edu
 ### 4.2 `config\SecurityConfig.java` (por ahora todo abierto)
 
 Igual que Admisión y Trayectoria en desarrollo: todo abierto. En la **S7** se cambia por la versión con Keycloak.
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\`
+    - 📄 **Archivo:** `SecurityConfig.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 ```java
 package pe.edu.upeu.lamb.biblioteca.config;
@@ -261,11 +324,21 @@ public class SecurityConfig {
 
 ### 4.3 `config\OpenApiConfig.java` (Swagger) - copia tal cual
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\`
+    - 📄 **Archivo:** `OpenApiConfig.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/config/OpenApiConfig.java}}
 
 ### 4.4 `filter\CorrelationIdFilter.java` (traceId) - copia tal cual
 
 Cada petición lleva un `X-Trace-ID` que sale en los logs. Se usa en la **S10**.
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\filter\`
+    - 📄 **Archivo:** `CorrelationIdFilter.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/filter/CorrelationIdFilter.java}}
 
@@ -273,6 +346,11 @@ Cada petición lleva un `X-Trace-ID` que sale en los logs. Se usa en la **S10**.
     Solo cambia la línea `package pe.edu.upeu.lamb.biblioteca...` por tu nombre.
 
 ### 4.5 `src\main\resources\logback-spring.xml` (logs a archivo)
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\resources\`
+    - 📄 **Archivo:** `logback-spring.xml`
+    - ✍️ Ojo: va en `resources`, **no** en la carpeta `java`. Pega **todo** el código de abajo → `Ctrl+S`.
 
 {{lamb:services/lamb-biblioteca-ms/src/main/resources/logback-spring.xml}}
 
@@ -283,7 +361,10 @@ Cada petición lleva un `X-Trace-ID` que sale en los logs. Se usa en la **S10**.
 
 **Si quieres agregar un servicio sin CRUD, sin lógica, solo un Hola mundo, sigue este paso y salta a la sección 7.**
 
-Crea `controller\SaludoController.java`:
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\controller\`
+    - 📄 **Archivo:** `SaludoController.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 ```java
 package pe.edu.upeu.lamb.biblioteca.controller;
@@ -338,6 +419,11 @@ Para un atributo **opcional**: quita `NOT NULL` del SQL, `nullable = false` de l
 
 Flyway crea la tabla sola al arrancar el servicio.
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\resources\db\migration\`
+    - 📄 **Archivo:** `V1__create_libros.sql`
+    - ✍️ El nombre lleva **dos** guiones bajos después de `V1` (`V1__`). Pega **todo** el código de abajo → `Ctrl+S`.
+
 {{lamb:services/lamb-biblioteca-ms/src/main/resources/db/migration/V1__create_libros.sql}}
 
 !!! note "Ejemplo: te piden “Pagos” con monto, fecha y método de pago"
@@ -362,6 +448,11 @@ Flyway crea la tabla sola al arrancar el servicio.
 
 Una propiedad por columna.
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\entity\`
+    - 📄 **Archivo:** `Libro.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/entity/Libro.java}}
 
 !!! note "Ejemplo para “Pagos”"
@@ -379,7 +470,17 @@ Una propiedad por columna.
 
 ### 6.4 `dto\LibroRequest.java` (lo que entra) y `dto\LibroResponse.java` (lo que sale)
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\dto\`
+    - 📄 **Archivo:** `LibroRequest.java`
+    - ✍️ Pega **este primer** código → `Ctrl+S`.
+
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/dto/LibroRequest.java}}
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\dto\`
+    - 📄 **Archivo:** `LibroResponse.java`
+    - ✍️ Pega **este segundo** código → `Ctrl+S`.
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/dto/LibroResponse.java}}
 
@@ -390,12 +491,23 @@ Una propiedad por columna.
 
 MapStruct genera solo el código que copia los datos entre la entidad y los DTO.
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\mapper\`
+    - 📄 **Archivo:** `LibroMapper.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/mapper/LibroMapper.java}}
 
 !!! note "Qué cambia"
     Solo los nombres (`Libro` → tu entidad). No tienes que escribir los atributos: MapStruct los copia solo si se llaman igual.
 
-**Agrega MapStruct al `pom.xml`** (copia tal cual). Dentro de `<dependencies>`, al final:
+**Agrega MapStruct al `pom.xml`** (copia tal cual). Son **2 cambios** en el mismo archivo.
+
+!!! warning "🟠 MODIFICAR archivo que ya existe"
+    - 📄 **Archivo:** `services\lamb-biblioteca-ms\pom.xml`
+    - ✍️ **Cambio 1:** busca la **primera** línea `</dependencies>` (cierra la lista de dependencias, cerca de la línea 112) y pega este bloque **justo arriba** de ella.
+    - ⛔ No borres lo demás del archivo.
+
 
 ```xml
 		<dependency>
@@ -405,7 +517,8 @@ MapStruct genera solo el código que copia los datos entre la entidad y los DTO.
 		</dependency>
 ```
 
-Y en el `maven-compiler-plugin`, en **las dos** `<annotationProcessorPaths>` (compile y testCompile), debajo del `<path>` de Lombok:
+**Cambio 2:** en el **mismo** `pom.xml`, busca `<annotationProcessorPaths>` (sale **2 veces**: en `default-compile` y en `default-testCompile`).
+En **cada una**, debajo del `</path>` que cierra el de Lombok (`<artifactId>lombok</artifactId>`), pega:
 
 ```xml
 								<path>
@@ -417,19 +530,39 @@ Y en el `maven-compiler-plugin`, en **las dos** `<annotationProcessorPaths>` (co
 
 ### 6.6 `repository\LibroRepository.java`
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\repository\`
+    - 📄 **Archivo:** `LibroRepository.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/repository/LibroRepository.java}}
 
 ### 6.7 `exception\ResourceNotFoundException.java` y `exception\GlobalExceptionHandler.java` - copia tal cual
 
 Responden `404` cuando no existe el registro y `400` cuando los datos no pasan la validación.
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\exception\`
+    - 📄 **Archivo:** `ResourceNotFoundException.java`
+    - ✍️ Pega **este primer** código → `Ctrl+S`.
+
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/exception/ResourceNotFoundException.java}}
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\exception\`
+    - 📄 **Archivo:** `GlobalExceptionHandler.java`
+    - ✍️ Pega **este segundo** código → `Ctrl+S`.
 
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/exception/GlobalExceptionHandler.java}}
 
 ### 6.8 `service\LibroService.java`
 
 En la **S8** se le agrega el aviso a Kafka.
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\service\`
+    - 📄 **Archivo:** `LibroService.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 ```java
 package pe.edu.upeu.lamb.biblioteca.service;
@@ -504,6 +637,11 @@ public class LibroService {
 | `PUT` | `/api/v1/libros/{id}` | `200`, `400` o `404` |
 | `DELETE` | `/api/v1/libros/{id}` | `204` o `404` |
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\controller\`
+    - 📄 **Archivo:** `LibroController.java`
+    - ✍️ Va en la misma carpeta que `SaludoController.java`. Pega **todo** el código de abajo → `Ctrl+S`.
+
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/controller/LibroController.java}}
 
 !!! note "Qué cambia"
@@ -511,7 +649,10 @@ public class LibroService {
 
 ## 7. Base de datos en Docker (los dos caminos)
 
-Crea `services\lamb-biblioteca-ms\compose-dev.yml`:
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\`
+    - 📄 **Archivo:** `compose-dev.yml`
+    - ✍️ Va **directo** en la carpeta del servicio (al lado del `pom.xml`), no dentro de `src`. Pega **todo** → `Ctrl+S`.
 
 {{lamb:services/lamb-biblioteca-ms/compose-dev.yml}}
 
@@ -522,6 +663,10 @@ Crea `services\lamb-biblioteca-ms\compose-dev.yml`:
     Si dos proyectos usan el mismo nombre de volumen, **comparten la base de datos** y Flyway falla.
 
 Levántala:
+
+!!! info "🔵 TERMINAL"
+    - 📍 **Dónde:** en la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*.
+    - ✍️ Docker Desktop debe estar abierto. Al final, `docker ps` debe mostrar `lamb-postgres-biblioteca-dev`.
 
 ```powershell
 docker compose -f services/lamb-biblioteca-ms/compose-dev.yml up -d
@@ -551,6 +696,10 @@ docker compose -f services/lamb-biblioteca-ms/compose-dev.yml up -d
 ## 8. Evidencia de cierre de la S1
 
 El servicio todavía **no arranca** (le falta su configuración, que se agrega en la S2), pero ya debe **compilar**:
+
+!!! info "🔵 TERMINAL"
+    - 📍 **Dónde:** en la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*.
+    - ✍️ El bloque entra a la carpeta de tu servicio. La primera vez tarda (descarga librerías).
 
 ```powershell
 cd services\lamb-biblioteca-ms

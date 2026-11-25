@@ -42,7 +42,11 @@ Tu servicio ya produce todo lo necesario para verlo en **Grafana** (igual en los
 
 ## 2. Logs: agrega tu servicio a Promtail
 
-En `obs\promtail\promtail-config-dev.yml`, busca `- job_name: lamb-gateway` y **justo arriba** pega:
+!!! warning "🟠 MODIFICAR archivo que ya existe"
+    - 📄 **Archivo:** `obs\promtail\promtail-config-dev.yml`
+    - ✍️ Busca (`Ctrl+F`) la línea `- job_name: lamb-gateway` y pega **justo arriba** de ella. Respeta los 2 espacios antes de `- job_name`.
+    - ⛔ No borres lo demás del archivo.
+
 
 ```yaml
   - job_name: lamb-biblioteca-ms
@@ -58,6 +62,9 @@ En `obs\promtail\promtail-config-dev.yml`, busca `- job_name: lamb-gateway` y **
     en `services\`). No cambies `/var/log/lamb/` ni `/logs/*.log`: Promtail ve la carpeta `services\` montada ahí.
 
 Levanta (o reinicia) la observabilidad para que lea el job nuevo:
+
+!!! info "🔵 TERMINAL"
+    - 📍 **Dónde:** en la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*.
 
 ```powershell
 docker compose -f obs/compose-dev.yml up -d

@@ -175,9 +175,27 @@ Todos deben salir `[LIBRE]`. Si alguno sale `[OCUPADO]`: ciérralo, o cambia el 
 !!! note "Si algo sigue fallando"
     Busca el mensaje en [Solución de errores](../sesiones/Solucion_Errores.md).
 
+!!! abstract "Cómo leer cada paso (los recuadros de colores)"
+    Antes de cada código hay un recuadro que te dice **en qué carpeta**, **qué archivo** y **qué hacer**:
+
+    | Recuadro | Qué haces |
+    |---|---|
+    | 🟢 **CREAR archivo nuevo** | En VS Code: clic derecho en la carpeta indicada → **New File** → escribe el nombre exacto → pega **todo** el código → `Ctrl+S` |
+    | 🟠 **MODIFICAR archivo que ya existe** | Ábrelo, busca la línea indicada y pega **solo** ese pedazo. No borres lo demás |
+    | 🔴 **REEMPLAZAR todo el archivo** | Ábrelo → `Ctrl+A` → `Supr` → pega el código nuevo → `Ctrl+S` |
+    | 🔵 **TERMINAL** | Abre PowerShell **en la carpeta que dice** y pega |
+
+    **Todas las rutas empiezan en `mi-proyecto\`.** Después del paso 2, abre esa carpeta en VS Code
+    (*File → Open Folder*) y usa *Terminal → New Terminal* para tener PowerShell ya ubicada ahí.
+
 ## 2. Crear las carpetas
 
-Abre PowerShell donde quieras crear el proyecto y pega:
+Aquí **no creas archivos a mano**: el comando crea `mi-proyecto\` y todas sus carpetas (vacías).
+
+!!! info "🔵 TERMINAL"
+    - 📍 **Dónde:** en la carpeta donde quieras crear el proyecto (ej. `Documentos`).
+    - ✍️ Pega todo el bloque. Al terminar, la terminal queda **dentro** de `mi-proyecto\`. Ábrela en VS Code: *File → Open Folder* → `mi-proyecto`.
+
 
 ```powershell
 New-Item -ItemType Directory mi-proyecto | Out-Null
@@ -191,7 +209,7 @@ cd mi-proyecto
 "mi-servicio\src\main\resources\static\js" | ForEach-Object { New-Item -ItemType Directory -Force $_ | Out-Null }
 ```
 
-**Camino B - Con CRUD:** crea además:
+**Camino B - Con CRUD:** crea además (en la **misma** terminal, que ya está en `mi-proyecto\`):
 
 ```powershell
 "mi-servicio\src\main\java\com\ejemplo\miservicio\entity",
@@ -207,6 +225,11 @@ cd mi-proyecto
 
 Levanta PostgreSQL, Kafka, Kafka UI, Keycloak, Prometheus, Loki, Promtail y Grafana.
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-proyecto\`
+    - 📄 **Archivo:** `docker-compose.yml`
+    - ✍️ Va **directo** en `mi-proyecto\` (no dentro de `mi-servicio`). Pega **todo** → `Ctrl+S`.
+
 {{file:version-sin-crud/docker-compose.yml}}
 
 !!! note "Qué cambia"
@@ -219,6 +242,11 @@ Levanta PostgreSQL, Kafka, Kafka UI, Keycloak, Prometheus, Loki, Promtail y Graf
 
 Keycloak lo importa solo al arrancar. Crea el realm **demo**, los roles `ADMIN` y `USUARIO`,
 el cliente `mi-servicio-web` y dos usuarios.
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `keycloak\`
+    - 📄 **Archivo:** `realm-demo.json`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{file:version-sin-crud/keycloak/realm-demo.json}}
 
@@ -233,9 +261,19 @@ el cliente `mi-servicio-web` y dos usuarios.
 
 ### 3.3 `observabilidad\prometheus.yml` (de dónde saca métricas)
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `observabilidad\`
+    - 📄 **Archivo:** `prometheus.yml`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+
 {{file:version-sin-crud/observabilidad/prometheus.yml}}
 
 ### 3.4 `observabilidad\promtail.yml` (de dónde saca logs)
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `observabilidad\`
+    - 📄 **Archivo:** `promtail.yml`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{file:version-sin-crud/observabilidad/promtail.yml}}
 
@@ -244,15 +282,30 @@ el cliente `mi-servicio-web` y dos usuarios.
 
 ### 3.5 `observabilidad\grafana\datasources\datasources.yml` - copia tal cual
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `observabilidad\grafana\datasources\`
+    - 📄 **Archivo:** `datasources.yml`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+
 {{file:version-sin-crud/observabilidad/grafana/datasources/datasources.yml}}
 
 ### 3.6 `observabilidad\grafana\dashboards\dashboards.yml` - copia tal cual
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `observabilidad\grafana\dashboards\`
+    - 📄 **Archivo:** `dashboards.yml`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{file:version-sin-crud/observabilidad/grafana/dashboards/dashboards.yml}}
 
 ### 3.7 `observabilidad\grafana\dashboards\mi-servicio.json` (el dashboard)
 
 Muestra: si el servicio está arriba, peticiones por segundo y los logs en vivo.
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `observabilidad\grafana\dashboards\`
+    - 📄 **Archivo:** `mi-servicio.json`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{file:version-sin-crud/observabilidad/grafana/dashboards/mi-servicio.json}}
 
@@ -265,6 +318,10 @@ Muestra: si el servicio está arriba, peticiones por segundo y los logs en vivo.
 
 Copia `mvnw`, `mvnw.cmd` y la carpeta `.mvn` de **cualquier** proyecto Spring Boot a `mi-servicio\`.
 Por ejemplo, desde el proyecto Lamb:
+
+!!! info "🔵 TERMINAL"
+    - 📍 **Dónde:** en la carpeta **`mi-proyecto\`** (la que abriste en VS Code).
+    - ✍️ Cambia la primera línea por la ruta real de Lamb en tu PC.
 
 ```powershell
 $lamb = "C:\ruta\a\Lamb-Modulo02-Admision-Trayectoria\services\lamb-trayectoria-ms"   # cambia por tu ruta
@@ -279,6 +336,11 @@ Copy-Item "$lamb\mvnw", "$lamb\mvnw.cmd" mi-servicio
 Trae: web, JPA, PostgreSQL, Flyway, Kafka, seguridad JWT (Keycloak), Swagger, Actuator y Prometheus.
 Es **el mismo** para los dos caminos.
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\`
+    - 📄 **Archivo:** `pom.xml`
+    - ✍️ Va **directo** en `mi-servicio\`, al lado de `mvnw.cmd`. Pega **todo** → `Ctrl+S`.
+
 {{file:version-sin-crud/mi-servicio/pom.xml}}
 
 !!! note "Qué cambia"
@@ -286,9 +348,19 @@ Es **el mismo** para los dos caminos.
 
 ### 4.3 `mi-servicio\.gitignore` - copia tal cual
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\`
+    - 📄 **Archivo:** `.gitignore`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+
 {{file:version-sin-crud/mi-servicio/.gitignore}}
 
 ### 4.4 `src\main\resources\application.yml`
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\resources\`
+    - 📄 **Archivo:** `application.yml`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{file:version-sin-crud/mi-servicio/src/main/resources/application.yml}}
 
@@ -299,6 +371,11 @@ Es **el mismo** para los dos caminos.
 ### 4.5 `src\main\resources\logback-spring.xml` (logs a archivo, para Loki)
 
 Escribe en `mi-servicio\logs\mi-servicio.log`, carpeta que Promtail lee.
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\resources\`
+    - 📄 **Archivo:** `logback-spring.xml`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{file:version-sin-crud/mi-servicio/src/main/resources/logback-spring.xml}}
 
@@ -311,6 +388,11 @@ Todos van dentro de `mi-servicio\src\main\java\com\ejemplo\miservicio\`.
 
 ### 5.1 `MiServicioApplication.java`
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\`
+    - 📄 **Archivo:** `MiServicioApplication.java`
+    - ✍️ Clic derecho en `miservicio` (no en una subcarpeta) → **New File** → pega **todo** → `Ctrl+S`.
+
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/MiServicioApplication.java}}
 
 ### 5.2 `config\SecurityConfig.java` (Keycloak y roles)
@@ -318,6 +400,11 @@ Todos van dentro de `mi-servicio\src\main\java\com\ejemplo\miservicio\`.
 Deja pasar la página y Swagger; para `/api/**`: **ver** = cualquier usuario logueado,
 **modificar** = solo `ADMIN`. Convierte los roles del token de Keycloak (`realm_access.roles`) en roles de Spring.
 Ya sirve para el CRUD del camino B: no hay que tocarlo.
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\config\`
+    - 📄 **Archivo:** `SecurityConfig.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/config/SecurityConfig.java}}
 
@@ -327,13 +414,28 @@ Ya sirve para el CRUD del camino B: no hay que tocarlo.
 
 ### 5.3 `config\OpenApiConfig.java` (Swagger con botón *Authorize*) - copia tal cual
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\config\`
+    - 📄 **Archivo:** `OpenApiConfig.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/config/OpenApiConfig.java}}
 
 ### 5.4 `config\KafkaTopicsConfig.java` (crea el topic) - copia tal cual
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\config\`
+    - 📄 **Archivo:** `KafkaTopicsConfig.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/config/KafkaTopicsConfig.java}}
 
 ### 5.5 `event\MiEvento.java` (el mensaje que viaja por Kafka)
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\event\`
+    - 📄 **Archivo:** `MiEvento.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/event/MiEvento.java}}
 
@@ -342,9 +444,19 @@ Ya sirve para el CRUD del camino B: no hay que tocarlo.
 
 ### 5.6 `messaging\EventosProducer.java` (ENVÍA a Kafka) - copia tal cual
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\messaging\`
+    - 📄 **Archivo:** `EventosProducer.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/messaging/EventosProducer.java}}
 
 ### 5.7 `messaging\EventosConsumer.java` (RECIBE de Kafka)
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\messaging\`
+    - 📄 **Archivo:** `EventosConsumer.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/messaging/EventosConsumer.java}}
 
@@ -355,6 +467,11 @@ Ya sirve para el CRUD del camino B: no hay que tocarlo.
 
 `/api/config` (público, le dice a la página dónde está Keycloak), `/api/hola` y `/api/hola/evento`.
 Va en **los dos caminos**.
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\controller\`
+    - 📄 **Archivo:** `HolaController.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{file:version-sin-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/controller/HolaController.java}}
 
@@ -384,6 +501,11 @@ En SQL los nombres de varias palabras van con guion bajo (`fecha_nacimiento`) y 
 
 Flyway la ejecuta sola al arrancar el servicio.
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\resources\db\migration\`
+    - 📄 **Archivo:** `V1__create_productos.sql`
+    - ✍️ El nombre lleva **dos** guiones bajos (`V1__`). Pega **todo** → `Ctrl+S`.
+
 {{file:version-con-crud/mi-servicio/src/main/resources/db/migration/V1__create_productos.sql}}
 
 !!! note "Qué cambia: ejemplo, te piden “Alumnos” con nombre, dni y fecha de nacimiento"
@@ -406,6 +528,11 @@ Flyway la ejecuta sola al arrancar el servicio.
 ### 6.3 `entity\Producto.java` (la tabla en Java)
 
 Un atributo por cada columna de la tabla.
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\entity\`
+    - 📄 **Archivo:** `Producto.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{file:version-con-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/entity/Producto.java}}
 
@@ -430,6 +557,11 @@ Un atributo por cada columna de la tabla.
 
 Con solo esto ya tienes `findAll`, `findById`, `save` y `delete`.
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\repository\`
+    - 📄 **Archivo:** `ProductoRepository.java`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+
 {{file:version-con-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/repository/ProductoRepository.java}}
 
 !!! note "Qué cambia"
@@ -445,6 +577,11 @@ Con solo esto ya tienes `findAll`, `findById`, `save` y `delete`.
 | `DELETE` | `/api/productos/{id}` | Elimina (`204`; `404` si no existe) |
 
 Cada cambio se avisa por Kafka (`producto.creado`, `producto.editado`, `producto.eliminado`).
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\java\com\ejemplo\miservicio\controller\`
+    - 📄 **Archivo:** `ProductoController.java`
+    - ✍️ Va al lado de `HolaController.java`. Pega **todo** → `Ctrl+S`.
 
 {{file:version-con-crud/mi-servicio/src/main/java/com/ejemplo/miservicio/controller/ProductoController.java}}
 
@@ -463,6 +600,10 @@ Cada cambio se avisa por Kafka (`producto.creado`, `producto.editado`, `producto
 
 La página usa la librería oficial de Keycloak. En PowerShell, desde `mi-proyecto\`:
 
+!!! info "🔵 TERMINAL"
+    - 📍 **Dónde:** en la carpeta **`mi-proyecto\`** (la que abriste en VS Code).
+    - ✍️ El bloque entra a `static`, descarga la librería y vuelve a `mi-proyecto\`.
+
 ```powershell
 cd mi-servicio\src\main\resources\static
 npm pack keycloak-js@26.2.5
@@ -479,12 +620,22 @@ Deben quedar `static\js\keycloak.js` y `static\js\deprecations.js`.
 **Si elegiste el servicio sin CRUD (solo Hola mundo), usa esta página.** Pide login a Keycloak, muestra
 "Hola mundo" y tiene un botón para mandar un evento a Kafka.
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\resources\static\`
+    - 📄 **Archivo:** `index.html`
+    - ✍️ Camino A. Va en `static` (no dentro de `js`). Pega **todo** → `Ctrl+S`.
+
 {{file:version-sin-crud/mi-servicio/src/main/resources/static/index.html}}
 
 ### 7.3 Camino B - Con CRUD: `src\main\resources\static\index.html`
 
 **Si elegiste el servicio con CRUD, usa esta página en lugar de la 7.2.** "Hola mundo", un formulario y una
 tabla con botones *Editar* / *Eliminar*.
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `mi-servicio\src\main\resources\static\`
+    - 📄 **Archivo:** `index.html`
+    - ✍️ Camino B (si ya creaste la del camino A, **reemplaza** todo su contenido). Pega **todo** → `Ctrl+S`.
 
 {{file:version-con-crud/mi-servicio/src/main/resources/static/index.html}}
 
@@ -496,6 +647,10 @@ tabla con botones *Editar* / *Eliminar*.
     ```
 
 ## 8. Ejecutar - los dos caminos
+
+!!! info "🔵 TERMINAL"
+    - 📍 **Dónde:** en la carpeta **`mi-proyecto\`** (la que abriste en VS Code).
+    - ✍️ La línea `cd mi-servicio` entra al servicio. Deja la terminal abierta: el servicio se queda corriendo ahí.
 
 ```powershell
 # 1. Infraestructura (desde mi-proyecto\; la primera vez descarga imágenes)

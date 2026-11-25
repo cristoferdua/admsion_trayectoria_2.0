@@ -51,7 +51,7 @@ eureka:
 
 ## 3. Probar
 
-Orden de arranque (cada uno en su terminal):
+Orden de arranque: **una terminal nueva por línea**, todas abiertas en la raíz del proyecto. Copia **una** línea en cada terminal y espera `Started ...` antes de la siguiente:
 
 ```powershell
 cd infra\lamb-config;            .\mvnw.cmd spring-boot:run    # 1. Config
@@ -69,6 +69,9 @@ Abre http://localhost:18761 → en *Instances currently registered with Eureka* 
 
 Para demostrar que el sistema escala, levanta una **segunda instancia** de tu servicio en otro puerto
 (otra terminal, en la carpeta del servicio):
+
+!!! info "🔵 TERMINAL"
+    - 📍 **Dónde:** terminal **nueva** dentro de `services\lamb-biblioteca-ms` (primero `cd services\lamb-biblioteca-ms` desde la raíz). La primera instancia sigue corriendo en su terminal.
 
 ```powershell
 .\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--server.port=8096"

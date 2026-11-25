@@ -30,6 +30,11 @@ hace lo mismo. **Es igual para los dos caminos (A y B).**
 
 ## 2. `src\main\resources\application.yml` (en tu servicio)
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `services\lamb-biblioteca-ms\src\main\resources\`
+    - 📄 **Archivo:** `application.yml`
+    - ✍️ Va en `resources`, al lado de `logback-spring.xml`. Pega **todo** el código de abajo → `Ctrl+S`.
+
 ```yaml
 spring:
   application:
@@ -47,6 +52,11 @@ spring:
 
 Crea este archivo en el Config Server. Ya trae todo lo que se usará en las siguientes sesiones
 (Eureka en S3, Keycloak en S7, Kafka en S8, métricas en S10), así no vuelves a tocarlo.
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `infra\lamb-config\config-repo\`
+    - 📄 **Archivo:** `lamb-biblioteca-ms-dev.yml`
+    - ✍️ Esta carpeta está en `infra` (**fuera** de tu servicio), junto a los `-dev.yml` de los otros servicios. Pega **todo** → `Ctrl+S`.
 
 ```yaml
 server:
@@ -160,7 +170,7 @@ eureka:
 
 ## 4. Probar
 
-1. Arranca el Config Server (si no está corriendo):
+1. Arranca el Config Server (si no está corriendo). Terminal **nueva** en la raíz del proyecto:
 
     ```powershell
     cd infra\lamb-config
@@ -170,7 +180,7 @@ eureka:
 2. Abre http://localhost:18888/lamb-biblioteca-ms/dev → debe mostrar un JSON con tu configuración
    (busca `"server.port": 8095`).
 
-3. Arranca tu servicio desde **su** carpeta (siempre desde ahí, para que los logs queden en `logs\`):
+3. Arranca tu servicio desde **su** carpeta (siempre desde ahí, para que los logs queden en `logs\`). Otra terminal **nueva** en la raíz del proyecto (el Config Server debe seguir corriendo en la suya):
 
     ```powershell
     cd services\lamb-biblioteca-ms

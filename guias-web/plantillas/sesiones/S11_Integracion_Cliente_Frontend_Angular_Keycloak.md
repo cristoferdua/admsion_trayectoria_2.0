@@ -45,11 +45,25 @@ Gateway y componentes con su `.ts` y su `.html`. El login de Keycloak y el enví
 | A - Sin CRUD | `/biblioteca`: "Hola mundo" + botón *Enviar evento a Kafka* |
 | B - Con CRUD | lo del camino A + `/biblioteca/libros` (tabla), `/biblioteca/libros/nuevo` y `/biblioteca/libros/:id/editar` (formulario) |
 
-Crea la carpeta `clients\lamb-frontend\src\app\features\biblioteca\` (cambia por tu nombre).
+Crea la carpeta `biblioteca` (cambia por tu nombre): en VS Code, clic derecho en `clients\lamb-frontend\src\app\features\`
+→ **New Folder** → `biblioteca`. Ahí van **todos** los archivos `.ts` y `.html` de esta sesión (salvo `app.routes.ts`).
+
+```text
+clients\lamb-frontend\src\app\
+├── app.routes.ts          <- se MODIFICA (rutas)
+└── features\
+    ├── admision\  inicio\  trayectoria\ ...   <- ya existen, no se tocan
+    └── biblioteca\        <- NUEVA: aquí creas todos los archivos
+```
 
 ## 2. Código común (los dos caminos): la página Hola mundo
 
 ### 2.1 `biblioteca-service.ts`
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
+    - 📄 **Archivo:** `biblioteca-service.ts`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/biblioteca-service.ts}}
 
@@ -58,11 +72,21 @@ Crea la carpeta `clients\lamb-frontend\src\app\features\biblioteca\` (cambia por
 
 ### 2.2 `saludo.ts`
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
+    - 📄 **Archivo:** `saludo.ts`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/saludo.ts}}
 
 ### 2.3 `saludo.html`
 
 **Camino A - Sin CRUD:** quita la última línea (el link *Ver libros*). **Camino B:** pégalo completo.
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
+    - 📄 **Archivo:** `saludo.html`
+    - ✍️ Pega el código de abajo (camino A: sin la última línea) → `Ctrl+S`.
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/saludo.html}}
 
@@ -72,7 +96,11 @@ Crea la carpeta `clients\lamb-frontend\src\app\features\biblioteca\` (cambia por
 
 ### 2.4 La ruta: `clients\lamb-frontend\src\app\app.routes.ts`
 
-Busca la última línea `{ path: '**', redirectTo: '' }` y **justo arriba** pega:
+!!! warning "🟠 MODIFICAR archivo que ya existe"
+    - 📄 **Archivo:** `clients\lamb-frontend\src\app\app.routes.ts`
+    - ✍️ Busca (`Ctrl+F`) la línea `{ path: '**', redirectTo: '' }` (casi al final) y pega **justo arriba** de ella.
+    - ⛔ No borres lo demás del archivo.
+
 
 ```ts
   // ====== BIBLIOTECA (paginas simples, sin diseño; piden login de Keycloak) ======
@@ -89,9 +117,14 @@ Busca la última línea `{ path: '**', redirectTo: '' }` y **justo arriba** pega
 
 ## 3. Camino B - Con CRUD: lista y formulario
 
-**Si quieres agregar el servicio con CRUD, sigue estos pasos.** Todos en `features\biblioteca\`.
+**Si quieres agregar el servicio con CRUD, sigue estos pasos.** Todos se crean en `clients\lamb-frontend\src\app\features\biblioteca\` (la misma carpeta del paso 2).
 
 ### 3.1 `libro.model.ts`
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
+    - 📄 **Archivo:** `libro.model.ts`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro.model.ts}}
 
@@ -101,6 +134,11 @@ Busca la última línea `{ path: '**', redirectTo: '' }` y **justo arriba** pega
 
 ### 3.2 `libro-service.ts`
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
+    - 📄 **Archivo:** `libro-service.ts`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro-service.ts}}
 
 !!! note "Qué cambia"
@@ -108,9 +146,19 @@ Busca la última línea `{ path: '**', redirectTo: '' }` y **justo arriba** pega
 
 ### 3.3 `libro-list.ts` (la tabla)
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
+    - 📄 **Archivo:** `libro-list.ts`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro-list.ts}}
 
 ### 3.4 `libro-list.html`
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
+    - 📄 **Archivo:** `libro-list.html`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro-list.html}}
 
@@ -121,6 +169,11 @@ Busca la última línea `{ path: '**', redirectTo: '' }` y **justo arriba** pega
 ### 3.5 `libro-form.ts` (agregar y editar con el mismo formulario)
 
 Si la ruta trae `:id`, carga el libro y al guardar hace `PUT`; si no, hace `POST`.
+
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
+    - 📄 **Archivo:** `libro-form.ts`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
 
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro-form.ts}}
 
@@ -138,6 +191,11 @@ Si la ruta trae `:id`, carga el libro y al guardar hace `PUT`; si no, hace `POST
 
 ### 3.6 `libro-form.html`
 
+!!! success "🟢 CREAR archivo nuevo"
+    - 📁 **Carpeta:** `clients\lamb-frontend\src\app\features\biblioteca\`
+    - 📄 **Archivo:** `libro-form.html`
+    - ✍️ Pega **todo** el código de abajo y guarda (`Ctrl+S`).
+
 {{lamb:clients/lamb-frontend/src/app/features/biblioteca/libro-form.html}}
 
 !!! note "Qué cambia"
@@ -146,7 +204,11 @@ Si la ruta trae `:id`, carga el libro y al guardar hace `PUT`; si no, hace `POST
 
 ### 3.7 Las rutas: `app.routes.ts`
 
-Debajo de la ruta `biblioteca` del paso 2.4, pega:
+!!! warning "🟠 MODIFICAR archivo que ya existe"
+    - 📄 **Archivo:** `clients\lamb-frontend\src\app\app.routes.ts`
+    - ✍️ El mismo archivo del paso 2.4. Busca la ruta `path: 'biblioteca'` que pegaste y pega esto **debajo** de su `},`.
+    - ⛔ No borres lo demás del archivo.
+
 
 ```ts
   {
@@ -167,6 +229,10 @@ Debajo de la ruta `biblioteca` del paso 2.4, pega:
 ```
 
 ## 4. Probar
+
+!!! info "🔵 TERMINAL"
+    - 📍 **Dónde:** en la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`). En VS Code: *Terminal → New Terminal*.
+    - ✍️ Déjala abierta: el frontend se queda corriendo ahí.
 
 ```powershell
 cd clients\lamb-frontend

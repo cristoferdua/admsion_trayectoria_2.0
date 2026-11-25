@@ -52,6 +52,10 @@ flowchart LR
 
 Reemplaza **todo** el archivo de la S1 por este (igual que `pagatu-pago-ms`). Es igual para los dos caminos:
 
+!!! danger "🔴 REEMPLAZAR todo el archivo"
+    - 📄 **Archivo:** `services\lamb-biblioteca-ms\src\main\java\pe\edu\upeu\lamb\biblioteca\config\SecurityConfig.java`
+    - ✍️ Es el de **tu servicio** (el que creaste en la S1), **no** el del Gateway. Ábrelo → `Ctrl+A` → `Supr` → pega **todo** el código de abajo → `Ctrl+S`.
+
 {{lamb:services/lamb-biblioteca-ms/src/main/java/pe/edu/upeu/lamb/biblioteca/config/SecurityConfig.java}}
 
 !!! note "Copia tal cual (solo cambia el `package`)"
@@ -60,8 +64,11 @@ Reemplaza **todo** el archivo de la S1 por este (igual que `pagatu-pago-ms`). Es
 
 ## 3. El Gateway: reglas por rol
 
-En `infra\lamb-gateway\src\main\java\pe\edu\upeu\lamb\gateway\config\SecurityConfig.java`,
-**borra** la línea `permitAll()` que pegaste en la S4 y en su lugar pega:
+!!! warning "🟠 MODIFICAR archivo que ya existe"
+    - 📄 **Archivo:** `infra\lamb-gateway\src\main\java\pe\edu\upeu\lamb\gateway\config\SecurityConfig.java`
+    - ✍️ Este es el del **Gateway** (no el de tu servicio). Busca (`Ctrl+F`) `/api/v1/biblioteca/**` → **borra** la línea `...permitAll()` que pegaste en la S4 → en ese mismo lugar pega las líneas de tu camino (A **o** B).
+    - ⛔ No borres lo demás del archivo.
+
 
 ### Camino A - Sin CRUD
 
@@ -79,7 +86,8 @@ En `infra\lamb-gateway\src\main\java\pe\edu\upeu\lamb\gateway\config\SecurityCon
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/libros/**").hasRole("ADMIN")
 ```
 
-Luego **reinicia el Gateway**.
+Guarda (`Ctrl+S`) y **reinicia el Gateway**: en su terminal `Ctrl+C` y otra vez `.\mvnw.cmd spring-boot:run`.
+Reinicia también **tu servicio** (cambiaste su `SecurityConfig`).
 
 **Cambia según lo que te pidan:**
 
