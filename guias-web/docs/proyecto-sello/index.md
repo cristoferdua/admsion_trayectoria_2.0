@@ -119,7 +119,18 @@ Cada unidad tiene su propio producto (plantilla-ejemplo con el contenido de `pag
 
 Cada `uN-producto.md` incluye su propia rúbrica, la trazabilidad con la malla curricular, y — en Unidad 3 — la secuencia de sustentación completa y las plantillas de documentación e informe que antes vivían sueltas en esta guía.
 
-## 7. Resultado Esperado
+## 7. Guías prácticas
+
+| Guía | Para qué |
+|---|---|
+| [`servicio-con-crud.md`](servicio-con-crud.md) | Agregar un CRUD a un servicio Lamb. |
+| [`servicio-saga-kafka.md`](servicio-saga-kafka.md) | Agregar un servicio con saga Kafka y panel de Grafana (examen final). |
+| [`arrancar-app.md`](arrancar-app.md) | Arrancar la app: comandos y links. |
+| [`servicio-desde-cero.md`](servicio-desde-cero.md) | Crear un servicio desde cero, con o sin CRUD. |
+
+El repositorio del proyecto es [https://github.com/cristoferdua/Admision_Trayectoria_Lamb.git](https://github.com/cristoferdua/Admision_Trayectoria_Lamb.git).
+
+## 8. Resultado Esperado
 
 Al finalizar el curso, el estudiante debe demostrar que puede construir y defender un sistema distribuido realista, reproducible y observable.
 

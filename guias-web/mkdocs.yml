@@ -17,6 +17,7 @@ nav:
       - Sistema académico (referencia): proyecto-sello/acad.md
       - Sistema de producción y comercialización (referencia): proyecto-sello/produccion.md
       - "Guía: agregar un servicio con CRUD a Lamb": proyecto-sello/servicio-con-crud.md
+      - "Guía: agregar un servicio con saga Kafka (examen final)": proyecto-sello/servicio-saga-kafka.md
       - "Guía: arrancar la app (comandos y links)": proyecto-sello/arrancar-app.md
       - "Guía: crear un servicio desde cero (con o sin CRUD)": proyecto-sello/servicio-desde-cero.md
   - Silabos:
