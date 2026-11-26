@@ -17,7 +17,7 @@ contenedores de Docker (BD, Kafka, Keycloak, Grafana) los detiene **sin** cerrar
 **Y pega el siguiente código:**
 
 ```powershell
-$puertos = @(4200, 8095, 8096, 13000, 13100, 18080, 18090, 18092, 18180, 18761, 18888, 19090) + (8081..8089) + (15451..15460)
+$puertos = @(4200, 8095, 8096, 8097, 13000, 13100, 15436, 18080, 18090, 18092, 18180, 18761, 18888, 19000, 19090) + (8081..8089) + (15451..15461)
 foreach ($p in $puertos) {
     $c = Get-NetTCPConnection -LocalPort $p -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
     if (-not $c) { continue }
@@ -193,7 +193,7 @@ cd ..\..
 **2. Revisa que los puertos estén libres:**
 
 ```powershell
-foreach ($p in 4200, 8095, 13000, 13100, 15460, 18080, 18090, 18092, 18180, 18761, 18888, 19090) {
+foreach ($p in 4200, 8095, 13000, 13100, 15436, 15460, 18080, 18090, 18092, 18180, 18761, 18888, 19000, 19090) {
     $c = Get-NetTCPConnection -LocalPort $p -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
     if ($c) { "[OCUPADO] $p  -> lo usa: $((Get-Process -Id $c.OwningProcess).ProcessName)" } else { "[LIBRE]   $p" }
 }
