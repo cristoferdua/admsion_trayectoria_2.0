@@ -23,6 +23,24 @@
 
 ---
 
+## Cómo leer esta guía
+
+Cada paso te dice **qué archivo crear o modificar**, **la ruta exacta** y **cómo hacerlo en VS Code**:
+
+- **Para crear un archivo:** clic derecho en la carpeta → **New File** → escribe el nombre exacto.
+- **Para crear una carpeta:** clic derecho en la carpeta → **New Folder** → escribe el nombre exacto.
+- **Para abrir una terminal:** en VS Code, menú **Terminal → New Terminal**.
+- **Para pegar código:** abre el archivo y pega el bloque completo. Si el bloque dice **"Qué cambiar"**,
+  cambia solo eso; lo demás se copia igual.
+- **Para buscar y reemplazar:** `Ctrl+H` en VS Code, con **Aa** activado (distingue mayúsculas).
+
+!!! note "Abre el proyecto completo en VS Code"
+    Abre la carpeta **`Lamb-Modulo02-Admision-Trayectoria`** (la raíz del proyecto), no solo el servicio nuevo.
+    Así ves `services`, `infra`, `kafka`, `obs`, etc. En VS Code: **File → Open Folder...** → elige
+    `Lamb-Modulo02-Admision-Trayectoria`.
+
+---
+
 ## 0. Cómo usar esta guía para crear **otros** servicios
 
 La guía está escrita con el ejemplo del examen (`notificacion`). Para crear otro servicio con otro nombre
@@ -73,9 +91,19 @@ un GET que lista y un panel de Grafana.
 
 ## 2. Antes de empezar
 
-### 2.1 Levanta la infraestructura que ya tienes
+### 2.1 Lo que necesitas instalado
 
-Desde la raíz del proyecto (`Lamb-Modulo02-Admision-Trayectoria`):
+| Herramienta | Cómo comprobar que está |
+|---|---|
+| Docker Desktop | `docker --version` |
+| Java 21 | `java -version` (debe decir 21) |
+| VS Code | lo abres normalmente |
+| Git | `git --version` |
+
+### 2.2 Levanta la infraestructura que ya tienes
+
+Abre una terminal en la **raíz del proyecto** (`Lamb-Modulo02-Admision-Trayectoria`).
+En VS Code: **Terminal → New Terminal**.
 
 ```powershell
 docker compose -f kafka/compose-dev.yml up -d
@@ -83,24 +111,42 @@ docker compose -f keycloak/compose-dev.yml up -d
 docker compose -f obs/compose-dev.yml up -d
 ```
 
-Luego arranca, cada uno en su terminal y en este orden:
+Comprueba que están arriba:
+
+```powershell
+docker ps
+```
+
+Debes ver `lamb-kafka-dev`, `lamb-kafka-ui-dev`, `lamb-prometheus-dev`, `lamb-grafana-dev` y los de Keycloak.
+
+### 2.3 Arranca Config Server, Eureka y Gateway
+
+Cada uno en **su propia terminal** y en este orden. Para abrir otra terminal: **Terminal → New Terminal**.
+
+**Terminal 1 — Config Server:**
 
 ```powershell
 cd infra\lamb-config
 .\mvnw.cmd spring-boot:run
 ```
 
+Espera a ver `Started ...` y deja esa terminal abierta.
+
+**Terminal 2 — Eureka:**
+
 ```powershell
 cd infra\lamb-eureka
 .\mvnw.cmd spring-boot:run
 ```
+
+**Terminal 3 — Gateway:**
 
 ```powershell
 cd infra\lamb-gateway
 .\mvnw.cmd spring-boot:run
 ```
 
-### 2.2 URLs y puertos que vas a usar
+### 2.4 URLs y puertos que vas a usar
 
 | Herramienta | URL / puerto |
 |---|---|
@@ -113,7 +159,7 @@ cd infra\lamb-gateway
 | Grafana | http://localhost:13000 (admin / admin) |
 | Keycloak | http://localhost:18180 |
 
-### 2.3 Elige un puerto libre
+### 2.5 Elige un puerto libre
 
 En tu proyecto ya están ocupados `8081` a `8089`. Usa **`8090`** para este servicio.
 Los puertos de Postgres ocupados son `15451` a `15459`; usa **`15460`**.
@@ -142,53 +188,124 @@ Contenedor Postgres                 : cristoferdua-postgres-notificacion-dev
 
 ---
 
-## Paso 1: crear el proyecto Spring Boot
+## Paso 1: crear el proyecto con Spring Initializr
 
-### 1.1 Carpeta del servicio
+### 1.1 Abre Spring Initializr
 
-Crea la carpeta dentro de `services`:
-
-```text
-services\
-└── cristoferdua-notificacion-ms\
-```
-
-Copia desde `services\lamb-trayectoria-ms` los archivos del Maven Wrapper:
+Abre en tu navegador:
 
 ```text
-mvnw
-mvnw.cmd
-.mvn\
+https://start.spring.io
 ```
 
-Así usas la misma versión de Maven que el resto del proyecto.
+Verás un formulario a la izquierda y un panel con las dependencias a la derecha.
 
-### 1.2 Dependencias (Spring Initializr)
+### 1.2 Llena los datos del proyecto
 
-Si usas [start.spring.io](https://start.spring.io), selecciona:
+Llena **exactamente** estos campos:
 
-| Dependencia | Para qué |
+| Campo | Qué poner |
 |---|---|
-| Spring Web (Web MVC) | Los endpoints REST |
-| Spring Data JPA | La entidad y el repositorio |
-| Flyway Migration | La tabla `notificaciones` |
-| Validation | `@NotBlank`, `@Size` en el POST |
-| Spring for Apache Kafka | Productor y consumidor |
-| Spring Boot Actuator | `/actuator/health` y `/actuator/prometheus` |
-| Config Client | Leer el `.yml` del Config Server |
-| Eureka Discovery Client | Registrarse en Eureka |
-| PostgreSQL Driver | La base de datos |
-| Lombok | Menos código repetido |
-| Prometheus (micrometer-registry-prometheus) | Métricas para Grafana |
-| Springdoc OpenAPI (opcional) | Swagger |
+| **Project** | `Maven` |
+| **Language** | `Java` |
+| **Spring Boot** | `4.0.8` (si no aparece, elige el mismo que usa `services\lamb-trayectoria-ms\pom.xml`) |
+| **Group** | `pe.edu.upeu` |
+| **Artifact** | `cristoferdua-notificacion-ms` |
+| **Name** | `cristoferdua-notificacion-ms` |
+| **Description** | `Notificaciones con saga Kafka` |
+| **Package name** | `pe.edu.upeu.lamb.notificacion` |
+| **Packaging** | `Jar` |
+| **Java** | `21` |
 
-!!! danger "No selecciones Spring Security"
+!!! note "Si no aparece Spring Boot 4.0.8"
+    Usa la versión que tenga tu proyecto. Lo importante es que después reemplaces el `pom.xml`
+    por el de esta guía (paso 1.8), que ya trae las versiones correctas.
+
+### 1.3 Selecciona las dependencias
+
+Haz clic en el botón **ADD DEPENDENCIES** (o **Add Dependencies**) del panel derecho.
+Busca cada una por su nombre y haz clic para agregarla:
+
+| # | Busca y agrega | Para qué |
+|---:|---|---|
+| 1 | **Spring Web** | Los endpoints REST |
+| 2 | **Spring Data JPA** | La entidad y el repositorio |
+| 3 | **Flyway Migration** | La tabla `notificaciones` |
+| 4 | **Validation** | `@NotBlank`, `@Size` en el POST |
+| 5 | **Spring for Apache Kafka** | Productor y consumidor |
+| 6 | **Spring Boot Actuator** | `/actuator/health` y `/actuator/prometheus` |
+| 7 | **Config Client** | Leer el `.yml` del Config Server |
+| 8 | **Eureka Discovery Client** | Registrarse en Eureka |
+| 9 | **PostgreSQL Driver** | La base de datos |
+| 10 | **Lombok** | Menos código repetido |
+| 11 | **Prometheus** (Micrometer registry) | Métricas para Grafana |
+| 12 | **Springdoc OpenAPI** (opcional) | Swagger |
+
+!!! danger "NO selecciones estas"
+    - **Spring Security**
+    - **OAuth2 Resource Server**
+
     El examen no usa Keycloak ni JWT en este microservicio. Si agregas seguridad, el POST directo
     responderá `401` y perderás los puntos de la saga.
 
-### 1.3 `pom.xml`
+Al terminar, en el panel derecho deben aparecer las dependencias seleccionadas. Si te equivocaste,
+haz clic en la **X** de la dependencia para quitarla.
 
-Reemplaza el `pom.xml` por este (ya incluye Kafka, Flyway, Eureka, Config, Actuator y Prometheus, **sin seguridad**):
+### 1.4 Genera y descarga el ZIP
+
+1. Haz clic en el botón **GENERATE** (abajo).
+2. Se descarga un archivo llamado `cristoferdua-notificacion-ms.zip`.
+3. Abre la carpeta de **Descargas**.
+4. Clic derecho en el ZIP → **Extract All...** (o **Extraer todo...**).
+5. Se crea una carpeta `cristoferdua-notificacion-ms`.
+
+### 1.5 Mueve la carpeta a `services\`
+
+Mueve la carpeta descomprimida dentro de:
+
+```text
+Lamb-Modulo02-Admision-Trayectoria\
+└── services\
+    └── cristoferdua-notificacion-ms\
+```
+
+La ruta final debe quedar así:
+
+```text
+services\cristoferdua-notificacion-ms\pom.xml
+services\cristoferdua-notificacion-ms\src\
+```
+
+!!! warning "Ojo con la carpeta doble"
+    A veces el ZIP se descomprime como `cristoferdua-notificacion-ms\cristoferdua-notificacion-ms\`.
+    Si ves eso, mueve **la carpeta interna** a `services\` y borra la carpeta externa vacía.
+    Dentro de `services\cristoferdua-notificacion-ms\` debe estar directamente el `pom.xml`.
+
+### 1.6 Abre el proyecto en VS Code
+
+1. En VS Code: **File → Open Folder...**
+2. Elige la carpeta **`Lamb-Modulo02-Admision-Trayectoria`**.
+3. En el explorador de la izquierda, abre `services\cristoferdua-notificacion-ms`.
+4. Debes ver `pom.xml`, `src`, `mvnw`, `mvnw.cmd` y `.mvn`.
+
+### 1.7 Copia el Maven Wrapper (recomendado)
+
+Para usar la misma versión de Maven que el resto del proyecto, copia el wrapper de
+`lamb-trayectoria-ms`. Abre una terminal en la **raíz del proyecto** y ejecuta:
+
+```powershell
+Copy-Item "services\lamb-trayectoria-ms\mvnw"     "services\cristoferdua-notificacion-ms\" -Force
+Copy-Item "services\lamb-trayectoria-ms\mvnw.cmd" "services\cristoferdua-notificacion-ms\" -Force
+Copy-Item "services\lamb-trayectoria-ms\.mvn"     "services\cristoferdua-notificacion-ms\.mvn" -Recurse -Force
+```
+
+Si ya los tenías, no pasa nada: se reemplazan.
+
+### 1.8 Reemplaza el `pom.xml`
+
+**Modifica el archivo:** `pom.xml`
+**En la ruta:** `services\cristoferdua-notificacion-ms\`
+**Cómo:** ábrelo, selecciona todo (`Ctrl+A`) y pega este contenido completo:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -353,7 +470,23 @@ Reemplaza el `pom.xml` por este (ya incluye Kafka, Flyway, Eureka, Config, Actua
 </project>
 ```
 
-### 1.4 `src\main\resources\application.yml`
+!!! note "Qué cambia si usas otro nombre"
+    - `cristoferdua-notificacion-ms` → tu artefacto.
+    - `Notificaciones con saga Kafka` → tu descripción.
+    - No cambies `groupId`, `java.version` ni `spring-cloud.version` salvo que tu proyecto use otras.
+
+### 1.9 Crea el `application.yml`
+
+Spring Initializr crea `src\main\resources\application.properties`. Lo vamos a reemplazar por `application.yml`.
+
+**Borra el archivo:** `application.properties`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\resources\`
+**Cómo:** clic derecho en `application.properties` → **Delete**.
+
+**Crea el archivo:** `application.yml`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\resources\`
+**Cómo:** clic derecho en la carpeta `resources` → **New File** → escribe `application.yml`.
+**Y pega el siguiente código:**
 
 ```yaml
 spring:
@@ -369,9 +502,14 @@ spring:
     El puerto, la base de datos, Kafka, Eureka y Actuator viven en el **Config Server**
     (`infra\lamb-config\config-repo`). Ese es el ítem de configuración centralizada.
 
-### 1.5 Clase principal
+### 1.10 Verifica la clase principal
 
-`src\main\java\pe\edu\upeu\lamb\notificacion\NotificacionMsApplication.java`
+Spring Initializr ya creó la clase principal:
+
+`services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\CristoferduaNotificacionMsApplication.java`
+
+**Abre el archivo** y verifica que el paquete sea `pe.edu.upeu.lamb.notificacion`.
+Debe verse así:
 
 ```java
 package pe.edu.upeu.lamb.notificacion;
@@ -380,21 +518,71 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class NotificacionMsApplication {
+public class CristoferduaNotificacionMsApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(NotificacionMsApplication.class, args);
+        SpringApplication.run(CristoferduaNotificacionMsApplication.class, args);
     }
 }
+```
+
+!!! note "Si tu clase se llama distinto"
+    No importa. Solo asegúrate de que el `package` sea `pe.edu.upeu.lamb.notificacion`.
+    Si el paquete es otro, corrígelo aquí y en todos los archivos de esta guía.
+
+### 1.11 Compila para comprobar que todo está bien
+
+Abre una terminal en la **raíz del proyecto**:
+
+```powershell
+cd services\cristoferdua-notificacion-ms
+.\mvnw.cmd clean package -DskipTests
+```
+
+Debe terminar con `BUILD SUCCESS`. Si falla, revisa que el `pom.xml` se haya pegado completo
+y que Java sea 21 (`java -version`).
+
+### 1.12 Mapa de archivos que vas a crear
+
+Al terminar la guía, la carpeta del servicio debe verse así:
+
+```text
+services\cristoferdua-notificacion-ms\
+├── compose-dev.yml
+├── pom.xml
+├── mvnw
+├── mvnw.cmd
+├── .mvn\
+└── src\main\
+    ├── java\pe\edu\upeu\lamb\notificacion\
+    │   ├── CristoferduaNotificacionMsApplication.java
+    │   ├── config\KafkaTopicsConfig.java
+    │   ├── controller\NotificacionController.java
+    │   ├── dto\NotificacionRequest.java
+    │   ├── dto\NotificacionResponse.java
+    │   ├── entity\EstadoNotificacion.java
+    │   ├── entity\Notificacion.java
+    │   ├── event\NotificacionEvento.java
+    │   ├── exception\GlobalExceptionHandler.java
+    │   ├── messaging\NotificacionEventosConsumer.java
+    │   ├── messaging\NotificacionEventosProducer.java
+    │   ├── repository\NotificacionRepository.java
+    │   └── service\NotificacionService.java
+    └── resources\
+        ├── application.yml
+        └── db\migration\V1__crear_notificaciones.sql
 ```
 
 ---
 
 ## Paso 2: base de datos y Flyway
 
-### 2.1 `compose-dev.yml` del servicio
+### 2.1 Crea el `compose-dev.yml`
 
-`services\cristoferdua-notificacion-ms\compose-dev.yml`
+**Crea el archivo:** `compose-dev.yml`
+**En la ruta:** `services\cristoferdua-notificacion-ms\`
+**Cómo:** clic derecho en la carpeta `cristoferdua-notificacion-ms` → **New File** → escribe `compose-dev.yml`.
+**Y pega el siguiente código:**
 
 ```yaml
 name: cristoferdua-notificacion-dev
@@ -417,7 +605,16 @@ volumes:
   cristoferdua_notificacion_dev_data:
 ```
 
-Levántalo:
+**Qué cambiar si usas otro nombre:**
+
+- `cristoferdua-notificacion-dev` → el nombre del proyecto Docker.
+- `cristoferdua-postgres-notificacion-dev` → el contenedor.
+- `lamb_notificacion_db` → tu base.
+- `15460` → tu puerto libre.
+
+### 2.2 Levanta el Postgres
+
+Abre una terminal en la **raíz del proyecto**:
 
 ```powershell
 cd services\cristoferdua-notificacion-ms
@@ -425,12 +622,31 @@ docker compose -f compose-dev.yml up -d
 docker ps --filter "name=cristoferdua-postgres-notificacion-dev"
 ```
 
-### 2.2 Migración Flyway
+Debe aparecer el contenedor en estado `Up`.
 
-`src\main\resources\db\migration\V1__crear_notificaciones.sql`
+### 2.3 Crea la carpeta `db\migration`
 
-!!! important "Pega este script tal cual"
-    La restricción `UNIQUE` sobre `referencia` es la que evita las filas duplicadas en la prueba de idempotencia.
+**Crea las carpetas:** `db` y `migration`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\resources\`
+
+**Opción A (VS Code):**
+
+1. Clic derecho en la carpeta `resources` → **New Folder** → escribe `db`.
+2. Clic derecho en la carpeta `db` → **New Folder** → escribe `migration`.
+
+**Opción B (terminal, más rápido):**
+
+```powershell
+New-Item -ItemType Directory -Force "services\cristoferdua-notificacion-ms\src\main\resources\db\migration" | Out-Null
+```
+
+### 2.4 Crea la migración Flyway
+
+**Crea el archivo:** `V1__crear_notificaciones.sql`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\resources\db\migration\`
+**Cómo:** clic derecho en la carpeta `migration` → **New File** → escribe `V1__crear_notificaciones.sql`.
+**Ojo:** El nombre lleva **dos** guiones bajos después de `V1` (`V1__`).
+**Y pega el siguiente código:**
 
 ```sql
 CREATE TABLE notificaciones (
@@ -445,16 +661,23 @@ CREATE TABLE notificaciones (
 );
 ```
 
-Flyway la ejecuta al arrancar el microservicio. La configuración usa `ddl-auto: validate`,
+!!! important "La restricción UNIQUE"
+    `uk_notificaciones_referencia` es la que evita las filas duplicadas en la prueba de idempotencia.
+    No la quites.
+
+Flyway ejecuta esta migración al arrancar el microservicio. La configuración usa `ddl-auto: validate`,
 así que Hibernate **no** crea la tabla: la crea Flyway.
 
 ---
 
 ## Paso 3: Config Server y Eureka
 
-Crea el archivo:
+### 3.1 Crea el archivo del Config Server
 
-`infra\lamb-config\config-repo\cristoferdua-notificacion-ms-dev.yml`
+**Crea el archivo:** `cristoferdua-notificacion-ms-dev.yml`
+**En la ruta:** `infra\lamb-config\config-repo\`
+**Cómo:** clic derecho en la carpeta `config-repo` → **New File** → escribe `cristoferdua-notificacion-ms-dev.yml`.
+**Y pega el siguiente código:**
 
 ```yaml
 server:
@@ -530,6 +753,14 @@ management:
       show-details: always
 ```
 
+**Qué cambiar si usas otro nombre:**
+
+- `8090` → tu puerto.
+- `15460` / `lamb_notificacion_db` → tu Postgres.
+- `cristoferdua-notificacion-ms` (group-id) → tu nombre.
+- `pe.edu.upeu.lamb.notificacion.event` → tu paquete.
+- `notificacion-eventos` → tu topic.
+
 !!! note "Los 5 bloques que califica el docente"
     - `server.port`: el puerto del microservicio.
     - `spring.datasource` + `flyway` + `ddl-auto: validate`: la base y la migración.
@@ -537,14 +768,18 @@ management:
     - `app.kafka.topic.eventos`: el nombre del topic.
     - `eureka` + `management`: registro y métricas para Prometheus.
 
-Reinicia el Config Server para que lea el archivo nuevo:
+### 3.2 Reinicia el Config Server
+
+Si la terminal del Config Server sigue abierta, detenla con `Ctrl+C` y vuelve a arrancar:
 
 ```powershell
 cd infra\lamb-config
 .\mvnw.cmd spring-boot:run
 ```
 
-Verifica que el archivo se sirve:
+### 3.3 Verifica que el Config Server sirve tu archivo
+
+En otra terminal:
 
 ```powershell
 curl.exe -s http://localhost:18888/cristoferdua-notificacion-ms/dev
@@ -552,32 +787,52 @@ curl.exe -s http://localhost:18888/cristoferdua-notificacion-ms/dev
 
 Debe devolver el YAML con `port: 8090`, `notificacion-eventos`, etc.
 
+### 3.4 Verifica Eureka
+
+Abre http://localhost:18761 y deja la pestaña abierta. El servicio aparecerá **después** de arrancarlo
+(Paso 4). Por ahora solo confirma que Eureka está arriba.
+
 ---
 
 ## Paso 4: código Java
 
-Crea los paquetes dentro de `src\main\java\pe\edu\upeu\lamb\notificacion\`:
+### 4.1 Crea las carpetas del código
 
-```text
-notificacion\
-├── NotificacionMsApplication.java
-├── config\KafkaTopicsConfig.java
-├── controller\NotificacionController.java
-├── dto\NotificacionRequest.java
-├── dto\NotificacionResponse.java
-├── entity\EstadoNotificacion.java
-├── entity\Notificacion.java
-├── event\NotificacionEvento.java
-├── exception\GlobalExceptionHandler.java
-├── messaging\NotificacionEventosConsumer.java
-├── messaging\NotificacionEventosProducer.java
-├── repository\NotificacionRepository.java
-└── service\NotificacionService.java
+**Crea las carpetas:** `config`, `controller`, `dto`, `entity`, `event`, `exception`, `messaging`, `repository`, `service`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\`
+
+**Opción A (terminal, más rápido):**
+
+```powershell
+$base = "services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion"
+"config","controller","dto","entity","event","exception","messaging","repository","service" |
+  ForEach-Object { New-Item -ItemType Directory -Force "$base\$_" | Out-Null }
 ```
 
-### 4.1 Entidad y estado
+**Opción B (VS Code):** clic derecho en la carpeta `notificacion` → **New Folder** → escribe cada nombre.
 
-`entity\EstadoNotificacion.java`
+Así debe quedar:
+
+```text
+services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\
+├── CristoferduaNotificacionMsApplication.java
+├── config\
+├── controller\
+├── dto\
+├── entity\
+├── event\
+├── exception\
+├── messaging\
+├── repository\
+└── service\
+```
+
+### 4.2 Crea `EstadoNotificacion.java`
+
+**Crea el archivo:** `EstadoNotificacion.java`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\entity\`
+**Cómo:** clic derecho en la carpeta `entity` → **New File** → escribe `EstadoNotificacion.java`.
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.notificacion.entity;
@@ -589,7 +844,12 @@ public enum EstadoNotificacion {
 }
 ```
 
-`entity\Notificacion.java`
+### 4.3 Crea `Notificacion.java`
+
+**Crea el archivo:** `Notificacion.java`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\entity\`
+**Cómo:** clic derecho en la carpeta `entity` → **New File** → escribe `Notificacion.java`.
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.notificacion.entity;
@@ -633,9 +893,12 @@ public class Notificacion {
 }
 ```
 
-### 4.2 Repositorio
+### 4.4 Crea `NotificacionRepository.java`
 
-`repository\NotificacionRepository.java`
+**Crea el archivo:** `NotificacionRepository.java`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\repository\`
+**Cómo:** clic derecho en la carpeta `repository` → **New File** → escribe `NotificacionRepository.java`.
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.notificacion.repository;
@@ -656,9 +919,12 @@ public interface NotificacionRepository extends JpaRepository<Notificacion, Long
 }
 ```
 
-### 4.3 DTOs
+### 4.5 Crea `NotificacionRequest.java`
 
-`dto\NotificacionRequest.java`
+**Crea el archivo:** `NotificacionRequest.java`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\dto\`
+**Cómo:** clic derecho en la carpeta `dto` → **New File** → escribe `NotificacionRequest.java`.
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.notificacion.dto;
@@ -692,7 +958,12 @@ public class NotificacionRequest {
 }
 ```
 
-`dto\NotificacionResponse.java`
+### 4.6 Crea `NotificacionResponse.java`
+
+**Crea el archivo:** `NotificacionResponse.java`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\dto\`
+**Cómo:** clic derecho en la carpeta `dto` → **New File** → escribe `NotificacionResponse.java`.
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.notificacion.dto;
@@ -718,9 +989,12 @@ public class NotificacionResponse {
 }
 ```
 
-### 4.4 Evento de Kafka
+### 4.7 Crea `NotificacionEvento.java`
 
-`event\NotificacionEvento.java`
+**Crea el archivo:** `NotificacionEvento.java`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\event\`
+**Cómo:** clic derecho en la carpeta `event` → **New File** → escribe `NotificacionEvento.java`.
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.notificacion.event;
@@ -753,9 +1027,12 @@ public class NotificacionEvento {
 | `notificacion.enviada` | Camino feliz |
 | `notificacion.fallida` | Compensación |
 
-### 4.5 Topic de Kafka
+### 4.8 Crea `KafkaTopicsConfig.java`
 
-`config\KafkaTopicsConfig.java`
+**Crea el archivo:** `KafkaTopicsConfig.java`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\config\`
+**Cómo:** clic derecho en la carpeta `config` → **New File** → escribe `KafkaTopicsConfig.java`.
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.notificacion.config;
@@ -781,9 +1058,12 @@ public class KafkaTopicsConfig {
     Este bean los declara con `KafkaAdmin` al arrancar. También puedes crearlo desde Kafka UI o con el comando
     del [Paso 6](#paso-6-kafka). Para el examen, muestra el topic en Kafka UI de todos modos.
 
-### 4.6 Productor
+### 4.9 Crea `NotificacionEventosProducer.java`
 
-`messaging\NotificacionEventosProducer.java`
+**Crea el archivo:** `NotificacionEventosProducer.java`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\messaging\`
+**Cómo:** clic derecho en la carpeta `messaging` → **New File** → escribe `NotificacionEventosProducer.java`.
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.notificacion.messaging;
@@ -846,9 +1126,12 @@ public class NotificacionEventosProducer {
     `kafkaTemplate.send(topic, evento.getReferencia(), evento)` usa la **referencia** como llave.
     Eso es exactamente lo que pide el examen y hace que los mensajes de la misma referencia vayan a la misma partición.
 
-### 4.7 Servicio con la saga
+### 4.10 Crea `NotificacionService.java`
 
-`service\NotificacionService.java`
+**Crea el archivo:** `NotificacionService.java`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\service\`
+**Cómo:** clic derecho en la carpeta `service` → **New File** → escribe `NotificacionService.java`.
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.notificacion.service;
@@ -938,9 +1221,12 @@ public class NotificacionService {
     `saveAndFlush` inserta la fila en **PENDIENTE** (la saga arranca ahí). Después, en la misma transacción,
     se cambia a **ENVIADA** o **CANCELADA** y se guarda. La fila nunca se queda en PENDIENTE.
 
-### 4.8 Consumidor
+### 4.11 Crea `NotificacionEventosConsumer.java`
 
-`messaging\NotificacionEventosConsumer.java`
+**Crea el archivo:** `NotificacionEventosConsumer.java`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\messaging\`
+**Cómo:** clic derecho en la carpeta `messaging` → **New File** → escribe `NotificacionEventosConsumer.java`.
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.notificacion.messaging;
@@ -979,9 +1265,12 @@ public class NotificacionEventosConsumer {
     `notificacion.enviada` y `notificacion.fallida` viajan por el mismo topic. El consumidor los recibe,
     ve que `tipo` no es `notificacion.solicitada` y los ignora. Eso es normal y no rompe nada.
 
-### 4.9 Controlador
+### 4.12 Crea `NotificacionController.java`
 
-`controller\NotificacionController.java`
+**Crea el archivo:** `NotificacionController.java`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\controller\`
+**Cómo:** clic derecho en la carpeta `controller` → **New File** → escribe `NotificacionController.java`.
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.notificacion.controller;
@@ -1031,9 +1320,12 @@ public class NotificacionController {
 }
 ```
 
-### 4.10 Manejo de errores (opcional, pero recomendado)
+### 4.13 Crea `GlobalExceptionHandler.java` (opcional, recomendado)
 
-`exception\GlobalExceptionHandler.java`
+**Crea el archivo:** `GlobalExceptionHandler.java`
+**En la ruta:** `services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\exception\`
+**Cómo:** clic derecho en la carpeta `exception` → **New File** → escribe `GlobalExceptionHandler.java`.
+**Y pega el siguiente código:**
 
 ```java
 package pe.edu.upeu.lamb.notificacion.exception;
@@ -1074,7 +1366,9 @@ public class GlobalExceptionHandler {
 }
 ```
 
-### 4.11 Compilar y arrancar
+### 4.14 Compila y arranca el microservicio
+
+Abre una terminal en la **raíz del proyecto**:
 
 ```powershell
 cd services\cristoferdua-notificacion-ms
@@ -1089,13 +1383,21 @@ Tomcat started on port 8090
 DiscoveryClient ... registering service ...
 ```
 
-Comprueba:
+### 4.15 Comprueba que está arriba
+
+En otra terminal:
 
 ```powershell
 curl.exe -s http://localhost:8090/actuator/health
 ```
 
-Debe responder `{"status":"UP"}`.
+Debe responder:
+
+```json
+{"status":"UP"}
+```
+
+Abre http://localhost:18761 y verifica que aparece `CRISTOFERDUA-NOTIFICACION-MS`.
 
 !!! danger "Si ves `401` o `403` en el POST directo"
     Agregaste Spring Security al microservicio. Quítalo: el examen no lo usa. Revisa que el `pom.xml`
@@ -1106,10 +1408,12 @@ Debe responder `{"status":"UP"}`.
 
 ## Paso 5: Gateway
 
-### 5.1 Ruta en el Config Server
+### 5.1 Agrega la ruta en el Config Server
 
-Edita `infra\lamb-config\config-repo\lamb-gateway-dev.yml` y agrega esta ruta dentro de `routes:`
-(por ejemplo, después de la ruta de `lamb-trayectoria`):
+**Modifica el archivo:** `lamb-gateway-dev.yml`
+**En la ruta:** `infra\lamb-config\config-repo\`
+**Cómo:** ábrelo y baja hasta la lista `routes:`. Agrega este bloque al final de las rutas,
+debajo de la ruta de `lamb-finanzas`:
 
 ```yaml
             - id: cristoferdua-notificacion
@@ -1118,26 +1422,36 @@ Edita `infra\lamb-config\config-repo\lamb-gateway-dev.yml` y agrega esta ruta de
                 - Path=/api/v1/notificaciones/**
 ```
 
-### 5.2 `permitAll` en la seguridad del Gateway
+Debe quedar con la misma indentación que las demás rutas (12 espacios antes de `- id:`).
 
-Edita `infra\lamb-gateway\src\main\java\pe\edu\upeu\lamb\gateway\config\SecurityConfig.java`
-y agrega esta línea **antes** de las reglas que autentican el resto (por ejemplo, justo después de
-`.requestMatchers("/actuator/**", "/error").permitAll()`):
+### 5.2 Agrega `permitAll` en la seguridad del Gateway
+
+**Modifica el archivo:** `SecurityConfig.java`
+**En la ruta:** `infra\lamb-gateway\src\main\java\pe\edu\upeu\lamb\gateway\config\`
+**Cómo:** ábrelo y busca esta línea:
+
+```java
+                        .requestMatchers("/actuator/**", "/error").permitAll()
+```
+
+Justo **debajo** de esa línea, agrega:
 
 ```java
                         .requestMatchers("/api/v1/notificaciones/**").permitAll()
 ```
 
-La regla debe quedar **antes** de `anyRequest().authenticated()`. Spring aplica la primera regla que coincide.
+Debe quedar antes de `anyRequest().authenticated()`. Spring aplica la primera regla que coincide.
 
 ### 5.3 Reinicia el Gateway
+
+Detén la terminal del Gateway con `Ctrl+C` y vuelve a arrancar:
 
 ```powershell
 cd infra\lamb-gateway
 .\mvnw.cmd spring-boot:run
 ```
 
-Prueba por el Gateway (sin token):
+### 5.4 Prueba por el Gateway (sin token)
 
 ```powershell
 curl.exe -i http://localhost:18080/api/v1/notificaciones
@@ -1154,9 +1468,18 @@ Debe responder `HTTP/1.1 200` y `[]` (o la lista de notificaciones).
 
 ## Paso 6: Kafka
 
-### 6.1 Crear el topic (si no lo creó el bean)
+### 6.1 Crea el topic desde Kafka UI
 
-En Kafka UI (`http://localhost:18090`) o por comando:
+1. Abre http://localhost:18090.
+2. En el menú izquierdo, haz clic en **Topics**.
+3. Haz clic en **Create Topic** (o **Add Topic**).
+4. Llena:
+   - **Name:** `notificacion-eventos`
+   - **Partitions:** `3`
+   - **Replication factor:** `1`
+5. Haz clic en **Create**.
+
+**Alternativa por comando:**
 
 ```powershell
 docker exec -it lamb-kafka-dev /opt/kafka/bin/kafka-topics.sh `
@@ -1166,7 +1489,11 @@ docker exec -it lamb-kafka-dev /opt/kafka/bin/kafka-topics.sh `
   --partitions 3 --replication-factor 1
 ```
 
-Verifica:
+### 6.2 Verifica el topic
+
+En Kafka UI, en **Topics**, debe aparecer `notificacion-eventos`.
+
+Por comando:
 
 ```powershell
 docker exec -it lamb-kafka-dev /opt/kafka/bin/kafka-topics.sh `
@@ -1174,7 +1501,7 @@ docker exec -it lamb-kafka-dev /opt/kafka/bin/kafka-topics.sh `
   --describe --topic notificacion-eventos
 ```
 
-### 6.2 Ver el grupo del consumidor
+### 6.3 Verifica el grupo del consumidor
 
 Cuando el microservicio esté arriba y haya consumido al menos un mensaje:
 
@@ -1192,20 +1519,20 @@ docker exec -it lamb-kafka-dev /opt/kafka/bin/kafka-consumer-groups.sh `
   --describe --group cristoferdua-notificacion-ms
 ```
 
-En Kafka UI el grupo debe verse en estado **Stable**.
+En Kafka UI, en **Consumers**, el grupo debe verse en estado **Stable**.
 
-### 6.3 Ver el mensaje `notificacion.solicitada`
+### 6.4 Ve el mensaje `notificacion.solicitada`
 
-Haz el POST válido (ver [Paso 7](#paso-7-probar-la-saga)) y en Kafka UI entra a:
+Haz el POST válido del [Paso 7](#paso-7-probar-la-saga) y en Kafka UI:
 
-```text
-Topics → notificacion-eventos → Messages
-```
+1. **Topics** → `notificacion-eventos`.
+2. Pestaña **Messages**.
+3. Haz clic en **Refresh** si no aparece.
 
 Debes ver:
 
-- **Key**: `NOT-001` (la referencia)
-- **Value**: el JSON con `"tipo":"notificacion.solicitada"`, `referencia`, `destinatario`, `canal` y `mensaje`.
+- **Key:** `NOT-001` (la referencia)
+- **Value:** el JSON con `"tipo":"notificacion.solicitada"`, `referencia`, `destinatario`, `canal` y `mensaje`.
 
 ---
 
@@ -1215,7 +1542,12 @@ Debes ver:
     Usa `http://localhost:8090`. El Gateway (`http://localhost:18080`) se usa **solo** para el ítem del Gateway.
     Así lo pide el examen.
 
+!!! note "Usa `curl.exe`, no `curl`"
+    En PowerShell, `curl` es un alias de `Invoke-WebRequest`. Escribe **`curl.exe`** para usar el curl real.
+
 ### 7.1 Camino feliz
+
+Abre una terminal y ejecuta:
 
 ```powershell
 curl.exe -i -X POST http://localhost:8090/api/v1/notificaciones `
@@ -1244,14 +1576,18 @@ En Kafka UI debe aparecer también `notificacion.enviada`.
 
 ### 7.2 Idempotencia (una sola fila)
 
-Desde Kafka UI, entra al topic `notificacion-eventos` y **produce de nuevo** el mismo mensaje:
+Desde Kafka UI:
 
-- **Key**: `NOT-001`
-- **Value**:
+1. **Topics** → `notificacion-eventos` → **Messages**.
+2. Haz clic en **Produce Message** (o **Produce**).
+3. **Key:** `NOT-001`
+4. **Value:**
 
 ```json
 {"tipo":"notificacion.solicitada","referencia":"NOT-001","destinatario":"ana@correo.com","canal":"EMAIL","mensaje":"Tu pedido salio"}
 ```
+
+5. Haz clic en **Produce**.
 
 Luego verifica que sigue habiendo **una sola fila**:
 
@@ -1301,7 +1637,7 @@ El microservicio **no se cae** y la fila **no queda en PENDIENTE**.
 
 ### 8.1 Prometheus descubre el servicio por Eureka
 
-Abre `http://localhost:19090/targets` y busca `cristoferdua-notificacion-ms`.
+Abre http://localhost:19090/targets y busca `cristoferdua-notificacion-ms`.
 Debe estar en estado **UP**. No tienes que configurar nada: `obs\prometheus\prometheus-dev.yml`
 ya usa `eureka_sd_configs`.
 
@@ -1312,26 +1648,30 @@ curl.exe -s http://localhost:8090/actuator/prometheus
 curl.exe -s http://localhost:18761/eureka/apps
 ```
 
-### 8.2 Panel de Grafana
+### 8.2 Crea el panel en Grafana
 
-1. Abre `http://localhost:13000` (admin / admin).
-2. **Dashboards → New → New dashboard → Add visualization**.
-3. Elige **Prometheus** como fuente de datos.
-4. Tipo de panel: **Stat**.
-5. En la consulta pega:
+1. Abre http://localhost:13000.
+2. Inicia sesión con **admin / admin** (si te pide cambiar la clave, puedes omitirlo).
+3. Menú izquierdo → **Dashboards** → **New** → **New dashboard**.
+4. Haz clic en **Add visualization**.
+5. En **Select data source**, elige **Prometheus**.
+6. Arriba a la derecha, cambia el tipo de panel a **Stat**.
+7. En la consulta (query), pega:
 
 ```promql
 max(up{application=~"(?i)cristoferdua-notificacion-ms"}) or vector(0)
 ```
 
-6. Activa **Instant** (o usa un rango de 5 minutos).
-7. En **Value mappings** agrega:
+8. Activa **Instant** (o usa un rango de 5 minutos).
+9. En el panel derecho, busca **Value mappings** y agrega:
    - `1` → texto `ACTIVO`, color verde.
    - `0` → texto `CAÍDO`, color rojo.
-8. Para que el fondo cambie de color, en **Standard options → Color mode** elige **Background**
-   y en **Color scheme** elige **From thresholds (by value)**.
-9. Título del panel: `Estado de cristoferdua-notificacion-ms`.
-10. Guarda el dashboard.
+10. Para que el fondo cambie de color:
+    - **Standard options → Color mode:** `Background`.
+    - **Color scheme:** `From thresholds (by value)`.
+    - **Thresholds:** `0` rojo, `1` verde.
+11. En **Panel options → Title**, escribe: `Estado de cristoferdua-notificacion-ms`.
+12. Haz clic en **Apply** y luego en **Save dashboard**.
 
 !!! note "Por qué `(?i)`"
     Eureka escribe el nombre de la aplicación en mayúsculas (`CRISTOFERDUA-NOTIFICACION-MS`).
@@ -1398,6 +1738,7 @@ El panel debe volver a **ACTIVO**.
 | El panel dice **CAÍDO** con el servicio arriba | La consulta no coincide con el nombre o Prometheus no lo ve | Usa `(?i)cristoferdua-notificacion-ms` y revisa http://localhost:19090/targets |
 | El panel tarda en cambiar | Eureka retiene la instancia | Espera hasta 2 minutos |
 | El puerto `8090` está ocupado | Otro proceso | Cambia el puerto en el YAML del Config Server y en los curl |
+| `curl` no hace el POST | En PowerShell `curl` es un alias | Usa `curl.exe` |
 
 ---
 
@@ -1424,9 +1765,7 @@ puerto `8091` y base `lamb_pagos_db`. Haz los reemplazos **en este orden** y con
 
 !!! warning "El orden importa"
     Reemplaza primero el plural (`notificaciones` → `pagos`) y después el singular
-    (`notificacion` → `pago`). Si lo haces al revés, `notificaciones` se convierte en `pagos` y luego
-    el reemplazo de `notificacion` ya no encuentra nada (está bien), pero puedes romper palabras.
-    Hazlo con calma y revisa el resultado.
+    (`notificacion` → `pago`). Hazlo con calma y revisa el resultado.
 
 Después de los reemplazos:
 
