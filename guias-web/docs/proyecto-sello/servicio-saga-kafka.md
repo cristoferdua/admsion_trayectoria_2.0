@@ -1,4 +1,4 @@
-# Guía: agregar un servicio con saga Kafka al proyecto Lamb (examen final)
+# Guía: agregar un servicio con saga Kafka a tu proyecto Lamb (examen final)
 
 *Guía de práctica para el examen final de Distribuidas — Variante 4: `<tunombre>-notificacion-ms`*
 
@@ -9,17 +9,65 @@
 | Examen de referencia | [Pagatu — Examen final práctico Variante 4](https://262dist.github.io/pagatu/examenes/examen-final-practico-v4-notificacion/) |
 | Nombre del servicio en esta guía | `cristoferdua-notificacion-ms` (cámbialo por el tuyo) |
 
-!!! info "Qué hace esta guía"
-    Crea **desde cero** un microservicio pequeño que se suma a tu proyecto Lamb y cumple **todo** lo que pide el examen:
-    base de datos con Flyway, Config Server, Eureka, ruta en el Gateway con `permitAll`, Kafka, una **saga**
-    (`PENDIENTE → ENVIADA` o `PENDIENTE → CANCELADA`), idempotencia y un panel de Grafana que dice **ACTIVO / CAÍDO**.
-
-    No es una guía de "servicio desde cero aislado": usa la infraestructura real de tu proyecto
-    (Config Server, Eureka, Gateway, Kafka, Prometheus y Grafana).
+!!! info "Esta guía es para TU proyecto que ya existe"
+    No creas un proyecto nuevo desde cero. Esta guía **agrega un microservicio más** a tu proyecto
+    `Lamb-Modulo02-Admision-Trayectoria`, que ya tiene Config Server, Eureka, Gateway, Kafka,
+    Prometheus y Grafana funcionando. Al terminar tendrás un servicio nuevo integrado a todo eso
+    y que cumple **todo** lo que pide el examen: base de datos con Flyway, Config Server, Eureka,
+    ruta en el Gateway con `permitAll`, Kafka, una **saga** (`PENDIENTE → ENVIADA` o
+    `PENDIENTE → CANCELADA`), idempotencia y un panel de Grafana que dice **ACTIVO / CAÍDO**.
 
 !!! warning "Sin seguridad"
     Este microservicio **no lleva Spring Security ni Keycloak**. El examen lo prohíbe. El Gateway de tu proyecto
     sigue protegiendo las demás rutas; para esta ruta solamente agregas `permitAll`.
+
+---
+
+## Antes de todo: escribe tus nombres
+
+Todo lo que vas a crear usa **tu nombre** y el **nombre del servicio**. Antes de empezar, copia esta
+tabla en un papel (o en un archivo) y escribe tus valores en la columna **"Tu valor"**. Los vas a
+necesitar en cada paso.
+
+| Placeholder | Qué es | Ejemplo del examen | Tu valor (escríbelo) |
+|---|---|---|---|
+| `<prefijo>` | Tu nombre y apellido, en minúsculas y sin espacios | `cristoferdua` | |
+| `<servicio>` | Nombre del servicio (el examen fija `notificacion`) | `notificacion` | |
+| `<entidad>` | Nombre de la entidad en PascalCase | `Notificacion` | |
+| `<plural>` | Tabla y ruta REST, en minúsculas | `notificaciones` | |
+| `<evento>` | Prefijo de los eventos, en minúsculas | `notificacion` | |
+| `<topic>` | Topic de Kafka | `notificacion-eventos` | |
+| `<puerto>` | Puerto del microservicio | `8090` | |
+| `<puerto-bd>` | Puerto de host del Postgres | `15460` | |
+| `<db>` | Nombre de la base de datos | `lamb_notificacion_db` | |
+| `<contenedor-bd>` | Nombre del contenedor Postgres | `cristoferdua-postgres-notificacion-dev` | |
+| `<paquete>` | Paquete Java | `pe.edu.upeu.lamb.notificacion` | |
+
+!!! tip "Ejemplo con otro nombre"
+    Si te llamas **Juan Pérez**, tu `<prefijo>` es `juanperez`. Entonces el artefacto será
+    `juanperez-notificacion-ms`, el contenedor `juanperez-postgres-notificacion-dev`, y en la
+    consulta de Grafana usarás `juanperez-notificacion-ms`. El resto de nombres (servicio, entidad,
+    topic) los fija el examen y **no cambian**.
+
+### Diccionario: dónde aparece cada nombre
+
+| Placeholder | Dónde lo vas a escribir |
+|---|---|
+| `<prefijo>` | artefacto del `pom.xml`, `spring.application.name`, nombre del archivo del Config Server, ruta del Gateway, `group-id` de Kafka, `container_name` de Postgres, consulta de Grafana |
+| `<servicio>` | sufijo del artefacto, paquete Java, carpeta del proyecto |
+| `<entidad>` | nombres de las clases Java (`Notificacion`, `NotificacionService`, ...) |
+| `<plural>` | tabla de la base de datos, `@Table`, ruta REST `/api/v1/<plural>` |
+| `<evento>` | nombres de los eventos (`<evento>.solicitada`, `<evento>.enviada`, `<evento>.fallida`) |
+| `<topic>` | topic de Kafka y `app.kafka.topic.eventos` |
+| `<puerto>` | `server.port` y todos los `curl` |
+| `<puerto-bd>` | `ports` del compose y `spring.datasource.url` |
+| `<db>` | `POSTGRES_DB` y `spring.datasource.url` |
+| `<contenedor-bd>` | `container_name` del compose y los `docker exec` |
+| `<paquete>` | `package` de todos los archivos Java y el YAML del Config Server |
+
+!!! note "Reglas de nombres"
+    Usa una sola palabra en minúsculas, sin tildes, sin espacios y sin guiones para `<servicio>`,
+    `<entidad>` y `<evento>`. El `<prefijo>` es tu nombre y apellido en minúsculas.
 
 ---
 
@@ -30,9 +78,13 @@ Cada paso te dice **qué archivo crear o modificar**, **la ruta exacta** y **có
 - **Para crear un archivo:** clic derecho en la carpeta → **New File** → escribe el nombre exacto.
 - **Para crear una carpeta:** clic derecho en la carpeta → **New Folder** → escribe el nombre exacto.
 - **Para abrir una terminal:** en VS Code, menú **Terminal → New Terminal**.
-- **Para pegar código:** abre el archivo y pega el bloque completo. Si el bloque dice **"Qué cambiar"**,
-  cambia solo eso; lo demás se copia igual.
+- **Para pegar código:** abre el archivo y pega el bloque completo.
 - **Para buscar y reemplazar:** `Ctrl+H` en VS Code, con **Aa** activado (distingue mayúsculas).
+
+!!! tip "🔁 El recuadro «Cambia esto»"
+    En cada paso vas a ver un recuadro **🔁 Cambia esto**. Ahí te digo **exactamente** qué palabras
+    debes reemplazar por tus valores de la tabla de arriba. Si un paso **no** tiene ese recuadro,
+    copia el código tal cual, sin cambiar nada.
 
 !!! note "Abre el proyecto completo en VS Code"
     Abre la carpeta **`Lamb-Modulo02-Admision-Trayectoria`** (la raíz del proyecto), no solo el servicio nuevo.
@@ -41,30 +93,19 @@ Cada paso te dice **qué archivo crear o modificar**, **la ruta exacta** y **có
 
 ---
 
-## 0. Cómo usar esta guía para crear **otros** servicios
+## Mapa de lo que vas a crear y modificar
 
-La guía está escrita con el ejemplo del examen (`notificacion`). Para crear otro servicio con otro nombre
-(`pagos`, `reservas`, `constancias`, etc.) cambia **solo** los valores de esta tabla desde el inicio.
-El resto del código es el mismo patrón: un POST que publica un evento, un consumidor que aplica la saga,
-un GET que lista y un panel de Grafana.
-
-| Variable | Ejemplo del examen | Otro ejemplo | Dónde se usa |
-|---|---|---|---|
-| `PREFIJO` | `cristoferdua` | `cristoferdua` | artefacto, `spring.application.name`, archivo del Config Server, ruta del Gateway, group-id, contenedor Postgres |
-| `SERVICIO` | `notificacion` | `pagos` | sufijo del artefacto, paquete Java, ruta REST |
-| `ENTIDAD` | `Notificacion` | `Pago` | clases Java, tabla |
-| `PLURAL` | `notificaciones` | `pagos` | tabla, ruta REST |
-| `EVENTO` | `notificacion` | `pago` | nombres de eventos y topic |
-| `TOPIC` | `notificacion-eventos` | `pago-eventos` | Kafka |
-| `PUERTO` | `8090` | `8091` | `server.port` |
-| `PUERTO_BD` | `15460` | `15461` | puerto de host del Postgres |
-| `DB` | `lamb_notificacion_db` | `lamb_pagos_db` | datasource |
-| `CONTENEDOR_BD` | `cristoferdua-postgres-notificacion-dev` | `cristoferdua-postgres-pagos-dev` | `container_name` |
-| `PAQUETE` | `pe.edu.upeu.lamb.notificacion` | `pe.edu.upeu.lamb.pagos` | paquete Java |
-
-!!! note "Reglas de nombres"
-    Usa una sola palabra en minúsculas, sin tildes, sin espacios y sin guiones para `SERVICIO`, `ENTIDAD` y `EVENTO`.
-    El prefijo es tu nombre y apellido en minúsculas (ejemplo: `cristoferdua`).
+| Acción | Archivo o carpeta | Paso |
+|---|---|---|
+| Crear | `services\<prefijo>-<servicio>-ms\` (el proyecto completo) | Paso 1 |
+| Crear | `services\<prefijo>-<servicio>-ms\compose-dev.yml` | Paso 2 |
+| Crear | `...\src\main\resources\db\migration\V1__crear_<plural>.sql` | Paso 2 |
+| Crear | `infra\lamb-config\config-repo\<prefijo>-<servicio>-ms-dev.yml` | Paso 3 |
+| Crear | 12 archivos Java en `...\src\main\java\<paquete>\` | Paso 4 |
+| Modificar | `infra\lamb-config\config-repo\lamb-gateway-dev.yml` | Paso 5 |
+| Modificar | `infra\lamb-gateway\...\config\SecurityConfig.java` | Paso 5 |
+| Crear (UI) | topic `<topic>` en Kafka UI | Paso 6 |
+| Crear (UI) | panel en Grafana | Paso 8 |
 
 ---
 
@@ -216,6 +257,12 @@ Llena **exactamente** estos campos:
 | **Package name** | `pe.edu.upeu.lamb.notificacion` |
 | **Packaging** | `Jar` |
 | **Java** | `21` |
+
+!!! tip "🔁 Cambia esto en este paso"
+    - **Artifact** y **Name:** `cristoferdua-notificacion-ms` → `<prefijo>-notificacion-ms` (tu nombre).
+    - **Package name:** `pe.edu.upeu.lamb.notificacion` → `pe.edu.upeu.lamb.<servicio>` (en el examen queda igual: `notificacion`).
+    - **Description:** cámbiala si quieres; no afecta la nota.
+    - En el examen, `<servicio>` **siempre** es `notificacion`. Solo cambia tu `<prefijo>`.
 
 !!! note "Si no aparece Spring Boot 4.0.8"
     Usa la versión que tenga tu proyecto. Lo importante es que después reemplaces el `pom.xml`
@@ -470,10 +517,10 @@ Si ya los tenías, no pasa nada: se reemplazan.
 </project>
 ```
 
-!!! note "Qué cambia si usas otro nombre"
-    - `cristoferdua-notificacion-ms` → tu artefacto.
-    - `Notificaciones con saga Kafka` → tu descripción.
-    - No cambies `groupId`, `java.version` ni `spring-cloud.version` salvo que tu proyecto use otras.
+!!! tip "🔁 Cambia esto en este paso (pom.xml)"
+    - `<artifactId>` y `<name>`: `cristoferdua-notificacion-ms` → `<prefijo>-notificacion-ms`.
+    - `<description>`: puedes cambiarla; no afecta la nota.
+    - **No cambies** `groupId`, `java.version` ni `spring-cloud.version` salvo que tu proyecto use otras versiones.
 
 ### 1.9 Crea el `application.yml`
 
@@ -497,6 +544,10 @@ spring:
   config:
     import: "optional:configserver:${CONFIG_SERVER_URL:http://localhost:18888}"
 ```
+
+!!! tip "🔁 Cambia esto en este paso (application.yml)"
+    - `name: cristoferdua-notificacion-ms` → `name: <prefijo>-notificacion-ms`.
+    - No cambies nada más: el resto de la configuración vive en el Config Server (Paso 3).
 
 !!! note "Por qué solo tiene esto"
     El puerto, la base de datos, Kafka, Eureka y Actuator viven en el **Config Server**
@@ -526,9 +577,10 @@ public class CristoferduaNotificacionMsApplication {
 }
 ```
 
-!!! note "Si tu clase se llama distinto"
-    No importa. Solo asegúrate de que el `package` sea `pe.edu.upeu.lamb.notificacion`.
-    Si el paquete es otro, corrígelo aquí y en todos los archivos de esta guía.
+!!! tip "🔁 Cambia esto en este paso (clase principal)"
+    - El `package` debe ser tu `<paquete>`: `pe.edu.upeu.lamb.notificacion`.
+    - El nombre de la clase lo genera Initializr (`CristoferduaNotificacionMsApplication`); no importa si no coincide exactamente con el ejemplo.
+    - Si el paquete quedó distinto, corrígelo aquí **y en todos los archivos Java** (Paso 4).
 
 ### 1.11 Compila para comprobar que todo está bien
 
@@ -543,6 +595,10 @@ Debe terminar con `BUILD SUCCESS`. Si falla, revisa que el `pom.xml` se haya peg
 y que Java sea 21 (`java -version`).
 
 ### 1.12 Mapa de archivos que vas a crear
+
+!!! tip "🔁 Cambia esto en este paso (mapa)"
+    En el árbol de abajo, `cristoferdua` es tu `<prefijo>` y `notificacion` es tu `<servicio>`.
+    Si el examen usa `notificacion`, el árbol queda **exactamente** como se muestra.
 
 Al terminar la guía, la carpeta del servicio debe verse así:
 
@@ -605,12 +661,12 @@ volumes:
   cristoferdua_notificacion_dev_data:
 ```
 
-**Qué cambiar si usas otro nombre:**
-
-- `cristoferdua-notificacion-dev` → el nombre del proyecto Docker.
-- `cristoferdua-postgres-notificacion-dev` → el contenedor.
-- `lamb_notificacion_db` → tu base.
-- `15460` → tu puerto libre.
+!!! tip "🔁 Cambia esto en este paso (compose-dev.yml)"
+    - `name: cristoferdua-notificacion-dev` → `name: <prefijo>-notificacion-dev`.
+    - `container_name: cristoferdua-postgres-notificacion-dev` → `container_name: <contenedor-bd>`.
+    - `POSTGRES_DB: lamb_notificacion_db` → `POSTGRES_DB: <db>`.
+    - `- "15460:5432"` → `- "<puerto-bd>:5432"`.
+    - El volumen `cristoferdua_notificacion_dev_data` puede quedarse igual o cambiar tu `<prefijo>`.
 
 ### 2.2 Levanta el Postgres
 
@@ -660,6 +716,12 @@ CREATE TABLE notificaciones (
     CONSTRAINT uk_notificaciones_referencia UNIQUE (referencia)
 );
 ```
+
+!!! tip "🔁 Cambia esto en este paso (migración SQL)"
+    - Nombre del archivo: `V1__crear_notificaciones.sql` → `V1__crear_<plural>.sql`.
+    - `CREATE TABLE notificaciones` → `CREATE TABLE <plural>`.
+    - `uk_notificaciones_referencia` → `uk_<plural>_referencia`.
+    - En el examen `<plural>` es `notificaciones`, así que **no cambia nada**.
 
 !!! important "La restricción UNIQUE"
     `uk_notificaciones_referencia` es la que evita las filas duplicadas en la prueba de idempotencia.
@@ -753,13 +815,13 @@ management:
       show-details: always
 ```
 
-**Qué cambiar si usas otro nombre:**
-
-- `8090` → tu puerto.
-- `15460` / `lamb_notificacion_db` → tu Postgres.
-- `cristoferdua-notificacion-ms` (group-id) → tu nombre.
-- `pe.edu.upeu.lamb.notificacion.event` → tu paquete.
-- `notificacion-eventos` → tu topic.
+!!! tip "🔁 Cambia esto en este paso (archivo del Config Server)"
+    - Nombre del archivo: `cristoferdua-notificacion-ms-dev.yml` → `<prefijo>-notificacion-ms-dev.yml`.
+    - `server.port: 8090` → `<puerto>`.
+    - `url: ...localhost:15460/lamb_notificacion_db` → `...localhost:<puerto-bd>/<db>`.
+    - `group-id: cristoferdua-notificacion-ms` → `<prefijo>-notificacion-ms`.
+    - `pe.edu.upeu.lamb.notificacion` (en `default.type`, `trusted.packages` y `logging.level`) → `<paquete>`.
+    - `eventos: notificacion-eventos` → `eventos: <topic>`.
 
 !!! note "Los 5 bloques que califica el docente"
     - `server.port`: el puerto del microservicio.
@@ -797,6 +859,15 @@ Abre http://localhost:18761 y deja la pestaña abierta. El servicio aparecerá *
 ## Paso 4: código Java
 
 ### 4.1 Crea las carpetas del código
+
+!!! tip "🔁 Cambia esto en TODOS los archivos Java de este paso"
+    - La ruta `...\java\pe\edu\upeu\lamb\notificacion\` → `...\java\<paquete en carpetas>\`.
+    - En cada archivo, `package pe.edu.upeu.lamb.notificacion...;` → `package <paquete>...;`.
+    - Nombres de clases: `Notificacion` → `<entidad>` (en el examen sigue siendo `Notificacion`).
+    - Ruta REST: `/api/v1/notificaciones` → `/api/v1/<plural>`.
+    - Eventos: `notificacion.solicitada/enviada/fallida` → `<evento>.solicitada/enviada/fallida`.
+    - **En el examen** (`notificacion`) estos valores **no cambian**: copia el código tal cual.
+    - Las carpetas `config`, `controller`, `dto`, `entity`, `event`, `exception`, `messaging`, `repository` y `service` **no cambian**.
 
 **Crea las carpetas:** `config`, `controller`, `dto`, `entity`, `event`, `exception`, `messaging`, `repository`, `service`
 **En la ruta:** `services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\`
@@ -1422,6 +1493,12 @@ debajo de la ruta de `lamb-finanzas`:
                 - Path=/api/v1/notificaciones/**
 ```
 
+!!! tip "🔁 Cambia esto en este paso (lamb-gateway-dev.yml)"
+    - `- id: cristoferdua-notificacion` → `- id: <prefijo>-notificacion`.
+    - `uri: lb://cristoferdua-notificacion-ms` → `uri: lb://<prefijo>-notificacion-ms`.
+    - `Path=/api/v1/notificaciones/**` → `Path=/api/v1/<plural>/**`.
+    - En el examen solo cambia tu `<prefijo>`.
+
 Debe quedar con la misma indentación que las demás rutas (12 espacios antes de `- id:`).
 
 ### 5.2 Agrega `permitAll` en la seguridad del Gateway
@@ -1439,6 +1516,10 @@ Justo **debajo** de esa línea, agrega:
 ```java
                         .requestMatchers("/api/v1/notificaciones/**").permitAll()
 ```
+
+!!! tip "🔁 Cambia esto en este paso (SecurityConfig.java)"
+    - `/api/v1/notificaciones/**` → `/api/v1/<plural>/**` (en el examen se queda igual).
+    - No borres las demás reglas ni `anyRequest().authenticated()`.
 
 Debe quedar antes de `anyRequest().authenticated()`. Spring aplica la primera regla que coincide.
 
@@ -1478,6 +1559,11 @@ Debe responder `HTTP/1.1 200` y `[]` (o la lista de notificaciones).
    - **Partitions:** `3`
    - **Replication factor:** `1`
 5. Haz clic en **Create**.
+
+!!! tip "🔁 Cambia esto en este paso (topic de Kafka)"
+    - **Name:** `notificacion-eventos` → `<topic>`.
+    - En el examen el topic es `notificacion-eventos`, así que **no cambia**.
+    - El comando de abajo también usa `--topic notificacion-eventos`.
 
 **Alternativa por comando:**
 
@@ -1544,6 +1630,12 @@ Debes ver:
 
 !!! note "Usa `curl.exe`, no `curl`"
     En PowerShell, `curl` es un alias de `Invoke-WebRequest`. Escribe **`curl.exe`** para usar el curl real.
+
+!!! tip "🔁 Cambia esto en este paso (pruebas con curl)"
+    - `http://localhost:8090` → `http://localhost:<puerto>`.
+    - `/api/v1/notificaciones` → `/api/v1/<plural>`.
+    - `cristoferdua-postgres-notificacion-dev` y `lamb_notificacion_db` (en los `docker exec`) → tus nombres.
+    - En el examen estos valores son los de la guía; solo cambia `<puerto>` si elegiste otro.
 
 ### 7.1 Camino feliz
 
@@ -1673,6 +1765,11 @@ max(up{application=~"(?i)cristoferdua-notificacion-ms"}) or vector(0)
 11. En **Panel options → Title**, escribe: `Estado de cristoferdua-notificacion-ms`.
 12. Haz clic en **Apply** y luego en **Save dashboard**.
 
+!!! tip "🔁 Cambia esto en este paso (Grafana)"
+    - En la consulta: `max(up{application=~"(?i)cristoferdua-notificacion-ms"}) or vector(0)` → usa `<prefijo>-notificacion-ms`.
+    - En el título del panel: `Estado de cristoferdua-notificacion-ms` → `Estado de <prefijo>-notificacion-ms`.
+    - En el examen solo cambia tu `<prefijo>`.
+
 !!! note "Por qué `(?i)`"
     Eureka escribe el nombre de la aplicación en mayúsculas (`CRISTOFERDUA-NOTIFICACION-MS`).
     `(?i)` hace que la comparación no distinga mayúsculas de minúsculas.
@@ -1694,6 +1791,11 @@ El panel debe volver a **ACTIVO**.
 ---
 
 ## Paso 9: checklist de calificación (20 puntos)
+
+!!! tip "🔁 Cambia esto en este paso (checklist)"
+    En la columna "Cómo lo demuestras", cambia `cristoferdua-notificacion-ms`,
+    `cristoferdua-postgres-notificacion-dev` y `notificacion-eventos` por tus valores.
+    En el examen se usan los de esta guía.
 
 | # | Ítem | Puntos | Cómo lo demuestras |
 |---|---|---:|---|
@@ -1723,6 +1825,10 @@ El panel debe volver a **ACTIVO**.
 ---
 
 ## Paso 10: problemas comunes
+
+!!! tip "🔁 Cambia esto en este paso (problemas)"
+    Los mensajes de error mencionan `cristoferdua-notificacion-ms`, `cristoferdua-notificacion-ms-dev.yml`
+    y `notificacion-eventos`. Si usaste otro nombre, busca tu `<prefijo>` en su lugar.
 
 | Síntoma | Causa probable | Solución |
 |---|---|---|
@@ -1799,6 +1905,11 @@ Después de los reemplazos:
 ---
 
 ## Anexo B: comandos rápidos
+
+!!! tip "🔁 Cambia esto en este anexo"
+    Todos los comandos usan `cristoferdua-notificacion-ms`, `cristoferdua-postgres-notificacion-dev`,
+    `lamb_notificacion_db`, `notificacion-eventos`, `8090` y `15460`. Reemplázalos por tus valores
+    si usaste otro nombre o puerto.
 
 ### Arranque completo
 
