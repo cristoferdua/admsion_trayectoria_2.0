@@ -231,47 +231,55 @@ Contenedor Postgres                 : cristoferdua-postgres-notificacion-dev
 
 ## Paso 1: crear el proyecto con Spring Initializr
 
-### 1.1 Abre Spring Initializr
+### 1.1 Instala la extensión Spring Initializr (solo la primera vez)
 
-Abre en tu navegador:
+En VS Code, abre la vista **Extensions** (icono de bloques a la izquierda o `Ctrl+Shift+X`).
+Busca **Spring Initializr Java Support** y haz clic en **Install**.
 
-```text
-https://start.spring.io
-```
+!!! note "También puedes usar el paquete completo"
+    Si prefieres, instala **Extension Pack for Java** o **Spring Boot Extension Pack**;
+    incluyen la extensión de Spring Initializr.
 
-Verás un formulario a la izquierda y un panel con las dependencias a la derecha.
+### 1.2 Crea el proyecto desde VS Code
 
-### 1.2 Llena los datos del proyecto
+1. Abre la **paleta de comandos**: `Ctrl+Shift+P`.
+2. Escribe **Spring Initializr** y elige **Spring Initializr: Create a Maven Project...**
+   (en algunas versiones aparece como **Generate a Maven Project...**).
+3. Si te pregunta la versión de Spring Boot, elige **4.0.8** (o la misma que usa
+   `services\lamb-trayectoria-ms\pom.xml`).
+4. Si te pregunta el lenguaje, elige **Java**.
 
-Llena **exactamente** estos campos:
+!!! tip "No uses el navegador"
+    Todo se hace dentro de VS Code. La extensión usa el mismo Initializr, pero genera el proyecto
+    directamente en tu carpeta, **sin descargar ningún ZIP**.
 
-| Campo | Qué poner |
+### 1.3 Llena los datos del proyecto
+
+La extensión te va preguntando uno por uno. Responde así:
+
+| Pregunta de la extensión | Qué escribir |
 |---|---|
-| **Project** | `Maven` |
-| **Language** | `Java` |
-| **Spring Boot** | `4.0.8` (si no aparece, elige el mismo que usa `services\lamb-trayectoria-ms\pom.xml`) |
-| **Group** | `pe.edu.upeu` |
-| **Artifact** | `cristoferdua-notificacion-ms` |
-| **Name** | `cristoferdua-notificacion-ms` |
-| **Description** | `Notificaciones con saga Kafka` |
-| **Package name** | `pe.edu.upeu.lamb.notificacion` |
+| **Group Id** | `pe.edu.upeu.lamb` |
+| **Artifact Id** | `notificacion` |
 | **Packaging** | `Jar` |
-| **Java** | `21` |
+| **Java version** | `21` |
+| **Package name** (si te lo pregunta) | `pe.edu.upeu.lamb.notificacion` |
 
 !!! tip "🔁 Cambia esto en este paso"
-    - **Artifact** y **Name:** `cristoferdua-notificacion-ms` → `<prefijo>-notificacion-ms` (tu nombre).
-    - **Package name:** `pe.edu.upeu.lamb.notificacion` → `pe.edu.upeu.lamb.<servicio>` (en el examen queda igual: `notificacion`).
-    - **Description:** cámbiala si quieres; no afecta la nota.
-    - En el examen, `<servicio>` **siempre** es `notificacion`. Solo cambia tu `<prefijo>`.
+    - **Group Id:** `pe.edu.upeu.lamb` **no cambia**.
+    - **Artifact Id:** `notificacion` → `<servicio>` (en el examen es `notificacion`).
+    - Así el paquete queda exacto: `pe.edu.upeu.lamb.notificacion`.
+    - El nombre real del servicio (`<prefijo>-notificacion-ms`) se pone en la carpeta (paso 1.5)
+      y en el `pom.xml` (paso 1.8).
 
 !!! note "Si no aparece Spring Boot 4.0.8"
-    Usa la versión que tenga tu proyecto. Lo importante es que después reemplaces el `pom.xml`
+    Elige la versión que tenga tu proyecto. Lo importante es que después reemplaces el `pom.xml`
     por el de esta guía (paso 1.8), que ya trae las versiones correctas.
 
-### 1.3 Selecciona las dependencias
+### 1.4 Selecciona las dependencias
 
-Haz clic en el botón **ADD DEPENDENCIES** (o **Add Dependencies**) del panel derecho.
-Busca cada una por su nombre y haz clic para agregarla:
+La extensión abre una lista para buscar y marcar dependencias. Busca cada una, selecciónala
+(barra espaciadora o clic) y al final confirma con **OK** o **Enter**:
 
 | # | Busca y agrega | Para qué |
 |---:|---|---|
@@ -295,26 +303,14 @@ Busca cada una por su nombre y haz clic para agregarla:
     El examen no usa Keycloak ni JWT en este microservicio. Si agregas seguridad, el POST directo
     responderá `401` y perderás los puntos de la saga.
 
-Al terminar, en el panel derecho deben aparecer las dependencias seleccionadas. Si te equivocaste,
-haz clic en la **X** de la dependencia para quitarla.
+### 1.5 Guarda el proyecto en `services\` y renómbralo
 
-### 1.4 Genera y descarga el ZIP
+Cuando la extensión pregunte **dónde guardar**, elige la carpeta `services` de tu proyecto.
+La extensión crea una carpeta llamada `notificacion` (el Artifact Id). **Renómbrala** al nombre
+real del servicio:
 
-1. Haz clic en el botón **GENERATE** (abajo).
-2. Se descarga un archivo llamado `cristoferdua-notificacion-ms.zip`.
-3. Abre la carpeta de **Descargas**.
-4. Clic derecho en el ZIP → **Extract All...** (o **Extraer todo...**).
-5. Se crea una carpeta `cristoferdua-notificacion-ms`.
-
-### 1.5 Mueve la carpeta a `services\`
-
-Mueve la carpeta descomprimida dentro de:
-
-```text
-Lamb-Modulo02-Admision-Trayectoria\
-└── services\
-    └── cristoferdua-notificacion-ms\
-```
+1. Clic derecho en la carpeta `notificacion` → **Rename**.
+2. Escribe `cristoferdua-notificacion-ms` y presiona **Enter**.
 
 La ruta final debe quedar así:
 
@@ -323,15 +319,19 @@ services\cristoferdua-notificacion-ms\pom.xml
 services\cristoferdua-notificacion-ms\src\
 ```
 
+!!! tip "🔁 Cambia esto en este paso"
+    - La carpeta `notificacion` → `<prefijo>-notificacion-ms`.
+    - Si la extensión no pregunta dónde guardar y crea la carpeta en la raíz del proyecto,
+      muévela a `services\` (arrástrala en el explorador de VS Code).
+
 !!! warning "Ojo con la carpeta doble"
-    A veces el ZIP se descomprime como `cristoferdua-notificacion-ms\cristoferdua-notificacion-ms\`.
-    Si ves eso, mueve **la carpeta interna** a `services\` y borra la carpeta externa vacía.
-    Dentro de `services\cristoferdua-notificacion-ms\` debe estar directamente el `pom.xml`.
+    Si queda `services\cristoferdua-notificacion-ms\cristoferdua-notificacion-ms\`, mueve **la carpeta interna**
+    a `services\` y borra la externa. Dentro de `services\cristoferdua-notificacion-ms\` debe estar directamente el `pom.xml`.
 
 ### 1.6 Abre el proyecto en VS Code
 
 1. En VS Code: **File → Open Folder...**
-2. Elige la carpeta **`Lamb-Modulo02-Admision-Trayectoria`**.
+2. Elige la carpeta **`Lamb-Modulo02-Admision-Trayectoria`** (la raíz del proyecto).
 3. En el explorador de la izquierda, abre `services\cristoferdua-notificacion-ms`.
 4. Debes ver `pom.xml`, `src`, `mvnw`, `mvnw.cmd` y `.mvn`.
 
@@ -557,7 +557,7 @@ spring:
 
 Spring Initializr ya creó la clase principal:
 
-`services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\CristoferduaNotificacionMsApplication.java`
+`services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\NotificacionApplication.java`
 
 **Abre el archivo** y verifica que el paquete sea `pe.edu.upeu.lamb.notificacion`.
 Debe verse así:
@@ -569,17 +569,17 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CristoferduaNotificacionMsApplication {
+public class NotificacionApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CristoferduaNotificacionMsApplication.class, args);
+        SpringApplication.run(NotificacionApplication.class, args);
     }
 }
 ```
 
 !!! tip "🔁 Cambia esto en este paso (clase principal)"
     - El `package` debe ser tu `<paquete>`: `pe.edu.upeu.lamb.notificacion`.
-    - El nombre de la clase lo genera Initializr (`CristoferduaNotificacionMsApplication`); no importa si no coincide exactamente con el ejemplo.
+    - El nombre de la clase lo genera Initializr (`NotificacionApplication`); no importa si no coincide exactamente con el ejemplo.
     - Si el paquete quedó distinto, corrígelo aquí **y en todos los archivos Java** (Paso 4).
 
 ### 1.11 Compila para comprobar que todo está bien
@@ -611,7 +611,7 @@ services\cristoferdua-notificacion-ms\
 ├── .mvn\
 └── src\main\
     ├── java\pe\edu\upeu\lamb\notificacion\
-    │   ├── CristoferduaNotificacionMsApplication.java
+    │   ├── NotificacionApplication.java
     │   ├── config\KafkaTopicsConfig.java
     │   ├── controller\NotificacionController.java
     │   ├── dto\NotificacionRequest.java
@@ -886,7 +886,7 @@ Así debe quedar:
 
 ```text
 services\cristoferdua-notificacion-ms\src\main\java\pe\edu\upeu\lamb\notificacion\
-├── CristoferduaNotificacionMsApplication.java
+├── NotificacionApplication.java
 ├── config\
 ├── controller\
 ├── dto\
