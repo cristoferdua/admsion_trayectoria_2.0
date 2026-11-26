@@ -37,4 +37,5 @@ public class Postulacion {
 
     @Column(name = "fecha_registro", nullable = false)
     private Instant fechaRegistro;
+    
 }

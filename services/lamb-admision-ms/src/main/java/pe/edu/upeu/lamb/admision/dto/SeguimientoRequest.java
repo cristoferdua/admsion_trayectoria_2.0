@@ -16,7 +16,7 @@ public class SeguimientoRequest {
     @NotNull private Long idPostulante;
     @NotNull private CanalSeguimiento canal;
     @Size(max = 50) private String medioCaptacion;
-    @NotBlank @Size(max = 200) private String asunto;
+    @Size(max = 200) private String asunto;
     @Size(max = 1000) private String detalle;
     @NotNull private ResultadoSeguimiento resultado;
     private Instant proximoContacto;

@@ -17,5 +17,5 @@ public class ExamenAdmisionRequest {
     @NotNull private Instant fechaExamen;
     @NotNull @Min(15) @Max(600) private Integer duracionMinutos;
     private Long idAula;
-    @NotNull @Min(1) private Integer aforoMaximo;
+    @Min(1) private Integer aforoMaximo;
 }

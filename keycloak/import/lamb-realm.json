@@ -55,7 +55,7 @@
       "credentials": [
         { "type": "password", "value": "admin123", "temporary": false }
       ],
-      "realmRoles": ["ADMIN"],
+      "realmRoles": ["ADMIN", "default-roles-lamb"],
       "attributes": { "idPersona": ["1"] }
     },
     {
@@ -68,7 +68,7 @@
       "credentials": [
         { "type": "password", "value": "docente123", "temporary": false }
       ],
-      "realmRoles": ["DOCENTE"],
+      "realmRoles": ["DOCENTE", "default-roles-lamb"],
       "attributes": { "idPersona": ["2"] }
     },
     {
@@ -81,7 +81,7 @@
       "credentials": [
         { "type": "password", "value": "estudiante123", "temporary": false }
       ],
-      "realmRoles": ["ESTUDIANTE"],
+      "realmRoles": ["ESTUDIANTE", "default-roles-lamb"],
       "attributes": { "idPersona": ["3"] }
     }
   ]

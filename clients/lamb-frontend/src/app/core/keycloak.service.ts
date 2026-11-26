@@ -28,6 +28,16 @@ export class KeycloakService {
   logout() { this.kc?.logout({ redirectUri: window.location.origin }); }
   get token(): string | undefined { return this.kc?.token; }
 
+  async getValidToken(): Promise<string | undefined> {
+    if (!this.kc) return undefined;
+    try {
+      await this.kc.updateToken(30);
+      return this.kc.token;
+    } catch {
+      return undefined;
+    }
+  }
+
   private async loadProfile() {
     const p = await this.kc?.loadUserProfile();
     const name = `${p?.firstName ?? ''} ${p?.lastName ?? ''}`.trim() || p?.username || 'Usuario';

@@ -91,11 +91,22 @@ export class CrudGenericComponent {
     const d = this.def(); if (!d) return;
     const data: Record<string, any> = {};
     for (const field of d.fields) {
-      data[field.key] = row[field.key] ?? null;
+      const v = row[field.key] ?? null;
+      data[field.key] = field.type === 'datetime' && typeof v === 'string' && v
+        ? this.toLocalInput(v)
+        : v;
     }
     this.form.set(data);
     this.editingId.set(row.id ?? null);
     this.showForm.set(true);
+  }
+
+  // "2026-11-18T19:34:00Z" (Instant) -> "2026-11-18T19:34" (valor de datetime-local)
+  private toLocalInput(iso: string): string {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return iso.slice(0, 16);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
 
   buscarReniec() {
@@ -123,6 +134,14 @@ export class CrudGenericComponent {
   save() {
     const d = this.def(); if (!d) return;
     const body = { ...this.form() };
+    // datetime-local produce "YYYY-MM-DDTHH:mm" (sin segundos ni zona) y el backend
+    // espera java.time.Instant → convertir a ISO UTC completo antes de enviar.
+    for (const field of d.fields) {
+      const v = body[field.key];
+      if (field.type === 'datetime' && typeof v === 'string' && v) {
+        body[field.key] = new Date(v).toISOString();
+      }
+    }
     // quitar campos virtuales (empiezan con __) y vacios
     for (const k of Object.keys(body)) {
       if (k.startsWith('__') || body[k] === '' || body[k] === null) delete body[k];

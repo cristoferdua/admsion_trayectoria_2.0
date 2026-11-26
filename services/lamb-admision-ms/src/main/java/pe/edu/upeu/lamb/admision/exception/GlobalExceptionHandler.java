@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestControllerAdvice
@@ -57,11 +58,23 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
+        List<Map<String, String>> errores = ex.getBindingResult().getFieldErrors().stream()
+                .map(fe -> Map.of(
+                        "campo", fe.getField(),
+                        "mensaje", fe.getDefaultMessage() == null ? "invalido" : fe.getDefaultMessage()))
+                .toList();
+
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", Instant.now().toString());
         body.put("status", HttpStatus.BAD_REQUEST.value());
         body.put("error", "Bad Request");
-        body.put("message", "Error de validacion en los datos enviados");
+        body.put("message", errores.isEmpty()
+                ? "Error de validacion en los datos enviados"
+                : "Error de validacion: " + errores.stream()
+                        .map(e -> e.get("campo") + " (" + e.get("mensaje") + ")")
+                        .reduce((a, b) -> a + ", " + b)
+                        .orElse(""));
+        body.put("errores", errores);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 }

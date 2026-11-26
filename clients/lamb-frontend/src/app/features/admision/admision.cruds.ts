@@ -58,10 +58,11 @@ export const ADMISION_CRUDS: CrudDef[] = [
       f('idConvocatoria', 'ID Convocatoria', 'number', { required: true }),
       f('codigo', 'Código', 'text', { required: true }),
       f('nombre', 'Nombre', 'text', { required: true }),
-      f('fechaExamen', 'Fecha', 'datetime', { required: true }),
+     
+      f('fechaExamen', 'Fecha examen', 'datetime', { required: true }),
       f('duracionMinutos', 'Duración (min)', 'number', { required: true, default: 120 }),
       f('idAula', 'ID Aula', 'number'),
-      f('aforoMaximo', 'Aforo máx.', 'number', { required: true, default: 30 }),
+      f('aforoMaximo', 'Aforo máx.', 'number', { required: false, default: 30 }),
       f('aforoAsignado', 'Aforo asignado', 'number', { required: true, default: 0 }),
       f('estado', 'Estado', 'enum', { required: true, options: ['PROGRAMADO','EN_CURSO','FINALIZADO','CANCELADO'], default: 'PROGRAMADO' })
     ]
@@ -75,7 +76,7 @@ export const ADMISION_CRUDS: CrudDef[] = [
       f('idPostulante', 'ID Postulante', 'number', { required: true }),
       f('canal', 'Canal', 'enum', { required: true, options: ['LLAMADA','WHATSAPP','CORREO','PRESENCIAL'], default: 'LLAMADA' }),
       f('medioCaptacion', 'Medio captación', 'text'),
-      f('asunto', 'Asunto', 'text', { required: true }),
+      f('asunto', 'Asunto', 'text', { required: false }),
       f('detalle', 'Detalle', 'textarea', { listed: false }),
       f('resultado', 'Resultado', 'enum', { required: true, options: ['CONTACTADO','SIN_RESPUESTA','INTERESADO','DESCARTADO'], default: 'CONTACTADO' }),
       f('idResponsable', 'ID Responsable', 'number'),

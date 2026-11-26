@@ -29,7 +29,7 @@ public class SeguimientoPostulante {
     @Column(name = "medio_captacion", length = 50)
     private String medioCaptacion;
 
-    @Column(name = "asunto", nullable = false, length = 200)
+    @Column(name = "asunto", nullable = true, length = 200)
     private String asunto;
 
     @Column(name = "detalle", length = 1000)

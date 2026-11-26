@@ -16,3 +16,5 @@ services:
 
 volumes:
   lamb_admision_dev_data:
+    # volumen propio: el proyecto 'lamb oficial' usa lamb-admision-dev_lamb_admision_dev_data con otras migraciones V6-V10
+    name: lamb-modulo02-admision-data

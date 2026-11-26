@@ -38,7 +38,7 @@ public class ExamenAdmision {
     @Column(name = "id_aula")
     private Long idAula;
 
-    @Column(name = "aforo_maximo", nullable = false)
+    @Column(name = "aforo_maximo", nullable = true)
     private Integer aforoMaximo;
 
     @Column(name = "aforo_asignado", nullable = false)

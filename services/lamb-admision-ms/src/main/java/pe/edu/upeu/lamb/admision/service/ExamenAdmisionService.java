@@ -63,7 +63,7 @@ public class ExamenAdmisionService {
         if (repo.existsByCodigoAndIdNot(r.getCodigo(), id)) {
             throw new BusinessRuleException("Ya existe otro examen con codigo " + r.getCodigo());
         }
-        if (r.getAforoMaximo() < e.getAforoAsignado()) {
+        if (r.getAforoMaximo() != null && r.getAforoMaximo() < e.getAforoAsignado()) {
             throw new BusinessRuleException("El aforo maximo no puede ser menor al aforo asignado (" + e.getAforoAsignado() + ")");
         }
         e.setCodigo(r.getCodigo());
