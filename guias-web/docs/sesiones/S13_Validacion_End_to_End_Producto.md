@@ -1,6 +1,6 @@
 # S13 - Validación end-to-end del producto del curso
 
-*Guía única: agregar un microservicio nuevo al proyecto Lamb - Parte 13 de 16 - 2026*
+*Guía principal: agregar un microservicio nuevo (sin CRUD) al proyecto Lamb - Parte 13 de 16 - 2026*
 
 ## 1. Introducción
 
@@ -29,32 +29,12 @@ Cambia solo `lamb-evaluacionn-ms` por tu servicio. Admisión y Trayectoria no so
 | 2 | Evento sin token | `Invoke-RestMethod -Method Post http://localhost:18080/api/v1/evaluacionn/saludo/evento` | `401` |
 | 3 | Evento directo | `Invoke-RestMethod -Method Post http://localhost:8095/api/v1/evaluacionn/saludo/evento` | `200` + evento en el log |
 
-**Camino B - Con CRUD:**
-
-| N. | Prueba | Esperado |
-|---|---|---|
-| 4 | `GET http://localhost:18080/api/v1/examenes` | `200` |
-| 5 | `POST` sin token por el Gateway | `401` |
-| 6 | `POST http://localhost:8095/api/v1/examenes` con datos válidos | `201` + `examen.creado` |
-| 7 | `POST` con `{"titulo":""}` | `400` "Error de validación en los datos enviados" y **sin** evento |
-| 8 | `PUT .../examenes/{id}` | `200` + `examen.actualizado` |
-| 9 | `GET .../examenes/99999` | `404` "Examen no encontrado: 99999" |
-| 10 | `DELETE .../examenes/{id}` | `204` + `examen.eliminado` |
-| 11 | Datos con tildes y ñ (`"Año"`) | se guardan bien |
-
-!!! note "Ver el código de error en PowerShell"
-    `Invoke-RestMethod` lanza una excepción con `400`/`404`. Para ver solo el código:
-    ```powershell
-    try { Invoke-RestMethod http://localhost:8095/api/v1/examenes/99999 } catch { $_.Exception.Response.StatusCode.value__ }
-    ```
-
 ## 4. Pruebas en el navegador
 
 | Usuario | Prueba | Esperado |
 |---|---|---|
 | `admin` / `admin123` | http://localhost:4200/evaluacionn → *Enviar evento* | "Evento enviado a Kafka." |
-| `admin` | **Camino B:** nuevo, editar, eliminar | todo funciona |
-| `estudiante1` / `estudiante123` | *Enviar evento* (y en B: *Guardar*) | "No tienes permiso para esta acción." |
+| `estudiante1` / `estudiante123` | *Enviar evento* | "No tienes permiso para esta acción." |
 
 ## 5. Revisión de infraestructura
 
@@ -72,3 +52,5 @@ Cambia solo `lamb-evaluacionn-ms` por tu servicio. Admisión y Trayectoria no so
 
 Una tabla como las de arriba con una columna **Resultado** (OK / falla) llena por ti, con capturas.
 Si algo falla, ve a la [S14](S14_Revision_Tecnica_Estabilizacion.md).
+
+**Si te piden CRUD:** ahora haz la [parte de pruebas de la guía con CRUD](../proyecto-sello/servicio-con-crud.md#10-s12-a-s16-pruebas-y-preguntas-del-crud).

@@ -1,6 +1,6 @@
 # S12 - Evaluación de la Unidad II
 
-*Guía única: agregar un microservicio nuevo al proyecto Lamb - Parte 12 de 16 - 2026*
+*Guía principal: agregar un microservicio nuevo (sin CRUD) al proyecto Lamb - Parte 12 de 16 - 2026*
 
 !!! note "Antes de empezar: debe estar levantado"
     Desde la raíz del proyecto (`Lamb-Modulo02-Admision-Trayectoria`). Si ya está corriendo, no lo arranques otra vez.
@@ -51,13 +51,11 @@ Toma una captura de cada una (sirven para el [Producto U2](../proyecto-sello/u2-
 | 2 | Roles en Keycloak | http://localhost:18180 → realm `lamb` → *Realm roles* | S7b |
 | 3 | Eventos publicados y consumidos | log: `status=published` / `status=consumed` | S8 |
 | 4 | Topic en Kafka UI | http://localhost:18090 → `evaluacionn-eventos` | S8 |
-| 5 | **Camino B:** dato inválido → `400` sin evento | PowerShell (S9, paso 4) | S9 |
-| 6 | Logs en Grafana | http://localhost:13000 → Explore → Loki | S10 |
-| 7 | Seguimiento por traceId | buscar un `X-Trace-ID` en Loki | S10 |
-| 8 | Métricas | http://localhost:19090/targets → UP | S10 |
-| 9 | Frontend Hola mundo + evento | http://localhost:4200/evaluacionn | S11 |
-| 10 | **Camino B:** CRUD en el frontend | `/evaluacionn/examenes`: nuevo, editar, eliminar | S11 |
-| 11 | `403` para `estudiante1` | "No tienes permiso para esta acción." | S11 |
+| 5 | Logs en Grafana | http://localhost:13000 → Explore → Loki | S10 |
+| 6 | Seguimiento por traceId | buscar un `X-Trace-ID` en Loki | S10 |
+| 7 | Métricas | http://localhost:19090/targets → UP | S10 |
+| 8 | Frontend Hola mundo + evento | http://localhost:4200/evaluacionn | S11 |
+| 9 | `403` para `estudiante1` | "No tienes permiso para esta acción." | S11 |
 
 ## 3. Preguntas que te pueden hacer
 
@@ -69,5 +67,7 @@ Toma una captura de cada una (sirven para el [Producto U2](../proyecto-sello/u2-
 | ¿Qué hace `publicarTrasCommit`? | Publica el evento solo después de que la base de datos confirmó el guardado. |
 | ¿Para qué sirve el traceId? | Para filtrar en Loki todas las líneas de una sola petición. |
 | ¿Cómo encuentra Prometheus a tu servicio? | Le pregunta a Eureka qué servicios hay. |
+
+**Si te piden CRUD:** ahora haz la [parte S12 a S16 de la guía con CRUD](../proyecto-sello/servicio-con-crud.md#10-s12-a-s16-pruebas-y-preguntas-del-crud).
 
 Siguiente: [S13 - Validación end-to-end](S13_Validacion_End_to_End_Producto.md).

@@ -1,6 +1,6 @@
 # S2 - Gestión centralizada de configuración y ambientes
 
-*Guía única: agregar un microservicio nuevo al proyecto Lamb - Parte 2 de 16 - 2026*
+*Guía principal: agregar un microservicio nuevo (sin CRUD) al proyecto Lamb - Parte 2 de 16 - 2026*
 
 !!! note "Antes de empezar: debe estar levantado"
     Desde la raíz del proyecto (`Lamb-Modulo02-Admision-Trayectoria`). Si ya está corriendo, no lo arranques otra vez.
@@ -21,7 +21,7 @@
 
 En Lamb, ningún microservicio guarda su configuración (puerto, base de datos, Kafka, Keycloak...) dentro
 de su código: la pide al **Config Server** (`http://localhost:18888`) al arrancar. En esta sesión tu servicio
-hace lo mismo. **Es igual para los dos caminos (A y B).**
+hace lo mismo.
 
 | Archivo | Dónde | Qué tiene |
 |---|---|---|
@@ -36,7 +36,7 @@ hace lo mismo. **Es igual para los dos caminos (A y B).**
 **Ojo:** Va en `resources`, al lado de `logback-spring.xml`.  
 **Y pega el siguiente código:**
 
-{{lamb:services/lamb-biblioteca-ms/src/main/resources/application.yml}}
+{{hola:services/lamb-hola-ms/src/main/resources/application.yml}}
 
 !!! note "Qué cambia"
     Solo `name: lamb-evaluacionn-ms`. No cambies `profiles.active: dev` ni la línea `config.import`.
@@ -52,7 +52,7 @@ Crea este archivo en el Config Server. Ya trae todo lo que se usará en las sigu
 **Ojo:** Esta carpeta está en `infra` (**fuera** de tu servicio), junto a los `-dev.yml` de los otros servicios.  
 **Y pega el siguiente código:**
 
-{{lamb:infra/lamb-config/config-repo/lamb-biblioteca-ms-dev.yml}}
+{{hola:infra/lamb-config/config-repo/lamb-hola-ms-dev.yml}}
 
 **Qué cambiar según tu caso y qué no:**
 
@@ -103,8 +103,6 @@ Located environment: name=lamb-evaluacionn-ms, profiles=[dev]
 Started LambEvaluacionnMsApplication in ... seconds
 ```
 
-**Camino B:** además debe salir `Successfully applied 1 migration to schema "public", now at version v1` (Flyway creó la tabla).
-
 ## 5. Ver la base de datos en VS Code
 
 Con la extensión **Database Client** (ícono de base de datos en la barra izquierda de VS Code) ves tu BD,
@@ -129,21 +127,17 @@ Clic en **Connect** (o *Save*). La conexión queda guardada para la próxima vez
     Port, Database, Username y Password son **los de tu `compose-dev.yml`** (`ports:` el número de la izquierda,
     `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`). Host siempre es `127.0.0.1`.
 
-**3. Ver las tablas:** despliega la conexión → `lamb_evaluacionn_db` → `public` → *Tables*. Aparecen cuando tu servicio arrancó una vez (Flyway las crea al arrancar).
+**3. Ver las tablas:** despliega la conexión → `lamb_evaluacionn_db` → `public` → *Tables*. Tu servicio **no tiene tablas propias** (no tiene CRUD), así que es normal que la lista esté vacía o que solo salga la de Flyway. Lo importante es que la conexión abra: eso prueba que la BD está levantada.
 
 | Tabla | Qué es |
 |---|---|
-| `examenes` | **Camino B:** tu tabla. Clic en ella para ver los registros (se llenan al agregar desde la página o la API) |
 | `flyway_schema_history` | La crea Flyway: lista de migraciones aplicadas (`V1`, `V2`...). **No la modifiques** |
 
 **4. Hacer una consulta:** clic derecho en la conexión → *New Query* (o el ícono de consulta), escribe y ejecuta (`Ctrl+Enter`):
 
 ```sql
-SELECT * FROM examenes;
 SELECT * FROM flyway_schema_history;
 ```
-
-Si agregas registros desde la página, clic derecho en la tabla → *Refresh* para ver los cambios.
 
 !!! note "No cambies la tabla desde aquí"
     Ver datos y hacer `SELECT` está bien, pero los cambios a la **estructura** (agregar o quitar columnas) se hacen
@@ -167,7 +161,8 @@ Si agregas registros desde la página, clic derecho en la tabla → *Refresh* pa
 | Salud | http://localhost:8095/actuator/health | `"status":"UP"` (y `db` UP) |
 | Hola mundo directo | http://localhost:8095/api/v1/evaluacionn/saludo | `Hola mundo desde lamb-evaluacionn-ms` |
 | Swagger | http://localhost:8095/swagger-ui.html | Tus endpoints |
-| **Camino B:** CRUD directo | http://localhost:8095/api/v1/examenes | `[]` |
-| BD en VS Code | Database Client → `lamb_evaluacionn_db` | `flyway_schema_history` (y en B, `examenes`) |
+| BD en VS Code | Database Client → `lamb_evaluacionn_db` | La conexión abre |
+
+**Si te piden CRUD:** ahora haz la [parte S2 de la guía con CRUD](../proyecto-sello/servicio-con-crud.md#3-s2-flyway-crea-la-tabla).
 
 Siguiente: [S3 - Registro y descubrimiento](S03_Registro_Descubrimiento_Ejecucion_Concurrente.md).

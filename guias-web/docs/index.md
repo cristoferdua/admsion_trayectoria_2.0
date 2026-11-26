@@ -1,10 +1,15 @@
 # DISTribuidas 2026-2
 
-!!! note "Sesiones de esta versión: guía única para agregar un microservicio a Lamb"
-    Las sesiones de las unidades **I, II y III** (menú de la izquierda) contienen **una sola guía**, paso a paso,
-    para agregar un microservicio nuevo al proyecto **Lamb** siguiendo el código de Pagatu.
-    En cada sesión eliges tu camino: **A - Sin CRUD** (solo Hola mundo) o **B - Con CRUD** (agregar, editar, eliminar).
+!!! note "Sesiones de esta versión: guía principal para agregar un microservicio a Lamb"
+    Las sesiones de las unidades **I, II y III** (menú de la izquierda) son **la guía principal**, paso a paso,
+    para agregar un microservicio nuevo **sin CRUD** al proyecto **Lamb** (Hola mundo conectado a Config, Eureka,
+    Gateway, Keycloak, Kafka y Grafana), siguiendo el código de Pagatu.
     Empieza en [S1 - Construcción de un servicio base](sesiones/S01_Construccion_Servicio_Base.md).
+
+    En **Guía de Proyecto Sello** están además:
+
+    - [Guía: agregar un servicio con CRUD](proyecto-sello/servicio-con-crud.md): lo que se agrega en cada sesión si te piden agregar, editar y eliminar.
+    - [Guía: arrancar la app](proyecto-sello/arrancar-app.md): todos los comandos en orden y todos los links (Eureka, Kafka, Grafana...).
 
 Curso práctico de sistemas distribuidos con microservicios, configuración centralizada, descubrimiento de servicios, Gateway, seguridad, resiliencia, mensajería asíncrona, consistencia distribuida, observabilidad e integración frontend.
 

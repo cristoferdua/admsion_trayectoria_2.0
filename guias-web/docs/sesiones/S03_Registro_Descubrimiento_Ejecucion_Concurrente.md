@@ -1,6 +1,6 @@
 # S3 - Registro, descubrimiento y ejecución concurrente de servicios
 
-*Guía única: agregar un microservicio nuevo al proyecto Lamb - Parte 3 de 16 - 2026*
+*Guía principal: agregar un microservicio nuevo (sin CRUD) al proyecto Lamb - Parte 3 de 16 - 2026*
 
 !!! note "Antes de empezar: debe estar levantado"
     Desde la raíz del proyecto (`Lamb-Modulo02-Admision-Trayectoria`). Si ya está corriendo, no lo arranques otra vez.
@@ -28,7 +28,7 @@
 
 **Eureka** (`http://localhost:18761`) es la "guía telefónica" de Lamb: cada servicio se registra al arrancar
 y el Gateway lo busca por su nombre (`lb://lamb-evaluacionn-ms`), sin saber su puerto.
-**Es igual para los dos caminos (A y B)** y no tienes que escribir código: ya quedó configurado en la S2.
+No tienes que escribir código: ya quedó configurado en la S2.
 
 ## 2. Lo que ya tienes
 

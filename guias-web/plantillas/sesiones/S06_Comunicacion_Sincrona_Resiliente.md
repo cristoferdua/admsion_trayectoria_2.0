@@ -1,10 +1,10 @@
 # S6 - Comunicación síncrona resiliente entre servicios
 
-*Guía única: agregar un microservicio nuevo al proyecto Lamb - Parte 6 de 16 - 2026*
+*Guía principal: agregar un microservicio nuevo (sin CRUD) al proyecto Lamb - Parte 6 de 16 - 2026*
 
 ## 1. ¿Lo necesitas?
 
-**Para los caminos A y B de esta guía: no.** Tu servicio no necesita llamar a otro microservicio para funcionar,
+**Para esta guía: no.** Tu servicio no necesita llamar a otro microservicio para funcionar,
 así que puedes pasar directo a la [S7](S07_Seguridad_Distribuida_Control_Acceso.md).
 
 Haz esta sesión **solo si te piden** que tu servicio **consulte a otro servicio antes de guardar**
@@ -29,7 +29,7 @@ Sigue los pasos de la sesión original del profe:
 reemplazando los nombres con la tabla de arriba.
 
 !!! note "Esta parte no está en el ejemplo probado"
-    Los caminos A y B de esta guía se probaron completos sin esta sesión. Si la agregas, prueba también
+    Esta guía y la guía con CRUD se probaron completas sin esta sesión. Si la agregas, prueba también
     qué responde tu servicio cuando el otro está apagado (debe responder un error controlado, no colgarse).
 
 Siguiente: [S7 - Seguridad distribuida](S07_Seguridad_Distribuida_Control_Acceso.md).

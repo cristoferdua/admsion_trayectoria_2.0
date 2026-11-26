@@ -1,6 +1,6 @@
 # S8 - Mensajería asíncrona entre servicios
 
-*Guía única: agregar un microservicio nuevo al proyecto Lamb - Parte 8 de 16 - 2026*
+*Guía principal: agregar un microservicio nuevo (sin CRUD) al proyecto Lamb - Parte 8 de 16 - 2026*
 
 !!! note "Antes de empezar: debe estar levantado"
     Desde la raíz del proyecto (`Lamb-Modulo02-Admision-Trayectoria`). Si ya está corriendo, no lo arranques otra vez.
@@ -33,10 +33,8 @@
 Tu servicio va a **publicar eventos** en Kafka (`localhost:18092`) y también **escucharlos**, igual que
 `orden-ms` y `pago-ms` en Pagatu:
 
-| Camino | Cuándo publica | Tipo de evento |
-|---|---|---|
-| A - Sin CRUD | al pulsar "Enviar evento" | `saludo.enviado` |
-| B - Con CRUD | cada vez que se agrega, edita o elimina | `examen.creado`, `examen.actualizado`, `examen.eliminado` (y también `saludo.enviado`) |
+Publica un evento `saludo.enviado` cada vez que alguien pulsa *Enviar evento a Kafka*
+(`POST /api/v1/evaluacionn/saludo/evento`), y el mismo servicio lo recibe y lo escribe en su log.
 
 La configuración de Kafka ya quedó lista en la S2 (`spring.kafka...` y `app.kafka.topic.evaluacionn`).
 
@@ -49,7 +47,7 @@ $java = "services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn
 "event","messaging" | ForEach-Object { New-Item -ItemType Directory -Force "$java\$_" | Out-Null }
 ```
 
-## 2. Código común (los dos caminos)
+## 2. Kafka en tu servicio
 
 ### 2.1 `config\KafkaTopicsConfig.java` (crea el topic al arrancar)
 
@@ -237,9 +235,9 @@ public class EvaluacionnEventosConsumer {
     dentro de `alRecibirEvento(...)`. Para escuchar el topic de **otro** servicio (ej. `admision-eventos`), mira
     `AdmisionEventosConsumer` de Trayectoria o `OrdenEventosConsumer` de `pagatu-pago-ms`.
 
-## 3. Camino A - Sin CRUD: el botón de evento
+## 3. El botón de evento: `SaludoController` (versión final)
 
-**Si elegiste el servicio sin CRUD (solo Hola mundo), reemplaza `controller\SaludoController.java` por esta versión**
+**Reemplaza `controller\SaludoController.java` por esta versión**
 (agrega `POST /api/v1/evaluacionn/saludo/evento`):
 
 **Abre el archivo:** `SaludoController.java`  
@@ -275,7 +273,7 @@ public class SaludoController {
     @GetMapping("/saludo")
     public String saludo() {
         log.info("Saludo solicitado");
-        return "Hola mundo desde " + nombreServicio;
+        return "@@EVALUACIONN_MUNDO@@ desde " + nombreServicio;
     }
 
     @PostMapping("/saludo/evento")
@@ -283,7 +281,7 @@ public class SaludoController {
         EvaluacionnEvento evento = EvaluacionnEvento.builder()
                 .tipoEvento("saludo.enviado")
                 .id(System.currentTimeMillis())
-                .mensaje("Hola mundo por Kafka")
+                .mensaje("@@EVALUACIONN_MUNDO@@ por Kafka")
                 .origen(nombreServicio)
                 .timestamp(Instant.now().toEpochMilli())
                 .build();
@@ -297,120 +295,16 @@ public class SaludoController {
 
 - `evaluacionn` (aparece 4 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
 - `Evaluacionn` (aparece 6 veces) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
+- `EVALUACIONN` (aparece 2 veces) → el nombre de **tu servicio**, en mayúsculas. Ej.: `TESORERIA`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
-## 4. Camino B - Con CRUD: cada cambio avisa a Kafka
-
-**Si elegiste el servicio con CRUD:**
-
-1. Reemplaza `controller\SaludoController.java` por la versión de la sección 3 (también va en el camino B).
-2. Reemplaza `service\ExamenService.java` por esta versión, que publica un evento en cada `crear`, `actualizar` y `eliminar`:
-
-**Abre el archivo:** `ExamenService.java`  
-**En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\service\`  
-**Borra todo su contenido y pega el siguiente código:**
-
-```java
-package pe.edu.upeu.lamb.evaluacionn.service;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import pe.edu.upeu.lamb.evaluacionn.dto.ExamenRequest;
-import pe.edu.upeu.lamb.evaluacionn.dto.ExamenResponse;
-import pe.edu.upeu.lamb.evaluacionn.entity.Examen;
-import pe.edu.upeu.lamb.evaluacionn.event.EvaluacionnEvento;
-import pe.edu.upeu.lamb.evaluacionn.exception.ResourceNotFoundException;
-import pe.edu.upeu.lamb.evaluacionn.mapper.ExamenMapper;
-import pe.edu.upeu.lamb.evaluacionn.messaging.EvaluacionnEventosProducer;
-import pe.edu.upeu.lamb.evaluacionn.repository.ExamenRepository;
-
-import java.time.Instant;
-import java.util.List;
-
-@Service
-@RequiredArgsConstructor
-public class ExamenService {
-
-    private final ExamenRepository examenRepository;
-    private final ExamenMapper examenMapper;
-    private final EvaluacionnEventosProducer producer;
-
-    @Value("${spring.application.name}")
-    private String nombreServicio;
-
-    public List<ExamenResponse> listar() {
-        return examenRepository.findAll().stream()
-                .map(examenMapper::toResponse)
-                .toList();
-    }
-
-    public ExamenResponse obtener(Long id) {
-        return examenMapper.toResponse(buscarOFallar(id));
-    }
-
-    @Transactional
-    public ExamenResponse crear(ExamenRequest request) {
-        Examen examen = examenRepository.save(examenMapper.toEntity(request));
-        publicar("examen.creado", examen);
-        return examenMapper.toResponse(examen);
-    }
-
-    @Transactional
-    public ExamenResponse actualizar(Long id, ExamenRequest request) {
-        Examen examen = buscarOFallar(id);
-        examen.setTitulo(request.getTitulo());
-        examen.setCurso(request.getCurso());
-        examen = examenRepository.save(examen);
-        publicar("examen.actualizado", examen);
-        return examenMapper.toResponse(examen);
-    }
-
-    @Transactional
-    public void eliminar(Long id) {
-        Examen examen = buscarOFallar(id);
-        examenRepository.delete(examen);
-        publicar("examen.eliminado", examen);
-    }
-
-    private Examen buscarOFallar(Long id) {
-        return examenRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Examen no encontrado: " + id));
-    }
-
-    private void publicar(String tipoEvento, Examen examen) {
-        producer.publicarTrasCommit(EvaluacionnEvento.builder()
-                .tipoEvento(tipoEvento)
-                .id(examen.getId())
-                .mensaje(examen.getTitulo())
-                .origen(nombreServicio)
-                .timestamp(Instant.now().toEpochMilli())
-                .build());
-    }
-}
-```
-
-**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
-
-- `evaluacionn` (aparece 9 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `Evaluacionn` (aparece 4 veces) → el nombre de **tu servicio**, con mayúscula. Ej.: `Tesoreria`.
-- `examen` / `examenes` (aparece 31 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
-- `Examen` (aparece 20 veces) → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`.
-- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
-
-!!! note "Qué cambia respecto a la S1"
-    Se agregaron: `producer`, `nombreServicio`, el método `publicar(...)` y una llamada `publicar("examen.xxx", examen)`
-    en cada método que modifica. Cambia `"examen.creado"` etc. por tu recurso (`"pago.creado"`) y en
-    `.mensaje(examen.getTitulo())` usa un atributo que identifique tu registro.
-
-## 5. Probar
+## 4. Probar
 
 Reinicia tu servicio (en su terminal `Ctrl+C` y otra vez `.\mvnw.cmd spring-boot:run`). En el log debe salir el topic creado y, al probar
 (en **otra** PowerShell, cualquier carpeta):
 
 ```powershell
-# Camino A y B (directo al servicio, sin token)
+# directo al servicio, sin token
 Invoke-RestMethod -Method Post http://localhost:8095/api/v1/evaluacionn/saludo/evento
 ```
 
@@ -420,9 +314,6 @@ En la consola del servicio salen **dos** líneas (envió y recibió):
 ... component=producer topic=evaluacionn-eventos partition=1 offset=1 eventType=saludo.enviado ... status=published
 ... component=consumer eventType=saludo.enviado ... mensaje="Hola mundo por Kafka" status=consumed
 ```
-
-**Camino B:** crea, edita y elimina un examen (S4, paso 5, pero contra `http://localhost:8095/api/v1/examenes`)
-y verás `examen.creado`, `examen.actualizado` y `examen.eliminado`.
 
 Mira los mensajes en **Kafka UI**: http://localhost:18090 → *Topics* → `evaluacionn-eventos` → *Messages*.
 
@@ -439,12 +330,13 @@ Mira los mensajes en **Kafka UI**: http://localhost:18090 → *Topics* → `eval
 
     **Reemplazas:**
 
-    - `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\controller\SaludoController.java` - los dos caminos
-    - `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\service\ExamenService.java` - solo camino B
+    - `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\controller\SaludoController.java`
 
-## 6. Evidencia de cierre de la S8
+## 5. Evidencia de cierre de la S8
 
 - Líneas `component=producer ... status=published` y `component=consumer ... status=consumed` en el log.
 - Captura del topic `evaluacionn-eventos` con sus mensajes en Kafka UI.
+
+**Si te piden CRUD:** ahora haz la [parte S8 de la guía con CRUD](../proyecto-sello/servicio-con-crud.md#7-s8-cada-cambio-del-crud-avisa-a-kafka).
 
 Siguiente: [S9 - Consistencia distribuida](S09_Consistencia_Distribuida_Procesos_Negocio.md).

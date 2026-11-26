@@ -1,6 +1,6 @@
 # S15 - Evaluación de la Unidad III
 
-*Guía única: agregar un microservicio nuevo al proyecto Lamb - Parte 15 de 16 - 2026*
+*Guía principal: agregar un microservicio nuevo (sin CRUD) al proyecto Lamb - Parte 15 de 16 - 2026*
 
 !!! note "Antes de empezar: debe estar levantado"
     Desde la raíz del proyecto (`Lamb-Modulo02-Admision-Trayectoria`). Si ya está corriendo, no lo arranques otra vez.
@@ -48,11 +48,11 @@ Lo que entregas va en el [Producto U3 / Producto Final](../proyecto-sello/u3-pro
 | 1 | Arquitectura: diagrama de la S1 (sección 1.4) | esta guía |
 | 2 | Configuración centralizada y registro | http://localhost:18888/lamb-evaluacionn-ms/dev, http://localhost:18761 |
 | 3 | Hola mundo por el Gateway | http://localhost:18080/api/v1/evaluacionn/saludo |
-| 4 | Login con `admin` y uso del frontend (camino B: crear, editar, eliminar) | http://localhost:4200/evaluacionn |
+| 4 | Login con `admin` y botón *Enviar evento* | http://localhost:4200/evaluacionn |
 | 5 | Eventos en Kafka | http://localhost:18090 |
 | 6 | `estudiante1` sin permiso (`403`) | frontend |
 | 7 | Logs con traceId y métricas | http://localhost:13000 |
-| 8 | Código: entidad → DTO → mapper → servicio → controlador (B) o controlador + productor (A) | IDE |
+| 8 | Código: `SaludoController` → productor → consumidor, y el `-dev.yml` del Config Server | IDE |
 | 9–10 | Preguntas | |
 
 ## 3. Lista final de verificación
@@ -63,7 +63,6 @@ Lo que entregas va en el [Producto U3 / Producto Final](../proyecto-sello/u3-pro
 - [ ] Responde por el Gateway.
 - [ ] `GET` libre; modificar solo con `ADMIN`.
 - [ ] Publica y consume eventos en Kafka.
-- [ ] **Camino B:** CRUD completo con validaciones (`400`) y `404`.
 - [ ] Logs en Loki con traceId; métricas en Prometheus.
 - [ ] Frontend sin diseño funcionando con login de Keycloak.
 - [ ] Todas las pruebas de la S13 en OK.

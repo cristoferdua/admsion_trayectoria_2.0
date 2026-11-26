@@ -2,10 +2,11 @@
 
 Uso (desde la carpeta guias-web):  python generar.py
 
-  plantillas/sesiones/*.md  -> docs/sesiones/*.md      (guia unica: agregar un servicio a Lamb, con o sin CRUD)
-  plantillas/proyecto-sello/*.md -> docs/proyecto-sello/*.md (guia: crear un servicio desde cero, con o sin CRUD)
+  plantillas/sesiones/*.md  -> docs/sesiones/*.md      (guia principal: agregar un servicio SIN CRUD a Lamb)
+  plantillas/proyecto-sello/*.md -> docs/proyecto-sello/*.md (servicio CON CRUD, arrancar la app, servicio desde cero)
 
-  {{lamb:ruta}}  -> archivo de  Lamb-Modulo02-con-Biblioteca  (ejemplo probado)
+  {{lamb:ruta}}  -> archivo de  Lamb-Modulo02-con-Biblioteca  (ejemplo probado con CRUD)
+  {{hola:ruta}}  -> archivo de  Lamb-Modulo02-con-HolaMundo   (ejemplo probado sin CRUD)
   {{file:ruta}}  -> archivo de  Servicio-Desde-Cero
 """
 import pathlib
@@ -14,7 +15,7 @@ import sys
 
 BASE = pathlib.Path(r"C:\Users\crist\Documents\lamb uopeu 2.0")
 COPIA = BASE / "Lamb-Modulo02-con-Biblioteca"
-ORIGEN = {"lamb": COPIA, "file": BASE / "Servicio-Desde-Cero"}
+ORIGEN = {"lamb": COPIA, "hola": BASE / "Lamb-Modulo02-con-HolaMundo", "file": BASE / "Servicio-Desde-Cero"}
 AQUI = pathlib.Path(__file__).parent
 WEB = AQUI / "docs"
 PLANT = AQUI / "plantillas"
@@ -43,11 +44,23 @@ def renombrar(txt: str) -> str:
     return txt
 
 
+# El ejemplo sin CRUD se llama "hola" (puerto 8097, BD 15461); la guia lo muestra como "evaluacionn"
+# (8095, 15460). "Hola mundo" no se toca.
+def renombrar_hola(txt: str) -> str:
+    txt = txt.replace("Hola mundo", "@@HOLA_MUNDO@@")
+    for viejo, nuevo in (("HOLA", "EVALUACIONN"), ("Hola", "Evaluacionn"), ("hola", "evaluacionn"),
+                         ("8097", "8095"), ("15461", "15460")):
+        txt = txt.replace(viejo, nuevo)
+    return txt.replace("@@HOLA_MUNDO@@", "Hola mundo")
+
+
 def bloque(tipo: str, rel: str) -> str:
     p = ORIGEN[tipo] / rel
     txt = p.read_text(encoding="utf-8").replace("\r\n", "\n").rstrip("\n")
     if tipo == "lamb":
         txt = renombrar(txt)
+    elif tipo == "hola":
+        txt = renombrar_hola(txt)
     lang = LANG.get(p.suffix or p.name, "text")
     return f"```{lang}\n{txt}\n```"
 
@@ -65,7 +78,7 @@ CAMBIOS = {
             (r"Examen(es)?(?![a-z])", "`Examen` → el nombre de **tu CRUD**, con mayúscula. Ej.: `Pago`"),
             (r"(?i)(?<![a-z])(titulo|curso)(?![a-z])",
              "`titulo`, `curso` → **tus atributos** (uno por cada atributo que te pidan). Ej.: `monto`, `fecha`. "
-             "El tipo de cada uno está en la [tabla 6.1 de la S1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden)"),
+             "El tipo de cada uno está en la [tabla 1.1](#11-traduce-los-atributos-que-te-piden)"),
             (r"(?<!\d)8095(?!\d)", "`8095` → el puerto de **tu servicio**"),
             (r"(?<!\d)8096(?!\d)", "`8096` → el puerto de la **2da instancia** de tu servicio"),
             (r"(?<!\d)15460(?!\d)", "`15460` → el puerto de la **base de datos** de tu servicio"),
@@ -89,7 +102,7 @@ CAMBIOS = {
     },
 }
 SIN_LISTA = {"powershell", "bash", "mermaid", ""}
-SOLO = re.compile(r"^(S0[1-9]|S1[01])_|^servicio-desde-cero")
+SOLO = re.compile(r"^(S0[1-9]|S1[01])_|^servicio-desde-cero|^servicio-con-crud")
 
 
 def que_cambiar(codigo: str, cfg: dict) -> str:
@@ -144,11 +157,12 @@ def agregar_cambios(txt: str, carpeta: str) -> str:
 
 def render(f: pathlib.Path) -> str:
     txt = f.read_text(encoding="utf-8")
-    txt = re.sub(r"\{\{(lamb|file):([^}]+)\}\}", lambda m: bloque(m.group(1), m.group(2)), txt)
-    if re.search(r"\{\{(lamb|file):", txt):
+    txt = re.sub(r"\{\{(lamb|hola|file):([^}]+)\}\}", lambda m: bloque(m.group(1), m.group(2)), txt)
+    if re.search(r"\{\{(lamb|hola|file):", txt):
         sys.exit(f"placeholder sin resolver en {f.name}")
     if SOLO.match(f.name):
-        txt = agregar_cambios(txt, f.parent.name)
+        # la guia con CRUD usa los mismos nombres que las sesiones (evaluacionn, examen)
+        txt = agregar_cambios(txt, "sesiones" if f.name.startswith("servicio-con-crud") else f.parent.name)
     return txt
 
 

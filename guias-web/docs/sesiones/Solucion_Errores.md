@@ -1,6 +1,6 @@
 # Solución de errores
 
-*Guía única: agregar un microservicio nuevo al proyecto Lamb - Si te sale un error, búscalo aquí - 2026*
+*Guía principal: agregar un microservicio nuevo (sin CRUD) al proyecto Lamb - Si te sale un error, búscalo aquí - 2026*
 
 ## 1. Cómo usar esta página
 
@@ -172,7 +172,7 @@ Trayectoria. Si usas otro atributo, el método cambia de nombre (`metodoPago` �
 **Por qué:** falta el procesador de MapStruct.
 
 **Solución:** en el `pom.xml` agrega `mapstruct-processor` en **las dos** `<annotationProcessorPaths>`
-([S1, paso 6.5](S01_Construccion_Servicio_Base.md#65-mapperexamenmapperjava-mapstruct)) y recompila
+([guía con CRUD, paso 2.5](../proyecto-sello/servicio-con-crud.md#25-mapperexamenmapperjava-mapstruct)) y recompila
 con `.\mvnw.cmd clean package -DskipTests`.
 
 ### 4.4 `Unmapped target property: "x"` (aviso de MapStruct)
@@ -238,7 +238,7 @@ agrégala con una migración `V2`. Recuerda: `metodo_pago` en SQL ↔ `metodoPag
 
 ### 5.8 `Schema-validation: wrong column type ... found [numeric], but expecting [float(53)]`
 
-**Solución:** usa el tipo Java de la tabla de la [S1, 6.1](S01_Construccion_Servicio_Base.md#61-traduce-los-atributos-que-te-piden):
+**Solución:** usa el tipo Java de la tabla de la [S1, 6.1](../proyecto-sello/servicio-con-crud.md#11-traduce-los-atributos-que-te-piden):
 `NUMERIC(10,2)` ↔ `BigDecimal`, `DATE` ↔ `LocalDate`, `INTEGER` ↔ `Integer`.
 
 ## 6. Eureka y Gateway

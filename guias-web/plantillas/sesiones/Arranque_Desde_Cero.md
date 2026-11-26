@@ -1,9 +1,11 @@
 # Arranque desde cero (solo comandos)
 
-*Guía única: agregar un microservicio nuevo al proyecto Lamb - Para cuando ya terminaste la guía - 2026*
+*Guía principal: agregar un microservicio nuevo (sin CRUD) al proyecto Lamb - Para cuando ya terminaste la guía - 2026*
 
 Todo el proyecto, con tu servicio incluido, en orden. Abre PowerShell en la raíz del proyecto
 (`Lamb-Modulo02-Admision-Trayectoria`). Cambia `lamb-evaluacionn-ms` por tu servicio.
+
+La versión explicada paso a paso, con todos los links, está en la [Guía: arrancar la app](../proyecto-sello/arrancar-app.md).
 
 ## Paso 0. Solo la primera vez
 
@@ -92,7 +94,6 @@ npm start
 ```powershell
 Invoke-RestMethod http://localhost:18080/actuator/health
 Invoke-RestMethod http://localhost:18080/api/v1/evaluacionn/saludo
-Invoke-RestMethod http://localhost:18080/api/v1/examenes          # solo camino B (con CRUD)
 ```
 
 | Abrir | Link |

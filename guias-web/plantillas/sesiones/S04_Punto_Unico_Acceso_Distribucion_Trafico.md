@@ -1,6 +1,6 @@
 # S4 - Punto único de acceso y distribución de tráfico
 
-*Guía única: agregar un microservicio nuevo al proyecto Lamb - Parte 4 de 16 - 2026*
+*Guía principal: agregar un microservicio nuevo (sin CRUD) al proyecto Lamb - Parte 4 de 16 - 2026*
 
 !!! note "Antes de empezar: debe estar levantado"
     Desde la raíz del proyecto (`Lamb-Modulo02-Admision-Trayectoria`). Si ya está corriendo, no lo arranques otra vez.
@@ -42,37 +42,20 @@ Una ruta **por recurso**.
 
 **Abre el archivo:** `lamb-gateway-dev.yml`  
 **En la ruta:** `infra\lamb-config\config-repo\`  
-**Qué hacer:** Busca (`Ctrl+F`) la línea `- id: lamb-finanzas` y pega **justo arriba** de ella el bloque de tu camino (A **o** B, no los dos). No borres lo demás del archivo.
+**Qué hacer:** Busca (`Ctrl+F`) la línea `- id: lamb-finanzas` y pega **justo arriba** de ella este bloque. No borres lo demás del archivo.
 
-
-### Camino A - Sin CRUD
 
 ```yaml
             - id: lamb-evaluacionn-saludo
               uri: lb://lamb-evaluacionn-ms
               predicates:
                 - Path=/api/v1/evaluacionn/**
-```
-
-### Camino B - Con CRUD
-
-Las dos rutas (la del Hola mundo y la del CRUD):
-
-```yaml
-            - id: lamb-evaluacionn-saludo
-              uri: lb://lamb-evaluacionn-ms
-              predicates:
-                - Path=/api/v1/evaluacionn/**
-            - id: lamb-evaluacionn-examenes
-              uri: lb://lamb-evaluacionn-ms
-              predicates:
-                - Path=/api/v1/examenes/**
 ```
 
 !!! note "Qué cambia"
     - `id`: un nombre único (`lamb-` + servicio + recurso).
     - `uri: lb://lamb-evaluacionn-ms`: el `spring.application.name` de tu servicio (`lb://` = buscarlo en Eureka y balancear).
-    - `Path`: la ruta de tu controlador (`@RequestMapping`). Si el profe pide otro CRUD, agrega otra ruta igual con su `Path`.
+    - `Path`: la ruta de tu controlador (`@RequestMapping`).
 
     No cambies la indentación (12 espacios antes de `- id:`): si está mal, el Gateway no arranca.
 
@@ -82,19 +65,11 @@ El Gateway de Lamb **rechaza** (`401`) toda ruta que no tenga permiso.
 
 **Abre el archivo:** `SecurityConfig.java`  
 **En la ruta:** `infra\lamb-gateway\src\main\java\pe\edu\upeu\lamb\gateway\config\`  
-**Qué hacer:** Busca (`Ctrl+F`) la línea `.requestMatchers(TRAYECTORIA).permitAll()` y pega **en la línea de abajo** la línea de tu camino (A **o** B). No borres lo demás del archivo.
+**Qué hacer:** Busca (`Ctrl+F`) la línea `.requestMatchers(TRAYECTORIA).permitAll()` y pega **en la línea de abajo** esta línea. No borres lo demás del archivo.
 
-
-### Camino A - Sin CRUD
 
 ```java
                         .requestMatchers("/api/v1/evaluacionn/**").permitAll()
-```
-
-### Camino B - Con CRUD
-
-```java
-                        .requestMatchers("/api/v1/evaluacionn/**", "/api/v1/examenes/**").permitAll()
 ```
 
 !!! note "Es temporal"
@@ -120,21 +95,6 @@ cd infra\lamb-gateway
 | Qué | Link | Qué debes ver |
 |---|---|---|
 | Hola mundo por el Gateway | http://localhost:18080/api/v1/evaluacionn/saludo | `Hola mundo desde lamb-evaluacionn-ms` |
-| **Camino B:** CRUD por el Gateway | http://localhost:18080/api/v1/examenes | `[]` o la lista |
-
-**Camino B:** prueba el CRUD completo por el Gateway con PowerShell:
-
-**Dónde abrir la terminal:** Cualquier PowerShell (no importa la carpeta). Pega **una línea a la vez** para ver qué responde cada una.
-
-```powershell
-$api = "http://localhost:18080/api/v1/examenes"                       # cambia por tu ruta
-Invoke-RestMethod -Method Post $api -ContentType "application/json; charset=utf-8" -Body '{"titulo":"Parcial 1","curso":"Matematica"}'
-Invoke-RestMethod $api                                              # mira el id
-Invoke-RestMethod -Method Put "$api/1" -ContentType "application/json; charset=utf-8" -Body '{"titulo":"Parcial 1 (recuperacion)","curso":"Matematica"}'
-Invoke-RestMethod -Method Delete "$api/1"
-```
-
-El `-Body` lleva **tus** atributos.
 
 ## 6. Distribución de tráfico entre instancias
 
@@ -154,12 +114,14 @@ En las consolas de **las dos** instancias aparece `Saludo solicitado`: el Gatewa
 
 ## 7. Evidencia de cierre de la S4
 
-- Hola mundo (y en el camino B, el CRUD) responde por `http://localhost:18080`.
+- Hola mundo responde por `http://localhost:18080`.
 - Las peticiones se reparten entre las 2 instancias.
 
 !!! note "Si el Gateway responde..."
     - `404`: falta la ruta del paso 2 o no reiniciaste el Gateway.
     - `401`: falta el permiso del paso 3.
     - `503` / `500 Unable to find instance`: tu servicio aún no está en Eureka; espera 30 s.
+
+**Si te piden CRUD:** ahora haz la [parte S4 de la guía con CRUD](../proyecto-sello/servicio-con-crud.md#4-s4-rutas-y-permisos-del-crud).
 
 Siguiente: [S5 - Evaluación de la Unidad I](S05_Evaluacion_Unidad_1.md).

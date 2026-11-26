@@ -1,6 +1,6 @@
 # S9 - Consistencia distribuida en procesos de negocio
 
-*Guía única: agregar un microservicio nuevo al proyecto Lamb - Parte 9 de 16 - 2026*
+*Guía principal: agregar un microservicio nuevo (sin CRUD) al proyecto Lamb - Parte 9 de 16 - 2026*
 
 !!! note "Antes de empezar: debe estar levantado"
     Desde la raíz del proyecto (`Lamb-Modulo02-Admision-Trayectoria`). Si ya está corriendo, no lo arranques otra vez.
@@ -36,11 +36,7 @@ Tu servicio ya está protegido: no tienes que escribir código nuevo, pero sí *
 
 ## 2. Lo que ya hace tu código
 
-### 2.1 `@Transactional` en el servicio (camino B)
-
-En `ExamenService`, `crear`, `actualizar` y `eliminar` tienen `@Transactional`: o se guarda **todo**, o **nada**.
-
-### 2.2 `publicarTrasCommit` en el productor (los dos caminos)
+### 2.1 `publicarTrasCommit` en el productor
 
 ```java
 public void publicarTrasCommit(EvaluacionnEvento evento) {
@@ -61,9 +57,9 @@ public void publicarTrasCommit(EvaluacionnEvento evento) {
 
 | Situación | Qué pasa |
 |---|---|
-| Se guarda bien | Después del commit se publica `examen.creado` |
-| Falla al guardar (error, validación, BD caída) | Se hace *rollback* y **no** se publica nada |
-| Camino A (sin base de datos) | Se publica de inmediato |
+| Sin transacción (tu botón *Enviar evento*) | Se publica **de inmediato** |
+| Con transacción que se guarda bien (ej. un CRUD con `@Transactional`) | Se publica **después** del commit |
+| Con transacción que falla (error, validación, BD caída) | Se hace *rollback* y **no** se publica nada |
 
 Es el mismo mecanismo que usa `PagoEventosProducer` en Pagatu.
 
@@ -87,25 +83,26 @@ Para la compensación (deshacer un paso cuando otro falla, como `pago.fallido` �
 [S9 original de Pagatu](https://262dist.github.io/pagatu/sesiones/S09_Consistencia_Distribuida_Procesos_Negocio/).
 
 !!! note "Esta sección 3 no está en el ejemplo probado"
-    Solo hazla si te la piden: los caminos A y B funcionan sin ella.
+    Solo hazla si te la piden: el servicio funciona sin ella.
 
-## 4. Probar (camino B)
+## 4. Probar
 
-Envía un examen **inválido** (título vacío) y revisa que **no** salga ningún evento:
+Tu botón no abre transacción, así que el evento sale enseguida. Pruébalo (en cualquier PowerShell):
 
 ```powershell
-Invoke-RestMethod -Method Post http://localhost:8095/api/v1/examenes -ContentType "application/json" -Body '{"titulo":""}'
+Invoke-RestMethod -Method Post http://localhost:8095/api/v1/evaluacionn/saludo/evento
 ```
 
-Responde `400` ("Error de validación en los datos enviados") y en el log **no** aparece `component=producer`.
-Con un examen válido sí aparece `examen.creado`.
+En el log sale `component=producer ... status=published` en el mismo instante: es la rama `else` de `publicarTrasCommit` ("no hay transacción: envía de inmediato").
 
 !!! note "Archivos de esta sesión"
     En esta sesión **no creas ni cambias archivos**: el código de la S8 ya lo hace.
 
 ## 5. Evidencia de cierre de la S9
 
-- Captura del `400` sin evento y del `201` con su evento `examen.creado` (camino B).
+- Captura del log con `status=published` al pulsar el botón.
 - Explicación en tus palabras de `publicarTrasCommit`.
+
+**Si te piden CRUD:** ahora haz la [parte S9 de la guía con CRUD](../proyecto-sello/servicio-con-crud.md#8-s9-no-publicar-si-no-se-guardo).
 
 Siguiente: [S10 - Observabilidad](S10_Observabilidad_Diagnostico_Sistemas_Distribuidos.md).

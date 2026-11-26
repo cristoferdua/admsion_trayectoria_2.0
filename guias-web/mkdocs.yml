@@ -16,6 +16,8 @@ nav:
       - Alcance por microservicio: proyecto-sello/alcance-microservicios.md
       - Sistema académico (referencia): proyecto-sello/acad.md
       - Sistema de producción y comercialización (referencia): proyecto-sello/produccion.md
+      - "Guía: agregar un servicio con CRUD a Lamb": proyecto-sello/servicio-con-crud.md
+      - "Guía: arrancar la app (comandos y links)": proyecto-sello/arrancar-app.md
       - "Guía: crear un servicio desde cero (con o sin CRUD)": proyecto-sello/servicio-desde-cero.md
   - Silabos:
       - Silabo 2026-1: silabo_dist_2026_1.md

@@ -1,9 +1,9 @@
 # Enlaces del sistema
 
-*Guía única: agregar un microservicio nuevo al proyecto Lamb - Todos los links en localhost - 2026*
+*Guía principal: agregar un microservicio nuevo (sin CRUD) al proyecto Lamb - Todos los links en localhost - 2026*
 
 Todos los links del proyecto Lamb en desarrollo. Solo funcionan si el componente está levantado
-(orden de arranque en la [S13](S13_Validacion_End_to_End_Producto.md)).
+(orden de arranque en la [Guía: arrancar la app](../proyecto-sello/arrancar-app.md)).
 
 ## 1. Infraestructura
 
@@ -47,19 +47,16 @@ Usuarios de prueba del frontend: `admin` / `admin123`, `docente1` / `docente123`
 
 ## 5. Tu servicio nuevo (ejemplo `lamb-evaluacionn-ms`)
 
-Cambia `8095`, `evaluacionn` y `examenes` por los tuyos.
+Cambia `8095` y `evaluacionn` por los tuyos.
 
 | Qué | Link |
 |---|---|
 | Hola mundo (por Gateway) | http://localhost:18080/api/v1/evaluacionn/saludo |
-| CRUD (por Gateway, camino B) | http://localhost:18080/api/v1/examenes |
 | Hola mundo (directo) | http://localhost:8095/api/v1/evaluacionn/saludo |
-| CRUD (directo, camino B) | http://localhost:8095/api/v1/examenes |
 | Swagger | http://localhost:8095/swagger-ui.html |
 | Salud | http://localhost:8095/actuator/health |
 | Métricas | http://localhost:8095/actuator/prometheus |
 | Frontend - Hola mundo | http://localhost:4200/evaluacionn |
-| Frontend - CRUD (camino B) | http://localhost:4200/evaluacionn/examenes |
 | Base de datos | `localhost:15460` · BD `lamb_evaluacionn_db` · `lamb` / `lamb` |
 
 ## 6. Servicios de Lamb (Admisión y Trayectoria)

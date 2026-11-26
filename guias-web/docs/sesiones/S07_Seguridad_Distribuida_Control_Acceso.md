@@ -1,6 +1,6 @@
 # S7 - Seguridad distribuida y control de acceso
 
-*Guía única: agregar un microservicio nuevo al proyecto Lamb - Parte 7 de 16 - 2026*
+*Guía principal: agregar un microservicio nuevo (sin CRUD) al proyecto Lamb - Parte 7 de 16 - 2026*
 
 !!! note "Antes de empezar: debe estar levantado"
     Desde la raíz del proyecto (`Lamb-Modulo02-Admision-Trayectoria`). Si ya está corriendo, no lo arranques otra vez.
@@ -50,7 +50,7 @@ flowchart LR
 
 ## 2. El servicio: `config\SecurityConfig.java` (versión final)
 
-Reemplaza **todo** el archivo de la S1 por este (igual que `pagatu-pago-ms`). Es igual para los dos caminos:
+Reemplaza **todo** el archivo de la S1 por este (igual que `pagatu-pago-ms`):
 
 **Abre el archivo:** `SecurityConfig.java`  
 **En la ruta:** `services\lamb-evaluacionn-ms\src\main\java\pe\edu\upeu\lamb\evaluacionn\config\`  
@@ -93,10 +93,8 @@ public class SecurityConfig {
 
 **Abre el archivo:** `SecurityConfig.java`  
 **En la ruta:** `infra\lamb-gateway\src\main\java\pe\edu\upeu\lamb\gateway\config\`  
-**Qué hacer:** Este es el del **Gateway** (no el de tu servicio). Busca (`Ctrl+F`) `/api/v1/evaluacionn/**` → **borra** la línea `...permitAll()` que pegaste en la S4 → en ese mismo lugar pega las líneas de tu camino (A **o** B). No borres lo demás del archivo.
+**Qué hacer:** Este es el del **Gateway** (no el de tu servicio). Busca (`Ctrl+F`) `/api/v1/evaluacionn/**` → **borra** la línea `...permitAll()` que pegaste en la S4 → en ese mismo lugar pega estas líneas. No borres lo demás del archivo.
 
-
-### Camino A - Sin CRUD
 
 ```java
                         .requestMatchers(HttpMethod.GET, "/api/v1/evaluacionn/**").permitAll()
@@ -106,21 +104,6 @@ public class SecurityConfig {
 **Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
 
 - `evaluacionn` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
-
-### Camino B - Con CRUD
-
-```java
-                        .requestMatchers(HttpMethod.GET, "/api/v1/evaluacionn/**", "/api/v1/examenes/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/evaluacionn/**", "/api/v1/examenes/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/examenes/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/examenes/**").hasRole("ADMIN")
-```
-
-**Qué cambiar en este código** (ejemplo: si tu servicio es **Tesorería** y tu CRUD es **Pagos** con `monto` y `fecha`):
-
-- `evaluacionn` (aparece 2 veces) → el nombre de **tu servicio**, en minúscula. Ej.: `tesoreria`.
-- `examen` / `examenes` (aparece 4 veces) → el nombre de **tu CRUD**, en minúscula (singular / plural). Ej.: `pago` / `pagos`.
 - Todo lo demás se copia **igual**. Tip: `Ctrl+H` en VS Code, con **Aa** activado (respeta mayúsculas).
 
 Guarda (`Ctrl+S`) y **reinicia el Gateway**: en su terminal `Ctrl+C` y otra vez `.\mvnw.cmd spring-boot:run`.
@@ -155,16 +138,9 @@ Invoke-RestMethod -Method Post http://localhost:18080/api/v1/evaluacionn/saludo 
 !!! note "El POST de arriba da 401 aunque aún no exista"
     El Gateway corta la petición **antes** de llegar a tu servicio. El endpoint `POST .../saludo/evento` se crea en la S8.
 
-**Camino B:**
-
-```powershell
-Invoke-RestMethod http://localhost:18080/api/v1/examenes                            # 200
-Invoke-RestMethod -Method Post http://localhost:18080/api/v1/examenes -ContentType "application/json" -Body '{"titulo":"x"}'   # 401
-```
-
 Con usuarios reales se prueba desde el frontend en la S11:
 
-| Usuario | Al crear / editar / eliminar |
+| Usuario | Al pulsar *Enviar evento a Kafka* |
 |---|---|
 | `admin` / `admin123` (rol `ADMIN`) | funciona |
 | `estudiante1` / `estudiante123` | "No tienes permiso para esta acción." (`403`) |
@@ -180,7 +156,9 @@ Con usuarios reales se prueba desde el frontend en la S11:
 
 ## 5. Evidencia de cierre de la S7
 
-- `GET` responde `200` sin token; `POST` (y en el camino B `PUT`/`DELETE`) responde `401` sin token.
+- `GET` responde `200` sin token; `POST` responde `401` sin token.
 - Captura de las líneas que agregaste en el `SecurityConfig` del Gateway.
+
+**Si te piden CRUD:** ahora haz la [parte S7 de la guía con CRUD](../proyecto-sello/servicio-con-crud.md#6-s7-roles-para-el-crud).
 
 Siguiente: [S7b - Seguridad con Keycloak](S07b_Seguridad_Distribuida_Keycloak.md).

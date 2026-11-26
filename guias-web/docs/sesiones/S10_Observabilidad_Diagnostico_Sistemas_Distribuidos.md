@@ -1,6 +1,6 @@
 # S10 - Observabilidad y diagnóstico de sistemas distribuidos
 
-*Guía única: agregar un microservicio nuevo al proyecto Lamb - Parte 10 de 16 - 2026*
+*Guía principal: agregar un microservicio nuevo (sin CRUD) al proyecto Lamb - Parte 10 de 16 - 2026*
 
 !!! note "Antes de empezar: debe estar levantado"
     Desde la raíz del proyecto (`Lamb-Modulo02-Admision-Trayectoria`). Si ya está corriendo, no lo arranques otra vez.
@@ -32,7 +32,7 @@
 
 ## 1. Introducción
 
-Tu servicio ya produce todo lo necesario para verlo en **Grafana** (igual en los dos caminos):
+Tu servicio ya produce todo lo necesario para verlo en **Grafana**:
 
 | Qué | Lo produce | Lo recoge | Configuración |
 |---|---|---|---|

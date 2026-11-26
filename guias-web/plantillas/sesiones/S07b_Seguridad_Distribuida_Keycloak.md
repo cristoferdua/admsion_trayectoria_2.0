@@ -1,6 +1,6 @@
 # S7b - Seguridad distribuida con Keycloak
 
-*Guía única: agregar un microservicio nuevo al proyecto Lamb - Parte 7b de 16 - 2026*
+*Guía principal: agregar un microservicio nuevo (sin CRUD) al proyecto Lamb - Parte 7b de 16 - 2026*
 
 !!! note "Antes de empezar: debe estar levantado"
     Desde la raíz del proyecto (`Lamb-Modulo02-Admision-Trayectoria`). Si ya está corriendo, no lo arranques otra vez.
@@ -21,7 +21,7 @@
 
 **Keycloak** (`http://localhost:18180`) es quien maneja los usuarios, las contraseñas y los roles de Lamb.
 Tu servicio **no crea usuarios ni guarda contraseñas**: solo confía en el token que firma Keycloak.
-Esta sesión es igual para los dos caminos y casi no tiene código: es saber **usar la consola de Keycloak**.
+Esta sesión casi no tiene código: es saber **usar la consola de Keycloak**.
 
 | Dato | Valor en Lamb |
 |---|---|
@@ -46,7 +46,7 @@ Esta sesión es igual para los dos caminos y casi no tiene código: es saber **u
 
 ## 3. Si te piden un rol nuevo
 
-Ejemplo: "solo el **EVALUADOR** puede registrar examenes".
+Ejemplo: "solo el **EVALUADOR** puede enviar eventos".
 
 1. http://localhost:18180 → `admin` / `admin123` → arriba a la izquierda elige el realm **lamb**.
 2. *Realm roles* → *Create role* → nombre `EVALUADOR` → *Save*.
