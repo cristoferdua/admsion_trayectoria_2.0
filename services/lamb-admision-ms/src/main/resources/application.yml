@@ -10,9 +10,11 @@ spring:
 lamb:
   reniec:
     base-url: https://api.apis.net.pe
+    # Sin valor por defecto: definir LAMB_RENIEC_TOKEN en el entorno / .env
     token: ${LAMB_RENIEC_TOKEN:}
   brevo:
     base-url: https://api.brevo.com
+    # Sin valor por defecto: definir LAMB_BREVO_KEY en el entorno / .env
     key: ${LAMB_BREVO_KEY:}
     from-email: ${LAMB_BREVO_FROM:cristion22gfg@gmail.com}
     from-name: ${LAMB_BREVO_FROM_NAME:Admisión UPeU}
