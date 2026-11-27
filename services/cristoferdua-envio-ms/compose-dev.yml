@@ -1,0 +1,19 @@
+name: cristoferdua-envio-dev
+
+services:
+  cristoferdua-postgres-envio-dev:
+    image: postgres:16-alpine
+    container_name: cristoferdua-postgres-envio-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pagatu_envio_db
+      POSTGRES_USER: pagatu
+      POSTGRES_PASSWORD: pagatu
+    ports:
+      - "15436:5432"
+    volumes:
+      - cristoferdua_envio_dev_data:/var/lib/postgresql/data
+
+volumes:
+  cristoferdua_envio_dev_data:
+    name: cristoferdua-envio-dev-data

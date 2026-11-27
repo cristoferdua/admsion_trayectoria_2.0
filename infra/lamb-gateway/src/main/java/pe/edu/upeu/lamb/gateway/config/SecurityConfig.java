@@ -179,6 +179,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/matriculas/**").hasAnyRole("ADMIN", "COORDINADOR", "ESTUDIANTE")
                         .requestMatchers(HttpMethod.GET, "/api/v1/pagos/**").authenticated()
                         .requestMatchers("/api/v1/pagos/**").hasAnyRole("ADMIN", "COORDINADOR")
+                        .requestMatchers("/api/v1/envios/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
