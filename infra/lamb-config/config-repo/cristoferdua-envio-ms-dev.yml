@@ -30,6 +30,10 @@ spring:
         spring.json.value.default.type: pe.edu.upeu.lamb.envio.event.EnvioEvento
         spring.json.trusted.packages: pe.edu.upeu.lamb.envio.event
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
 app:
   kafka:
     topic:

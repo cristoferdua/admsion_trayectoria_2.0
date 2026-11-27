@@ -1,0 +1,52 @@
+name: cristoferdua-envio-prod
+
+services:
+  cristoferdua-postgres-envio:
+    image: postgres:16-alpine
+    container_name: cristoferdua-postgres-envio
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    volumes:
+      - cristoferdua_envio_data:/var/lib/postgresql/data
+    ports:
+      - "25436:5432"
+    networks:
+      - cristoferdua-envio-int
+
+  cristoferdua-envio-ms:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      cristoferdua-postgres-envio:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      CONFIG_SERVER_URL: ${CONFIG_SERVER_URL}
+      DB_HOST: cristoferdua-postgres-envio
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - cristoferdua-envio-int
+      - lamb-prod-net
+
+volumes:
+  cristoferdua_envio_data:
+
+networks:
+  cristoferdua-envio-int:
+    name: cristoferdua-envio-int
+  lamb-prod-net:
+    external: true
